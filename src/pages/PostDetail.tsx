@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Send, Heart, MessageSquare, Share2, Quote } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
+import CommentItem from '@/components/CommentItem';
 
 const MOCK_POSTS: VersePost[] = [
   {
@@ -21,7 +22,7 @@ const MOCK_POSTS: VersePost[] = [
     createdAt: '2 hours ago',
     likes: 24,
     comments: [
-      { id: 'c1', author: 'Hopeful', content: 'This is exactly what I needed today. Discernment starts with trust.', createdAt: '1 hour ago' }
+      { id: 'c1', author: 'Hopeful', content: 'This is exactly what I needed today. Discernment starts with trust.', createdAt: '1 hour ago', replies: [] }
     ]
   },
   {
@@ -93,7 +94,8 @@ const PostDetail = () => {
       id: Date.now().toString(),
       author: 'You',
       content: newComment,
-      createdAt: 'Just now'
+      createdAt: 'Just now',
+      replies: []
     };
 
     setPost({
@@ -102,6 +104,36 @@ const PostDetail = () => {
     });
     setNewComment("");
     showSuccess("Reflection shared!");
+  };
+
+  const handleReply = (parentId: string, content: string) => {
+    const addReplyToComments = (comments: Comment[]): Comment[] => {
+      return comments.map(c => {
+        if (c.id === parentId) {
+          return {
+            ...c,
+            replies: [...(c.replies || []), {
+              id: Date.now().toString(),
+              author: 'You',
+              content: content,
+              createdAt: 'Just now',
+              replies: []
+            }]
+          };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return { ...c, replies: addReplyToComments(c.replies) };
+        }
+        return c;
+      });
+    };
+
+    if (post) {
+      setPost({
+        ...post,
+        comments: addReplyToComments(post.comments)
+      });
+    }
   };
 
   return (
@@ -119,7 +151,7 @@ const PostDetail = () => {
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-[#a855f7] to-[#ec4899] p-[2px]">
                   <div className="h-full w-full rounded-full bg-white flex items-center justify-center font-bold text-primary">
-                    S
+                    {post.author[0]}
                   </div>
                 </div>
                 <div>
@@ -188,17 +220,13 @@ const PostDetail = () => {
               </Button>
             </form>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {post.comments.map((comment) => (
-                <div key={comment.id} className="bg-white/30 backdrop-blur-sm rounded-3xl p-6 border border-white/50">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="font-black text-xs text-primary">{comment.author}</span>
-                    <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-tighter">{comment.createdAt}</span>
-                  </div>
-                  <p className="text-sm font-medium leading-relaxed text-foreground/80">
-                    {comment.content}
-                  </p>
-                </div>
+                <CommentItem 
+                  key={comment.id} 
+                  comment={comment} 
+                  onReply={handleReply}
+                />
               ))}
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { VersePost } from '@/types';
+import { VersePost, Comment } from '@/types';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { MessageSquare, Heart, Share2, Quote, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { showSuccess } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
+import CommentItem from './CommentItem';
 
 interface VerseCardProps {
   post: VersePost;
@@ -49,11 +50,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    const comment = {
+    const comment: Comment = {
       id: Date.now().toString(),
       author: 'You',
       content: newComment,
-      createdAt: 'Just now'
+      createdAt: 'Just now',
+      replies: []
     };
 
     setPost(prev => ({
@@ -62,6 +64,34 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     }));
     setNewComment("");
     showSuccess("Reflection shared!");
+  };
+
+  const handleReply = (parentId: string, content: string) => {
+    const addReplyToComments = (comments: Comment[]): Comment[] => {
+      return comments.map(c => {
+        if (c.id === parentId) {
+          return {
+            ...c,
+            replies: [...(c.replies || []), {
+              id: Date.now().toString(),
+              author: 'You',
+              content: content,
+              createdAt: 'Just now',
+              replies: []
+            }]
+          };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return { ...c, replies: addReplyToComments(c.replies) };
+        }
+        return c;
+      });
+    };
+
+    setPost(prev => ({
+      ...prev,
+      comments: addReplyToComments(prev.comments)
+    }));
   };
 
   return (
@@ -143,15 +173,13 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
               </Button>
             </form>
 
-            <div className="space-y-3 max-h-60 overflow-y-auto px-2 scrollbar-hide">
+            <div className="space-y-4 max-h-96 overflow-y-auto px-2 scrollbar-hide">
               {post.comments.map((comment) => (
-                <div key={comment.id} className="bg-white/40 p-4 rounded-2xl border border-white/50 shadow-sm">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="font-black text-[10px] text-primary uppercase">{comment.author}</span>
-                    <span className="text-[9px] text-muted-foreground font-bold">{comment.createdAt}</span>
-                  </div>
-                  <p className="text-xs font-medium text-foreground/70">{comment.content}</p>
-                </div>
+                <CommentItem 
+                  key={comment.id} 
+                  comment={comment} 
+                  onReply={handleReply}
+                />
               ))}
               {post.comments.length === 0 && (
                 <p className="text-center py-4 text-xs font-bold text-muted-foreground italic">No reflections yet. Be the first!</p>
