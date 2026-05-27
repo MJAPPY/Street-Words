@@ -17,7 +17,7 @@ const MOCK_POSTS: VersePost[] = [
     reference: 'Hebrews 11:1',
     relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
     category: 'Faith',
-    author: 'TruthSeeker',
+    author: 'StreetWords',
     createdAt: '2 hours ago',
     likes: 24,
     comments: [
@@ -30,7 +30,7 @@ const MOCK_POSTS: VersePost[] = [
     reference: '1 Corinthians 13:4',
     relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
     category: 'Love',
-    author: 'StreetApostle',
+    author: 'StreetWords',
     createdAt: '5 hours ago',
     likes: 42,
     comments: []
@@ -41,7 +41,7 @@ const MOCK_POSTS: VersePost[] = [
     reference: 'Psalm 34:18',
     relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
     category: 'Despair',
-    author: 'GraceFindsMe',
+    author: 'StreetWords',
     createdAt: '1 day ago',
     likes: 156,
     comments: []
@@ -52,7 +52,7 @@ const MOCK_POSTS: VersePost[] = [
     reference: 'Proverbs 13:4',
     relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
     category: 'Wisdom',
-    author: 'SageStreet',
+    author: 'StreetWords',
     createdAt: '2 days ago',
     likes: 88,
     comments: []
