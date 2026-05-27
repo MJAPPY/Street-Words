@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const MOCK_POSTS: VersePost[] = [
   {
@@ -43,11 +45,42 @@ const MOCK_POSTS: VersePost[] = [
     createdAt: '1 day ago',
     likes: 156,
     comments: []
+  },
+  {
+    id: '4',
+    verse: 'The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.',
+    reference: 'Proverbs 13:4',
+    relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
+    category: 'Wisdom',
+    author: 'SageStreet',
+    createdAt: '2 days ago',
+    likes: 88,
+    comments: []
   }
 ];
 
 const Index = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category') as Category | null;
+  const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
+
+  useEffect(() => {
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    } else {
+      setSelectedCategory('All');
+    }
+  }, [categoryParam]);
+
+  const handleSelectCategory = (cat: Category | 'All') => {
+    if (cat === 'All') {
+      searchParams.delete('category');
+    } else {
+      searchParams.set('category', cat);
+    }
+    setSearchParams(searchParams);
+    setSelectedCategory(cat);
+  };
 
   const filteredPosts = selectedCategory === 'All' 
     ? MOCK_POSTS 
@@ -61,24 +94,40 @@ const Index = () => {
         <header className="mb-16 text-center space-y-6">
           <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
             <Sparkles className="h-3 w-3" />
-            Join the community of discernment
+            Word on the Street
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.9]">
-            Word on the <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] via-[#ec4899] to-[#a855f7] bg-[length:200%_auto] animate-gradient">
-              Street
-            </span>
+            {selectedCategory === 'All' ? (
+              <>Global <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] to-[#ec4899]">Feed</span></>
+            ) : (
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] to-[#ec4899]">{selectedCategory}</span>
+            )}
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-medium leading-relaxed">
-            Finding truth in every verse. A sanctuary for scripture, urban reflection, and communal wisdom.
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-medium">
+            {selectedCategory === 'All' 
+              ? "Exploring ancient wisdom for modern streets through communal discernment."
+              : `Verses and reflections centered on the theme of ${selectedCategory}.`
+            }
           </p>
         </header>
 
         <section className="sticky top-[65px] z-40 bg-background/50 backdrop-blur-md pt-4 pb-6 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <CategoryPills 
-            selectedCategory={selectedCategory} 
-            onSelect={setSelectedCategory} 
-          />
+          <div className="flex items-center justify-between gap-4">
+            <CategoryPills 
+              selectedCategory={selectedCategory} 
+              onSelect={handleSelectCategory} 
+            />
+            {selectedCategory !== 'All' && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => handleSelectCategory('All')}
+                className="rounded-full h-8 px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary"
+              >
+                Clear <X className="ml-1.5 h-3 w-3" />
+              </Button>
+            )}
+          </div>
         </section>
 
         <section className="space-y-10">
@@ -94,22 +143,9 @@ const Index = () => {
         </section>
       </main>
 
-      <footer className="mt-32 border-t border-primary/5 bg-white/30 backdrop-blur-sm py-16">
-        <div className="container text-center max-w-xl">
-          <div className="flex justify-center mb-8">
-            <div className="rounded-2xl bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px]">
-              <div className="bg-white rounded-[14px] p-2">
-                <img src="/logo.png" alt="Street Words" className="h-10 w-10" />
-              </div>
-            </div>
-          </div>
-          <h3 className="font-black tracking-tighter text-xl mb-4">STREET WORDS</h3>
-          <p className="text-sm text-muted-foreground font-medium mb-8 leading-relaxed px-4">
-            A digital corner where ancient wisdom meets modern streets. Dedicated to truth, discernment, and the community.
-          </p>
-          <div className="pt-8 border-t border-primary/5">
-            <MadeWithDyad />
-          </div>
+      <footer className="mt-32 border-t border-primary/5 py-12">
+        <div className="container text-center">
+          <MadeWithDyad />
         </div>
       </footer>
     </div>
