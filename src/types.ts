@@ -1,6 +1,7 @@
 export type Category = 
   | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
-  | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy';
+  | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
+  | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness';
 
 export interface CategoryInfo {
   name: Category;
@@ -44,4 +45,9 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Guilt', description: 'Navigating conviction towards the path of repentance.', count: 29, color: 'from-zinc-500 to-zinc-800', icon: 'History' },
   { name: 'Justice', description: 'The righteous pursuit of equity and divine order.', count: 41, color: 'from-red-800 to-stone-900', icon: 'Scale' },
   { name: 'Mercy', description: 'The kindness that triumphs over judgment and law.', count: 73, color: 'from-emerald-300 to-teal-500', icon: 'HandHeart' },
+  { name: 'Kindness', description: 'Friendly, generous, and considerate actions.', count: 52, color: 'from-pink-300 to-rose-400', icon: 'Sparkles' },
+  { name: 'Longsuffering', description: 'Enduring trials with a steady heart and spirit.', count: 21, color: 'from-slate-400 to-slate-600', icon: 'Anchor' },
+  { name: 'Patience', description: 'Calm endurance under pressure or delay.', count: 64, color: 'from-amber-200 to-yellow-500', icon: 'Clock' },
+  { name: 'Goodness', description: 'Moral excellence and virtue in daily living.', count: 48, color: 'from-lime-400 to-emerald-600', icon: 'CheckCircle2' },
+  { name: 'Faithfulness', description: 'Reliability and steadfast loyalty to the truth.', count: 39, color: 'from-indigo-400 to-blue-700', icon: 'ShieldCheck' },
 ];

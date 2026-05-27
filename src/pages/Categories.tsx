@@ -8,13 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { 
   Shield, Heart, CloudRain, Flame, Sun, Compass, Key, 
-  ArrowRight, Smile, Wind, EyeOff, History, Scale, HandHeart 
+  ArrowRight, Smile, Wind, EyeOff, History, Scale, HandHeart,
+  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 
 const iconMap: Record<string, any> = {
   Shield, Heart, CloudRain, Flame, Sun, Compass, Key,
-  Smile, Wind, EyeOff, History, Scale, HandHeart
+  Smile, Wind, EyeOff, History, Scale, HandHeart,
+  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck
 };
 
 const Categories = () => {
@@ -34,7 +36,7 @@ const Categories = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORY_DATA.map((cat) => {
-            const Icon = iconMap[cat.icon];
+            const Icon = iconMap[cat.icon] || Shield;
             return (
               <Link key={cat.name} to={`/?category=${cat.name}`}>
                 <Card className="group relative overflow-hidden h-full border-none bg-white/50 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2rem] p-8">

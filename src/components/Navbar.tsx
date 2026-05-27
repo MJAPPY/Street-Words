@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { PenSquare, Search, User, Menu } from 'lucide-react';
+import { PenSquare, Search, User, Menu, Settings } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Navbar = () => {
@@ -23,9 +23,11 @@ const Navbar = () => {
           </Link>
           
           <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-muted-foreground">
-            <Link to="/" className="transition-colors hover:text-primary text-primary">Feed</Link>
+            <Link to="/" className="transition-colors hover:text-primary">Feed</Link>
             <Link to="/categories" className="transition-colors hover:text-primary">Categories</Link>
-            <Link to="/about" className="transition-colors hover:text-primary">About</Link>
+            <Link to="/admin" className="transition-colors hover:text-primary flex items-center gap-1.5">
+              <Settings className="h-3.5 w-3.5" /> Admin
+            </Link>
           </div>
         </div>
         
@@ -54,7 +56,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4 mt-8">
                   <Link to="/" className="text-lg font-bold">Feed</Link>
                   <Link to="/categories" className="text-lg font-bold">Categories</Link>
-                  <Link to="/about" className="text-lg font-bold">About</Link>
+                  <Link to="/admin" className="text-lg font-bold">Admin Panel</Link>
                   <hr />
                   <Button className="w-full justify-start gap-2">
                     <PenSquare className="h-4 w-4" />
