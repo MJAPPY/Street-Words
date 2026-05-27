@@ -30,7 +30,7 @@ const Landing = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary bg-[length:200%_auto] animate-gradient">WORDS</span>
               </h1>
               <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                We're reclaiming the city streets with timeless truth. A decentralized community for urban souls to share, discern, and live out ancient wisdom in modern concrete jungles.
+                We're reclaiming the city streets with timeless truth, grounded in the Biblical truth completed by our Creator's only begotten Son — our Saviour Yeshua (Jesus). A community for urban souls to share, discern, and live out ancient wisdom.
               </p>
             </div>
 

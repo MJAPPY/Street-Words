@@ -105,7 +105,7 @@ const Index = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary bg-[length:200%_auto] animate-gradient">WORDS</span>
               </h1>
               <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                Ancient wisdom for modern streets. Join a community sharing verses that speak to the urban soul and navigating life through communal discernment.
+                Ancient wisdom for modern streets. Rooted in the Biblical truth completed by our Creator's only begotten Son — our Saviour Yeshua (Jesus).
               </p>
             </div>
 
