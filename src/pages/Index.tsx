@@ -21,7 +21,7 @@ const Landing = () => {
           <div className="flex flex-col items-center text-center space-y-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-5 py-2 text-primary text-xs font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
               <Sparkles className="h-3.5 w-3.5" />
-              Illuminating the Pavement
+              He has overcome the world — John 16:33
             </div>
             
             <div className="space-y-6 max-w-5xl">
