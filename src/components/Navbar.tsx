@@ -1,12 +1,15 @@
 "use client";
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { PenSquare, Search, User, Menu, Settings } from 'lucide-react';
+import { PenSquare, Search, User, Menu, Settings, LogIn } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const Navbar = () => {
+  const location = useLocation();
+  const isLanding = location.pathname === '/';
+
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
@@ -22,30 +25,43 @@ const Navbar = () => {
             </span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-6 text-sm font-semibold text-muted-foreground">
-            <Link to="/" className="transition-colors hover:text-primary">Feed</Link>
+          <div className="hidden md:flex items-center gap-6 text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px]">
+            <Link to="/feed" className="transition-colors hover:text-primary">Feed</Link>
             <Link to="/categories" className="transition-colors hover:text-primary">Categories</Link>
-            <Link to="/admin" className="transition-colors hover:text-primary flex items-center gap-1.5">
-              <Settings className="h-3.5 w-3.5" /> Admin
-            </Link>
+            {!isLanding && (
+              <Link to="/admin" className="transition-colors hover:text-primary flex items-center gap-1.5">
+                <Settings className="h-3.5 w-3.5" /> Admin
+              </Link>
+            )}
           </div>
         </div>
         
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" className="hidden sm:flex hover:bg-primary/5">
-            <Search className="h-5 w-5" />
-          </Button>
-          
-          <Button className="hidden sm:flex bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-full px-6 gap-2">
-            <PenSquare className="h-4 w-4" />
-            Post Verse
-          </Button>
+          {isLanding ? (
+            <Link to="/feed">
+              <Button className="rounded-full bg-primary hover:bg-primary/90 px-6 gap-2 text-[10px] font-black uppercase tracking-widest h-9 shadow-lg shadow-primary/20">
+                <LogIn className="h-3.5 w-3.5" />
+                Join Community
+              </Button>
+            </Link>
+          ) : (
+            <>
+              <Button variant="ghost" size="icon" className="hidden sm:flex hover:bg-primary/5">
+                <Search className="h-5 w-5" />
+              </Button>
+              
+              <Button className="hidden sm:flex bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-full px-6 gap-2 text-[10px] font-black uppercase tracking-widest h-9">
+                <PenSquare className="h-3.5 w-3.5" />
+                Post Verse
+              </Button>
 
-          <Link to="/profile">
-            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
+              <Link to="/profile">
+                <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5">
+                  <User className="h-5 w-5" />
+                </Button>
+              </Link>
+            </>
+          )}
 
           <div className="md:hidden">
             <Sheet>
@@ -55,14 +71,14 @@ const Navbar = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <div className="flex flex-col gap-4 mt-8">
-                  <Link to="/" className="text-lg font-bold">Feed</Link>
-                  <Link to="/categories" className="text-lg font-bold">Categories</Link>
-                  <Link to="/profile" className="text-lg font-bold">My Profile</Link>
-                  <Link to="/admin" className="text-lg font-bold">Admin Panel</Link>
-                  <hr />
-                  <Button className="w-full justify-start gap-2">
-                    <PenSquare className="h-4 w-4" />
+                <div className="flex flex-col gap-6 mt-12">
+                  <Link to="/" className="text-2xl font-black tracking-tighter">Landing</Link>
+                  <Link to="/feed" className="text-2xl font-black tracking-tighter">Feed</Link>
+                  <Link to="/categories" className="text-2xl font-black tracking-tighter">Categories</Link>
+                  <Link to="/profile" className="text-2xl font-black tracking-tighter">My Profile</Link>
+                  <hr className="border-primary/5" />
+                  <Button className="w-full justify-start gap-3 rounded-2xl h-14 font-black">
+                    <PenSquare className="h-5 w-5" />
                     Post Verse
                   </Button>
                 </div>
