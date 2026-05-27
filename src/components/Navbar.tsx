@@ -41,9 +41,11 @@ const Navbar = () => {
             Post Verse
           </Button>
 
-          <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5">
-            <User className="h-5 w-5" />
-          </Button>
+          <Link to="/profile">
+            <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5">
+              <User className="h-5 w-5" />
+            </Button>
+          </Link>
 
           <div className="md:hidden">
             <Sheet>
@@ -56,6 +58,7 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4 mt-8">
                   <Link to="/" className="text-lg font-bold">Feed</Link>
                   <Link to="/categories" className="text-lg font-bold">Categories</Link>
+                  <Link to="/profile" className="text-lg font-bold">My Profile</Link>
                   <Link to="/admin" className="text-lg font-bold">Admin Panel</Link>
                   <hr />
                   <Button className="w-full justify-start gap-2">

@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Categories from "./pages/Categories";
 import Admin from "./pages/Admin";
 import PostDetail from "./pages/PostDetail";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/categories" element={<Categories />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/post/:id" element={<PostDetail />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

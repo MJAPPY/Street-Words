@@ -31,6 +31,20 @@ export interface VersePost {
   comments: Comment[];
 }
 
+export interface UserProfile {
+  id: string;
+  name: string;
+  handle: string;
+  bio: string;
+  avatar: string;
+  joinedDate: string;
+  stats: {
+    verses: number;
+    likes: number;
+    reflections: number;
+  };
+}
+
 export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Faith', description: 'Assurance in the unseen and trust in the divine.', count: 124, color: 'from-blue-500 to-indigo-600', icon: 'Shield' },
   { name: 'Love', description: 'The greatest commandment and the heart of grace.', count: 89, color: 'from-rose-400 to-pink-600', icon: 'Heart' },
