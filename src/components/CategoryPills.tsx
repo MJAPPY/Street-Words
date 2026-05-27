@@ -14,25 +14,29 @@ interface CategoryPillsProps {
 
 const CategoryPills = ({ selectedCategory, onSelect }: CategoryPillsProps) => {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide">
+    <div className="flex gap-3 overflow-x-auto py-2 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
       <Button
-        variant={selectedCategory === 'All' ? 'default' : 'outline'}
+        variant="ghost"
         onClick={() => onSelect('All')}
         className={cn(
-          "rounded-full px-6 transition-all",
-          selectedCategory === 'All' ? "bg-[#a855f7] hover:bg-[#9333ea]" : ""
+          "rounded-full px-6 py-2 h-auto text-xs font-black uppercase tracking-widest transition-all duration-300",
+          selectedCategory === 'All' 
+            ? "bg-primary text-white shadow-lg shadow-primary/30" 
+            : "text-muted-foreground hover:text-primary hover:bg-primary/5"
         )}
       >
-        All
+        All Feed
       </Button>
       {categories.map((cat) => (
         <Button
           key={cat}
-          variant={selectedCategory === cat ? 'default' : 'outline'}
+          variant="ghost"
           onClick={() => onSelect(cat)}
           className={cn(
-            "rounded-full px-6 transition-all",
-            selectedCategory === cat ? "bg-[#a855f7] hover:bg-[#9333ea]" : ""
+            "rounded-full px-6 py-2 h-auto text-xs font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap",
+            selectedCategory === cat 
+              ? "bg-primary text-white shadow-lg shadow-primary/30" 
+              : "text-muted-foreground hover:text-primary hover:bg-primary/5"
           )}
         >
           {cat}

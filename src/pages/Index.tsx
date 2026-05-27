@@ -6,6 +6,7 @@ import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
 import { MadeWithDyad } from '@/components/made-with-dyad';
+import { Sparkles } from 'lucide-react';
 
 const MOCK_POSTS: VersePost[] = [
   {
@@ -53,48 +54,62 @@ const Index = () => {
     : MOCK_POSTS.filter(p => p.category === selectedCategory);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen urban-pattern bg-background/50">
       <Navbar />
       
-      <main className="container max-w-4xl py-8">
-        <header className="mb-12 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 text-primary">
-            Word on the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] to-[#ec4899]">Street</span>
+      <main className="container max-w-4xl py-12 md:py-20">
+        <header className="mb-16 text-center space-y-6">
+          <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+            <Sparkles className="h-3 w-3" />
+            Join the community of discernment
+          </div>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.9]">
+            Word on the <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] via-[#ec4899] to-[#a855f7] bg-[length:200%_auto] animate-gradient">
+              Street
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            A community dedicated to discernment in truth through scripture, reflection, and shared wisdom.
+          <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto font-medium leading-relaxed">
+            Finding truth in every verse. A sanctuary for scripture, urban reflection, and communal wisdom.
           </p>
         </header>
 
-        <section className="sticky top-16 z-40 bg-background/80 backdrop-blur-sm pt-2 mb-8">
+        <section className="sticky top-[65px] z-40 bg-background/50 backdrop-blur-md pt-4 pb-6 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
           <CategoryPills 
             selectedCategory={selectedCategory} 
             onSelect={setSelectedCategory} 
           />
         </section>
 
-        <section className="grid gap-8">
+        <section className="space-y-10">
           {filteredPosts.length > 0 ? (
             filteredPosts.map(post => (
               <VerseCard key={post.id} post={post} />
             ))
           ) : (
-            <div className="text-center py-20 border-2 border-dashed rounded-xl">
-              <p className="text-muted-foreground">No verses shared in this category yet. Be the first!</p>
+            <div className="text-center py-32 border-2 border-dashed border-primary/10 rounded-[2.5rem] bg-white/30">
+              <p className="text-muted-foreground font-bold italic">No verses shared in this category yet. <br /> Be the first to bring the light!</p>
             </div>
           )}
         </section>
       </main>
 
-      <footer className="mt-20 border-t py-12">
-        <div className="container text-center">
-          <div className="flex justify-center mb-6">
-            <img src="/logo.png" alt="Street Words" className="h-12 w-12" />
+      <footer className="mt-32 border-t border-primary/5 bg-white/30 backdrop-blur-sm py-16">
+        <div className="container text-center max-w-xl">
+          <div className="flex justify-center mb-8">
+            <div className="rounded-2xl bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px]">
+              <div className="bg-white rounded-[14px] p-2">
+                <img src="/logo.png" alt="Street Words" className="h-10 w-10" />
+              </div>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground mb-4">
-            © 2024 Street Words. Finding truth in every verse.
+          <h3 className="font-black tracking-tighter text-xl mb-4">STREET WORDS</h3>
+          <p className="text-sm text-muted-foreground font-medium mb-8 leading-relaxed px-4">
+            A digital corner where ancient wisdom meets modern streets. Dedicated to truth, discernment, and the community.
           </p>
-          <MadeWithDyad />
+          <div className="pt-8 border-t border-primary/5">
+            <MadeWithDyad />
+          </div>
         </div>
       </footer>
     </div>
