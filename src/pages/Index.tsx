@@ -18,47 +18,47 @@ const Landing = () => {
       {/* Hero Section */}
       <section className="relative pt-24 pb-20 md:pt-32 md:pb-32 overflow-hidden">
         <div className="container max-w-6xl relative z-10">
-          <div className="flex flex-col items-center text-center space-y-10">
+          <div className="flex flex-col items-center text-center space-y-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-5 py-2 text-primary text-xs font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
               <Sparkles className="h-3.5 w-3.5" />
-              The Ancient Future is Here
+              Illuminating the Pavement
             </div>
             
-            <div className="space-y-6 max-w-4xl">
-              <h1 className="text-7xl md:text-9xl font-black tracking-tighter text-foreground leading-[0.8] animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="space-y-6 max-w-5xl">
+              <h1 className="text-7xl md:text-[11rem] font-black tracking-tighter text-foreground leading-[0.75] animate-in fade-in slide-in-from-bottom-8 duration-700 select-none animate-title-glow">
                 STREET<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary bg-[length:200%_auto] animate-gradient">WORDS</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary animate-shimmer-text">WORDS</span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                We're sharing hope in the city streets with timeless truth, grounded in the Biblical truth completed by our Creator's only begotten Son — our Saviour Yeshua (Jesus). A community for urban souls to share, discern, and live out ancient wisdom.
+              <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000">
+                Sharing hope in the city streets with timeless truth, grounded in the Biblical truth completed by our Creator's only begotten Son — our Saviour Yeshua (Jesus).
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 pt-6 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
+            <div className="flex flex-wrap items-center justify-center gap-6 pt-8 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
               <Link to="/feed">
-                <Button className="rounded-full h-16 px-10 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-sm shadow-2xl shadow-primary/30 group">
+                <Button className="rounded-full h-16 px-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-sm shadow-[0_20px_50px_-12px_rgba(168,85,247,0.4)] group transition-all hover:scale-105">
                   Enter Community <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button variant="outline" className="rounded-full h-16 px-10 border-primary/20 hover:bg-primary/5 font-black uppercase tracking-widest text-sm backdrop-blur-sm bg-white/30">
-                Watch the Vision
+              <Button variant="outline" className="rounded-full h-16 px-12 border-primary/20 hover:bg-primary/5 font-black uppercase tracking-widest text-sm backdrop-blur-sm bg-white/30 transition-all hover:border-primary/40">
+                Our Vision
               </Button>
             </div>
           </div>
         </div>
         
         {/* Animated Background Elements */}
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none animate-pulse" />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-96 h-96 bg-[#ec4899]/20 rounded-full blur-[120px] pointer-events-none animate-pulse delay-700" />
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#ec4899]/10 rounded-full blur-[140px] pointer-events-none animate-pulse delay-700" />
       </section>
 
       {/* Feature Grid */}
       <section className="py-24 bg-white/20 backdrop-blur-md border-y border-primary/5">
         <div className="container max-w-6xl">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="space-y-4 p-8 rounded-[2.5rem] bg-white/40 border border-white/50 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                <BookOpen className="h-7 w-7" />
+            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                <BookOpen className="h-8 w-8" />
               </div>
               <h3 className="text-2xl font-black tracking-tight">Ancient Wisdom</h3>
               <p className="text-muted-foreground font-medium leading-relaxed">
@@ -66,9 +66,9 @@ const Landing = () => {
               </p>
             </div>
 
-            <div className="space-y-4 p-8 rounded-[2.5rem] bg-white/40 border border-white/50 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition-transform">
-                <Users className="h-7 w-7" />
+            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
+              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-500">
+                <Users className="h-8 w-8" />
               </div>
               <h3 className="text-2xl font-black tracking-tight">Communal Discernment</h3>
               <p className="text-muted-foreground font-medium leading-relaxed">
@@ -76,9 +76,9 @@ const Landing = () => {
               </p>
             </div>
 
-            <div className="space-y-4 p-8 rounded-[2.5rem] bg-white/40 border border-white/50 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="h-7 w-7" />
+            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
+                <ShieldCheck className="h-8 w-8" />
               </div>
               <h3 className="text-2xl font-black tracking-tight">Member Identity</h3>
               <p className="text-muted-foreground font-medium leading-relaxed">
@@ -92,7 +92,7 @@ const Landing = () => {
       {/* Proof/Testimonial Section */}
       <section className="py-32">
         <div className="container max-w-5xl">
-          <div className="relative p-12 md:p-20 rounded-[3rem] bg-gradient-to-br from-primary to-[#ec4899] text-white shadow-3xl overflow-hidden">
+          <div className="relative p-12 md:p-20 rounded-[4rem] bg-gradient-to-br from-primary to-[#ec4899] text-white shadow-[0_30px_60px_-15px_rgba(168,85,247,0.5)] overflow-hidden">
             <Quote className="absolute -top-10 -left-10 h-64 w-64 text-white/5 pointer-events-none" />
             
             <div className="relative z-10 space-y-10 text-center">
@@ -100,13 +100,13 @@ const Landing = () => {
                 "Street Words changed how I view my commute. It's no longer just concrete; it's a sanctuary for truth."
               </h2>
               <div className="flex flex-col items-center gap-4">
-                <div className="h-16 w-16 rounded-full border-2 border-white/30 p-1">
-                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-primary font-black text-xl">
+                <div className="h-20 w-20 rounded-full border-2 border-white/30 p-1">
+                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center text-primary font-black text-2xl">
                     M
                   </div>
                 </div>
                 <div>
-                  <p className="font-black text-lg">Marcus J.</p>
+                  <p className="font-black text-xl">Marcus J.</p>
                   <p className="text-white/60 font-bold text-xs uppercase tracking-widest">Early Adopter</p>
                 </div>
               </div>
@@ -116,15 +116,15 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 text-center space-y-12">
-        <div className="container max-w-3xl space-y-6">
-          <h2 className="text-5xl md:text-6xl font-black tracking-tighter">Ready to join the movement?</h2>
+      <section className="py-32 text-center space-y-12">
+        <div className="container max-w-3xl space-y-8">
+          <h2 className="text-5xl md:text-7xl font-black tracking-tighter">Ready to join the movement?</h2>
           <p className="text-xl text-muted-foreground font-medium">
             Join thousands of others illuminating the pavement with ancient truth.
           </p>
           <div className="pt-6">
             <Link to="/feed">
-              <Button size="lg" className="rounded-full h-16 px-12 bg-foreground text-background hover:bg-foreground/90 font-black uppercase tracking-widest text-sm shadow-xl">
+              <Button size="lg" className="rounded-full h-20 px-16 bg-foreground text-background hover:bg-foreground/90 font-black uppercase tracking-widest text-base shadow-2xl transition-transform hover:scale-105">
                 Get Started Now
               </Button>
             </Link>
@@ -132,13 +132,13 @@ const Landing = () => {
         </div>
       </section>
 
-      <footer className="py-12 border-t border-primary/5">
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-2">
-            <div className="bg-primary h-8 w-8 rounded-lg flex items-center justify-center text-white font-black">S</div>
-            <span className="font-black tracking-tighter text-xl">STREETWORDS</span>
+      <footer className="py-16 border-t border-primary/5">
+        <div className="container flex flex-col md:flex-row items-center justify-between gap-12">
+          <div className="flex items-center gap-3">
+            <div className="bg-primary h-10 w-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">S</div>
+            <span className="font-black tracking-tighter text-2xl">STREETWORDS</span>
           </div>
-          <div className="flex gap-8 text-xs font-black uppercase tracking-widest text-muted-foreground">
+          <div className="flex gap-10 text-xs font-black uppercase tracking-widest text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">Twitter</a>
             <a href="#" className="hover:text-primary transition-colors">Instagram</a>
             <a href="#" className="hover:text-primary transition-colors">Discord</a>
