@@ -5,7 +5,10 @@ import { Category } from '@/types';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
-const categories: Category[] = ['Faith', 'Love', 'Despair', 'Anger', 'Hope', 'Wisdom', 'Truth'];
+const categories: Category[] = [
+  'Faith', 'Love', 'Despair', 'Anger', 'Hope', 'Wisdom', 'Truth',
+  'Joy', 'Peace', 'Fear', 'Guilt', 'Justice', 'Mercy'
+];
 
 interface CategoryPillsProps {
   selectedCategory: Category | 'All';

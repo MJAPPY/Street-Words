@@ -1,4 +1,6 @@
-export type Category = 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth';
+export type Category = 
+  | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
+  | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy';
 
 export interface CategoryInfo {
   name: Category;
@@ -36,4 +38,10 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Hope', description: 'The anchor for the soul and expectations of goodness.', count: 112, color: 'from-amber-300 to-orange-500', icon: 'Sun' },
   { name: 'Wisdom', description: 'Prudent discernment and the path of understanding.', count: 78, color: 'from-emerald-500 to-teal-700', icon: 'Compass' },
   { name: 'Truth', description: 'Unwavering reality and the word that sets us free.', count: 95, color: 'from-violet-500 to-purple-700', icon: 'Key' },
+  { name: 'Joy', description: 'Strength found in celebration and eternal gladness.', count: 67, color: 'from-yellow-400 to-amber-600', icon: 'Smile' },
+  { name: 'Peace', description: 'The stillness that surpasses all human understanding.', count: 82, color: 'from-cyan-400 to-blue-500', icon: 'Wind' },
+  { name: 'Fear', description: 'Confronting anxieties with the presence of the Spirit.', count: 45, color: 'from-indigo-800 to-purple-950', icon: 'EyeOff' },
+  { name: 'Guilt', description: 'Navigating conviction towards the path of repentance.', count: 29, color: 'from-zinc-500 to-zinc-800', icon: 'History' },
+  { name: 'Justice', description: 'The righteous pursuit of equity and divine order.', count: 41, color: 'from-red-800 to-stone-900', icon: 'Scale' },
+  { name: 'Mercy', description: 'The kindness that triumphs over judgment and law.', count: 73, color: 'from-emerald-300 to-teal-500', icon: 'HandHeart' },
 ];

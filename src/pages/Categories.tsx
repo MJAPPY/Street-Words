@@ -6,11 +6,15 @@ import { CATEGORY_DATA } from '@/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Shield, Heart, CloudRain, Flame, Sun, Compass, Key, ArrowRight } from 'lucide-react';
+import { 
+  Shield, Heart, CloudRain, Flame, Sun, Compass, Key, 
+  ArrowRight, Smile, Wind, EyeOff, History, Scale, HandHeart 
+} from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 
 const iconMap: Record<string, any> = {
-  Shield, Heart, CloudRain, Flame, Sun, Compass, Key
+  Shield, Heart, CloudRain, Flame, Sun, Compass, Key,
+  Smile, Wind, EyeOff, History, Scale, HandHeart
 };
 
 const Categories = () => {
@@ -21,7 +25,7 @@ const Categories = () => {
       <main className="container max-w-6xl py-12 md:py-20">
         <header className="mb-16 text-center space-y-4">
           <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-foreground">
-            Explore <span className="text-primary">Truth</span>
+            Explore <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">Truth</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
             Browse verses by the spiritual state or theme that resonates with your journey today.
@@ -48,11 +52,11 @@ const Categories = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-4">
+                    <div className="flex items-center justify-between pt-4 border-t border-primary/5">
                       <span className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">
                         {cat.count} Verses
                       </span>
-                      <Button variant="ghost" size="sm" className="rounded-full group-hover:translate-x-1 transition-transform">
+                      <Button variant="ghost" size="sm" className="rounded-full group-hover:translate-x-1 transition-transform h-8">
                         Explore <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
