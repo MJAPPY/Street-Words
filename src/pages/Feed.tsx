@@ -104,9 +104,14 @@ const Index = () => {
                 STREET<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary bg-[length:200%_auto] animate-gradient">WORDS</span>
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                Ancient wisdom for modern streets. Rooted in the Biblical truth completed by our Creator's only begotten Son — our Saviour Yeshua (Jesus).
-              </p>
+              <div className="space-y-4 max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000">
+                <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
+                  Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation fulfilled by our Creator’s only begotten Son — our Savior Yeshua (Jesus).
+                </p>
+                <p className="text-xs md:text-sm font-serif italic text-primary/60 tracking-wide">
+                  “For where two or three are gathered in my name, there am I among them.” — Matthew 18:20
+                </p>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
