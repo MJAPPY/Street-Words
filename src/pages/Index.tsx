@@ -91,7 +91,7 @@ const Index = () => {
       <Navbar />
       
       <main className="container max-w-4xl py-12 md:py-20">
-        <header className="mb-16 text-center space-y-6">
+        <header className="mb-12 text-center space-y-6">
           <div className="inline-flex items-center gap-2 bg-primary/5 border border-primary/10 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">
             <Sparkles className="h-3 w-3" />
             Word on the Street
@@ -111,22 +111,25 @@ const Index = () => {
           </p>
         </header>
 
-        <section className="sticky top-[65px] z-40 bg-background/50 backdrop-blur-md pt-4 pb-6 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="flex items-center justify-between gap-4">
+        <section className="bg-white/30 backdrop-blur-sm border border-white/50 rounded-[2rem] p-4 md:p-6 mb-12 shadow-sm">
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex items-center justify-between w-full px-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Filter by Spirit</span>
+              {selectedCategory !== 'All' && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => handleSelectCategory('All')}
+                  className="h-6 px-2 text-[9px] font-black uppercase tracking-widest text-primary hover:bg-primary/10"
+                >
+                  Reset Filter <X className="ml-1 h-3 w-3" />
+                </Button>
+              )}
+            </div>
             <CategoryPills 
               selectedCategory={selectedCategory} 
               onSelect={handleSelectCategory} 
             />
-            {selectedCategory !== 'All' && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => handleSelectCategory('All')}
-                className="rounded-full h-8 px-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary"
-              >
-                Clear <X className="ml-1.5 h-3 w-3" />
-              </Button>
-            )}
           </div>
         </section>
 
