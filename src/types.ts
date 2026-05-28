@@ -38,6 +38,8 @@ export interface UserProfile {
   bio: string;
   avatar: string;
   joinedDate: string;
+  favoriteVerse?: string;
+  favoriteReference?: string;
   stats: {
     verses: number;
     likes: number;

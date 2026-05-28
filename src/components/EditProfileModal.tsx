@@ -21,7 +21,9 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
   const [formData, setFormData] = useState({
     name: user.name,
     bio: user.bio,
-    avatar: user.avatar
+    avatar: user.avatar,
+    favoriteVerse: user.favoriteVerse || "",
+    favoriteReference: user.favoriteReference || ""
   });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +67,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
           <Edit3 className="h-4 w-4" /> Edit Profile
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] rounded-[2.5rem] border-none shadow-2xl p-8">
+      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-8">
         <DialogHeader>
           <DialogTitle className="text-2xl font-black tracking-tight">Edit Profile</DialogTitle>
         </DialogHeader>
@@ -120,6 +122,30 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 className="rounded-2xl bg-muted/30 border-transparent focus:bg-white transition-all font-medium min-h-[100px]"
                 placeholder="Tell the street your story..."
               />
+            </div>
+
+            <div className="pt-4 border-t border-primary/5 space-y-4">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Life Verse</h4>
+              <div className="space-y-2">
+                <Label htmlFor="favVerse" className="text-xs font-black uppercase tracking-widest px-1">Verse Text</Label>
+                <Textarea
+                  id="favVerse"
+                  value={formData.favoriteVerse}
+                  onChange={(e) => setFormData(prev => ({ ...prev, favoriteVerse: e.target.value }))}
+                  className="rounded-2xl bg-muted/30 border-transparent focus:bg-white transition-all font-medium min-h-[80px]"
+                  placeholder="Your anchor verse..."
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="favRef" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
+                <Input
+                  id="favRef"
+                  value={formData.favoriteReference}
+                  onChange={(e) => setFormData(prev => ({ ...prev, favoriteReference: e.target.value }))}
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                  placeholder="e.g. John 3:16"
+                />
+              </div>
             </div>
           </div>
 

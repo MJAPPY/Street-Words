@@ -6,7 +6,7 @@ import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Calendar, BookOpen, Heart, MessageSquare, Settings, Share2 } from 'lucide-react';
+import { MapPin, Calendar, BookOpen, Heart, MessageSquare, Settings, Quote, Sparkles } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
@@ -18,6 +18,8 @@ const MOCK_USER: UserProfile = {
   bio: 'Walking the city streets with ancient wisdom. Looking for the light in every corner. 🕊️',
   avatar: 'T',
   joinedDate: 'Joined March 2024',
+  favoriteVerse: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.',
+  favoriteReference: 'Joshua 1:9',
   stats: {
     verses: 12,
     likes: 452,
@@ -117,6 +119,27 @@ const Profile = () => {
                 </div>
               </div>
             </div>
+
+            {/* Favorite Verse Section */}
+            {user.favoriteVerse && (
+              <div className="mt-12 p-8 md:p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-white/50 to-primary/5 border border-primary/10 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <Quote className="h-24 w-24 text-primary" />
+                </div>
+                <div className="relative z-10 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-primary" />
+                    <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Life Verse</h4>
+                  </div>
+                  <p className="text-2xl md:text-3xl font-serif italic text-primary leading-tight">
+                    "{user.favoriteVerse}"
+                  </p>
+                  <p className="font-black text-xs uppercase tracking-[0.2em] text-muted-foreground text-right">
+                    — {user.favoriteReference}
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 
