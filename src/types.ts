@@ -40,6 +40,9 @@ export interface UserProfile {
   joinedDate: string;
   favoriteVerse?: string;
   favoriteReference?: string;
+  socialLink?: string;
+  videoLink?: string;
+  websiteLink?: string;
   stats: {
     verses: number;
     likes: number;

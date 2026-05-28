@@ -6,7 +6,7 @@ import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Calendar, BookOpen, Heart, MessageSquare, Quote, Sparkles } from 'lucide-react';
+import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2 } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
@@ -21,6 +21,9 @@ const MOCK_USER: UserProfile = {
   joinedDate: 'Joined March 2024',
   favoriteVerse: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.',
   favoriteReference: 'Joshua 1:9',
+  socialLink: 'https://instagram.com/truthseeker',
+  videoLink: 'https://youtube.com/c/truthseeker',
+  websiteLink: 'https://streetwords.com',
   stats: {
     verses: 12,
     likes: 452,
@@ -97,9 +100,48 @@ const Profile = () => {
                 <p className="text-foreground/90 text-lg font-medium leading-relaxed">
                   {user.bio}
                 </p>
-                <div className="flex flex-wrap gap-6 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                  <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><MapPin className="h-4 w-4" /> Urban Sanctuary</span>
-                  <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><Calendar className="h-4 w-4" /> {user.joinedDate}</span>
+                
+                {/* Meta details & Custom User links */}
+                <div className="space-y-4">
+                  <div className="flex flex-wrap gap-6 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
+                    <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><MapPin className="h-4 w-4" /> Urban Sanctuary</span>
+                    <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><Calendar className="h-4 w-4" /> {user.joinedDate}</span>
+                  </div>
+
+                  {(user.websiteLink || user.videoLink || user.socialLink) && (
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      {user.websiteLink && (
+                        <a 
+                          href={user.websiteLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full transition-all"
+                        >
+                          <Globe className="h-3.5 w-3.5" /> Website
+                        </a>
+                      )}
+                      {user.videoLink && (
+                        <a 
+                          href={user.videoLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full transition-all"
+                        >
+                          <Video className="h-3.5 w-3.5" /> Video Channel
+                        </a>
+                      )}
+                      {user.socialLink && (
+                        <a 
+                          href={user.socialLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full transition-all"
+                        >
+                          <Link2 className="h-3.5 w-3.5" /> Social Profile
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
               

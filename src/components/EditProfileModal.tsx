@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { UserProfile } from '@/types';
 import { showError, showSuccess } from '@/utils/toast';
-import { Camera, Edit3, Loader2 } from 'lucide-react';
+import { Camera, Edit3, Loader2, Globe, Video, Link2 } from 'lucide-react';
 
 interface EditProfileModalProps {
   user: UserProfile;
@@ -23,7 +23,10 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
     bio: user.bio,
     avatar: user.avatar,
     favoriteVerse: user.favoriteVerse || "",
-    favoriteReference: user.favoriteReference || ""
+    favoriteReference: user.favoriteReference || "",
+    socialLink: user.socialLink || "",
+    videoLink: user.videoLink || "",
+    websiteLink: user.websiteLink || ""
   });
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -122,6 +125,50 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 className="rounded-2xl bg-muted/30 border-transparent focus:bg-white transition-all font-medium min-h-[100px]"
                 placeholder="Tell the street your story..."
               />
+            </div>
+
+            {/* Social & Media Links Section */}
+            <div className="pt-4 border-t border-primary/5 space-y-4">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Links & Networks</h4>
+              
+              <div className="space-y-2">
+                <Label htmlFor="websiteLink" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                  <Globe className="h-3 w-3 text-primary" /> Personal Website
+                </Label>
+                <Input
+                  id="websiteLink"
+                  placeholder="https://example.com"
+                  value={formData.websiteLink}
+                  onChange={(e) => setFormData(prev => ({ ...prev, websiteLink: e.target.value }))}
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="videoLink" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                  <Video className="h-3 w-3 text-red-500" /> Video Channel
+                </Label>
+                <Input
+                  id="videoLink"
+                  placeholder="https://youtube.com/channel/..."
+                  value={formData.videoLink}
+                  onChange={(e) => setFormData(prev => ({ ...prev, videoLink: e.target.value }))}
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="socialLink" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                  <Link2 className="h-3 w-3 text-purple-500" /> Social Profile
+                </Label>
+                <Input
+                  id="socialLink"
+                  placeholder="https://instagram.com/yourhandle"
+                  value={formData.socialLink}
+                  onChange={(e) => setFormData(prev => ({ ...prev, socialLink: e.target.value }))}
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                />
+              </div>
             </div>
 
             <div className="pt-4 border-t border-primary/5 space-y-4">
