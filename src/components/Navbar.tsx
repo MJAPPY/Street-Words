@@ -3,8 +3,9 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { PenSquare, Search, User, Menu, Settings, LogIn } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import CreatePostModal from './CreatePostModal';
 
 const Navbar = () => {
   const location = useLocation();
@@ -50,10 +51,7 @@ const Navbar = () => {
                 <Search className="h-5 w-5" />
               </Button>
               
-              <Button className="hidden sm:flex bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-full px-6 gap-2 text-[10px] font-black uppercase tracking-widest h-9">
-                <PenSquare className="h-3.5 w-3.5" />
-                Post Verse
-              </Button>
+              <CreatePostModal />
 
               <Link to="/profile">
                 <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5">
@@ -77,10 +75,14 @@ const Navbar = () => {
                   <Link to="/categories" className="text-2xl font-black tracking-tighter">Categories</Link>
                   <Link to="/profile" className="text-2xl font-black tracking-tighter">My Profile</Link>
                   <hr className="border-primary/5" />
-                  <Button className="w-full justify-start gap-3 rounded-2xl h-14 font-black">
-                    <PenSquare className="h-5 w-5" />
-                    Post Verse
-                  </Button>
+                  <CreatePostModal 
+                    trigger={
+                      <Button className="w-full justify-start gap-3 rounded-2xl h-14 font-black">
+                        <PenSquare className="h-5 w-5" />
+                        Post Verse
+                      </Button>
+                    }
+                  />
                 </div>
               </SheetContent>
             </Sheet>

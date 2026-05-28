@@ -9,6 +9,7 @@ import { Category, VersePost } from '@/types';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Sparkles, X, ArrowRight, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import CreatePostModal from '@/components/CreatePostModal';
 
 const MOCK_POSTS: VersePost[] = [
   {
@@ -59,7 +60,7 @@ const MOCK_POSTS: VersePost[] = [
   }
 ];
 
-const Index = () => {
+const Feed = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') as Category | null;
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
@@ -115,12 +116,18 @@ const Index = () => {
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
-              <Button className="rounded-full h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/25 group">
-                Post a Verse <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button variant="outline" className="rounded-full h-14 px-8 border-primary/20 hover:bg-primary/5 font-black uppercase tracking-widest text-xs">
-                Explore Truth
-              </Button>
+              <CreatePostModal 
+                trigger={
+                  <Button className="rounded-full h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/25 group transition-all hover:scale-105">
+                    Post a Verse <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                }
+              />
+              <Link to="/categories">
+                <Button variant="outline" className="rounded-full h-14 px-8 border-primary/20 hover:bg-primary/5 font-black uppercase tracking-widest text-xs backdrop-blur-sm bg-white/20">
+                  Explore Truth
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -154,6 +161,7 @@ const Index = () => {
             <CategoryPills 
               selectedCategory={selectedCategory} 
               onSelect={handleSelectCategory} 
+              onClose={() => {}}
             />
           </div>
         </div>
@@ -172,9 +180,13 @@ const Index = () => {
               <p className="text-muted-foreground font-bold italic text-lg">
                 No verses shared in this category yet. <br /> Be the first to bring the light!
               </p>
-              <Button className="mt-8 rounded-full h-12 px-6 bg-primary/10 hover:bg-primary/20 text-primary border-none font-black uppercase tracking-widest text-[10px]">
-                Create First Post
-              </Button>
+              <CreatePostModal 
+                trigger={
+                  <Button className="mt-8 rounded-full h-12 px-6 bg-primary/10 hover:bg-primary/20 text-primary border-none font-black uppercase tracking-widest text-[10px]">
+                    Create First Post
+                  </Button>
+                }
+              />
             </div>
           )}
         </section>
@@ -189,4 +201,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Feed;
