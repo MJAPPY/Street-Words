@@ -27,7 +27,7 @@ const App = () => (
             <Route path="/categories" element={<Categories />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/post/:id" element={<PostDetail />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:username?" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

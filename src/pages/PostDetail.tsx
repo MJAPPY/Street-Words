@@ -141,24 +141,24 @@ const PostDetail = () => {
       <Navbar />
       
       <main className="container max-w-3xl py-12">
-        <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 font-black text-xs uppercase tracking-widest transition-colors">
+        <Link to="/feed" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 font-black text-xs uppercase tracking-widest transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Feed
         </Link>
 
         <div className="space-y-8">
-          <div className="bg-white/50 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-white/50">
+          <div className="bg-white/50 dark:bg-zinc-900/80 backdrop-blur-md rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-white/50 dark:border-zinc-800/60">
             <div className="flex justify-between items-center mb-10">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-[#a855f7] to-[#ec4899] p-[2px]">
-                  <div className="h-full w-full rounded-full bg-white flex items-center justify-center font-bold text-primary">
+              <Link to={`/profile/${post.author}`} className="flex items-center gap-4 group/author hover:opacity-90">
+                <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-[#a855f7] to-[#ec4899] p-[2px] transition-transform group-hover/author:scale-105 duration-350">
+                  <div className="h-full w-full rounded-full bg-white dark:bg-zinc-950 flex items-center justify-center font-bold text-primary">
                     {post.author[0]}
                   </div>
                 </div>
                 <div>
-                  <p className="font-black text-sm">{post.author}</p>
+                  <p className="font-black text-sm group-hover/author:text-primary transition-colors underline-offset-4 group-hover/author:underline decoration-primary decoration-2">{post.author}</p>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">{post.createdAt}</p>
                 </div>
-              </div>
+              </Link>
               <div className="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest">
                 {post.category}
               </div>
@@ -174,7 +174,7 @@ const PostDetail = () => {
               </p>
             </div>
 
-            <div className="bg-muted/30 rounded-3xl p-8 border border-white/40 mb-8">
+            <div className="bg-muted/30 dark:bg-zinc-950/40 rounded-3xl p-8 border border-white/40 dark:border-zinc-800/40 mb-8">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-4">Street Discernment</h4>
               <p className="text-lg text-foreground/80 leading-relaxed font-medium italic">
                 {post.relevance}
@@ -209,7 +209,7 @@ const PostDetail = () => {
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add your reflection..." 
-                className="h-16 pl-6 pr-16 rounded-full bg-white/50 backdrop-blur-sm border-white/50 shadow-sm focus:ring-primary/20 text-base font-medium placeholder:text-muted-foreground/50"
+                className="h-16 pl-6 pr-16 rounded-full bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm border border-white/50 dark:border-zinc-800/60 shadow-sm focus:ring-primary/20 text-base font-medium placeholder:text-muted-foreground/50"
               />
               <Button 
                 type="submit"

@@ -98,17 +98,17 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     <Card className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
       <div className="p-8 md:p-12">
         <div className="flex justify-between items-center mb-10">
-          <div className="flex items-center gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary to-[#ec4899] p-[2px] shadow-lg shadow-primary/20">
+          <Link to={`/profile/${post.author}`} className="flex items-center gap-4 group/author hover:opacity-90">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary to-[#ec4899] p-[2px] shadow-lg shadow-primary/20 transition-transform group-hover/author:scale-105 duration-350">
               <div className="h-full w-full rounded-[14px] bg-white dark:bg-zinc-950 flex items-center justify-center font-black text-primary text-lg">
                 {post.author[0]}
               </div>
             </div>
             <div>
-              <p className="font-black text-base text-foreground tracking-tight">{post.author}</p>
+              <p className="font-black text-base text-foreground tracking-tight group-hover/author:text-primary transition-colors underline-offset-4 group-hover/author:underline decoration-primary decoration-2">{post.author}</p>
               <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">{post.createdAt}</p>
             </div>
-          </div>
+          </Link>
           <Badge variant="secondary" className="bg-primary/10 text-primary border-none px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
             {post.category}
           </Badge>

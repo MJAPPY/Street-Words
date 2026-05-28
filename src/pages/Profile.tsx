@@ -6,13 +6,15 @@ import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2 } from 'lucide-react';
+import { useParams } from 'react-router-dom';
+import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
 import SettingsModal from '@/components/SettingsModal';
+import { showSuccess } from '@/utils/toast';
 
-const MOCK_USER: UserProfile = {
+const MOCK_CURRENT_USER: UserProfile = {
   id: 'u1',
   name: 'TruthSeeker',
   handle: '@truth_seeker',
@@ -21,13 +23,44 @@ const MOCK_USER: UserProfile = {
   joinedDate: 'Joined March 2024',
   favoriteVerse: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.',
   favoriteReference: 'Joshua 1:9',
-  socialLink: 'https://instagram.com/truthseeker',
-  videoLink: 'https://youtube.com/c/truthseeker',
-  websiteLink: 'https://streetwords.com',
   stats: {
     verses: 12,
     likes: 452,
     reflections: 89
+  }
+};
+
+const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
+  'streetwords': {
+    id: 'u2',
+    name: 'StreetWords',
+    handle: '@streetwords_official',
+    bio: 'Curating the pavement. Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation.',
+    avatar: 'S',
+    joinedDate: 'Joined January 2024',
+    favoriteVerse: 'The light shines in the darkness, and the darkness has not overcome it.',
+    favoriteReference: 'John 1:5',
+    websiteLink: 'https://streetwords.sh',
+    stats: {
+      verses: 142,
+      likes: 9342,
+      reflections: 541
+    }
+  },
+  'hopeful': {
+    id: 'u3',
+    name: 'Hopeful',
+    handle: '@hopeful_spirit',
+    bio: 'Seeking grace in the urban jungle. Lover of wisdom and community reflection. Let’s converse!',
+    avatar: 'H',
+    joinedDate: 'Joined February 2024',
+    favoriteVerse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
+    favoriteReference: 'Hebrews 11:1',
+    stats: {
+      verses: 5,
+      likes: 112,
+      reflections: 24
+    }
   }
 };
 
@@ -56,12 +89,70 @@ const MOCK_MY_POSTS: VersePost[] = [
   }
 ];
 
+const MOCK_OTHER_POSTS: Record<string, VersePost[]> = {
+  'streetwords': [
+    {
+      id: '2',
+      verse: 'Love is patient and kind; love does not envy or boast; it is not arrogant or rude.',
+      reference: '1 Corinthians 13:4',
+      relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement.',
+      category: 'Love',
+      author: 'StreetWords',
+      createdAt: '5 hours ago',
+      likes: 42,
+      comments: []
+    },
+    {
+      id: '3',
+      verse: 'The Lord is near to the brokenhearted and saves the crushed in spirit.',
+      reference: 'Psalm 34:18',
+      relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair.',
+      category: 'Despair',
+      author: 'StreetWords',
+      createdAt: '1 day ago',
+      likes: 156,
+      comments: []
+    }
+  ]
+};
+
 const Profile = () => {
-  const [user, setUser] = useState<UserProfile>(MOCK_USER);
+  const { username } = useParams<{ username?: string }>();
+  
+  // Decide whether viewing own profile or another member
+  const isOwnProfile = !username || username.toLowerCase() === 'truthseeker';
+  const profileKey = username?.toLowerCase() || '';
+  
+  // Resolve active profile details
+  const [user, setUser] = useState<UserProfile>(() => {
+    if (isOwnProfile) return MOCK_CURRENT_USER;
+    return MOCK_OTHER_PROFILES[profileKey] || {
+      id: 'temp',
+      name: username || 'Street Disciple',
+      handle: `@${username?.toLowerCase() || 'disciple'}`,
+      bio: 'Searching for grace and shared Collective wisdom on Street Words.',
+      avatar: (username ? username[0].toUpperCase() : 'D'),
+      joinedDate: 'Joined recently',
+      stats: { verses: 3, likes: 14, reflections: 2 }
+    };
+  });
 
   const handleUpdateUser = (updatedData: Partial<UserProfile>) => {
     setUser(prev => ({ ...prev, ...updatedData }));
   };
+
+  const handleFollow = () => {
+    showSuccess(`You are now following ${user.name}!`);
+  };
+
+  const handleMessage = () => {
+    showSuccess(`Message request sent to ${user.name}`);
+  };
+
+  // Resolve posts to render
+  const postsToRender = isOwnProfile 
+    ? MOCK_MY_POSTS 
+    : (MOCK_OTHER_POSTS[profileKey] || []);
 
   return (
     <div className="min-h-screen urban-pattern bg-background/80">
@@ -90,8 +181,28 @@ const Profile = () => {
               </div>
               
               <div className="flex gap-4">
-                <EditProfileModal user={user} onUpdate={handleUpdateUser} />
-                <SettingsModal />
+                {isOwnProfile ? (
+                  <>
+                    <EditProfileModal user={user} onUpdate={handleUpdateUser} />
+                    <SettingsModal />
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      onClick={handleFollow} 
+                      className="rounded-full bg-primary hover:bg-primary/90 text-white gap-2 font-black text-xs uppercase tracking-widest h-11 px-6 shadow-lg shadow-primary/20"
+                    >
+                      <UserPlus className="h-4 w-4" /> Follow
+                    </Button>
+                    <Button 
+                      onClick={handleMessage} 
+                      variant="outline" 
+                      className="rounded-full border-primary/20 hover:bg-primary/5 gap-2 font-black text-xs uppercase tracking-widest h-11 px-6"
+                    >
+                      <Send className="h-4 w-4" /> Message
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
 
@@ -191,7 +302,7 @@ const Profile = () => {
               value="verses" 
               className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
-              My Verses
+              {isOwnProfile ? "My Verses" : `${user.name}'s Verses`}
             </TabsTrigger>
             <TabsTrigger 
               value="saved" 
@@ -208,23 +319,29 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="verses" className="space-y-12 animate-in fade-in duration-700">
-            {MOCK_MY_POSTS.map(post => (
-              <VerseCard key={post.id} post={post} />
-            ))}
+            {postsToRender.length > 0 ? (
+              postsToRender.map(post => (
+                <VerseCard key={post.id} post={post} />
+              ))
+            ) : (
+              <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
+                <BookOpen className="h-16 w-16 text-primary/20 mx-auto mb-6" />
+                <p className="text-muted-foreground font-bold italic text-lg">{user.name} hasn't posted any verses yet.</p>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="saved" className="text-center py-32 animate-in fade-in duration-700">
             <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20">
               <BookOpen className="h-16 w-16 text-primary/20 mx-auto mb-6" />
-              <p className="text-muted-foreground font-bold italic text-lg">No saved verses yet. Browse the feed to find inspiration!</p>
-              <Button variant="link" className="text-primary font-black uppercase tracking-widest text-xs mt-6">Go to Feed</Button>
+              <p className="text-muted-foreground font-bold italic text-lg">No saved verses yet.</p>
             </div>
           </TabsContent>
 
           <TabsContent value="reflections" className="space-y-12 animate-in fade-in duration-700">
              <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
               <MessageSquare className="h-16 w-16 text-primary/20 mx-auto mb-6" />
-              <p className="text-muted-foreground font-bold italic text-lg">Your journey of discernment will appear here.</p>
+              <p className="text-muted-foreground font-bold italic text-lg">Journey of discernment will appear here.</p>
             </div>
           </TabsContent>
         </Tabs>
