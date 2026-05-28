@@ -12,82 +12,87 @@ const Navbar = () => {
   const isLanding = location.pathname === '/';
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
-      <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="flex items-center gap-5 group">
+    <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
+      <div className="container flex h-24 items-center justify-between">
+        <div className="flex items-center gap-10">
+          <Link to="/" className="flex items-center gap-6 group">
             <div className="relative flex items-center justify-center">
-              {/* Enhanced Glow Effect */}
-              <div className="absolute -inset-3 bg-gradient-to-r from-primary/40 to-[#ec4899]/40 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-700" />
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-[#ec4899] rounded-[1.75rem] blur-sm opacity-30 group-hover:opacity-60 transition duration-500" />
+              {/* Sharp Glow Effect */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-[#ec4899]/30 to-primary/30 blur-2xl opacity-0 group-hover:opacity-100 transition duration-700" />
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-[#ec4899] opacity-40 group-hover:opacity-80 transition duration-500" />
               
-              {/* Larger Logo Container */}
-              <div className="relative h-14 w-14 overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px] shadow-2xl shadow-primary/20 transition-all group-hover:scale-105 duration-500">
-                <div className="h-full w-full rounded-[1.35rem] flex items-center justify-center overflow-hidden bg-background/10 backdrop-blur-sm">
+              {/* Square Logo Container */}
+              <div className="relative h-16 w-16 overflow-hidden bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px] shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all group-hover:scale-105 duration-500">
+                <div className="h-full w-full flex items-center justify-center overflow-hidden bg-background/20 backdrop-blur-md">
                   <img src="/logo.png" alt="Street Words" className="h-full w-full object-cover" />
                 </div>
               </div>
             </div>
             
-            <span className="font-black text-3xl tracking-tighter text-primary">
-              STREET<span className="text-muted-foreground font-light">WORDS</span>
-            </span>
+            <div className="flex flex-col -space-y-2">
+              <span className="font-black text-4xl tracking-tighter text-foreground group-hover:text-primary transition-colors duration-300">
+                STREET
+              </span>
+              <span className="font-light text-2xl tracking-[0.3em] text-muted-foreground">
+                WORDS
+              </span>
+            </div>
           </Link>
           
-          <div className="hidden md:flex items-center gap-6 text-sm font-bold text-muted-foreground uppercase tracking-widest text-[10px]">
-            <Link to="/feed" className="transition-colors hover:text-primary">Feed</Link>
-            <Link to="/categories" className="transition-colors hover:text-primary">Categories</Link>
+          <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">
+            <Link to="/feed" className="transition-all hover:text-primary hover:tracking-[0.4em]">Feed</Link>
+            <Link to="/categories" className="transition-all hover:text-primary hover:tracking-[0.4em]">Categories</Link>
             {!isLanding && (
-              <Link to="/admin" className="transition-colors hover:text-primary flex items-center gap-1.5">
-                <Settings className="h-3.5 w-3.5" /> Admin
+              <Link to="/admin" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2">
+                <Settings className="h-4 w-4" /> Admin
               </Link>
             )}
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {isLanding ? (
             <Link to="/feed">
-              <Button className="rounded-full bg-primary hover:bg-primary/90 px-8 gap-2 text-[11px] font-black uppercase tracking-widest h-12 shadow-xl shadow-primary/20 transition-all hover:scale-105">
-                <LogIn className="h-4 w-4" />
-                Join Community
+              <Button className="rounded-none bg-primary hover:bg-primary/90 px-10 gap-3 text-xs font-black uppercase tracking-[0.2em] h-14 shadow-2xl shadow-primary/20 transition-all hover:translate-x-1">
+                <LogIn className="h-5 w-5" />
+                Join
               </Button>
             </Link>
           ) : (
             <>
-              <Button variant="ghost" size="icon" className="hidden sm:flex hover:bg-primary/5 h-12 w-12 rounded-2xl">
-                <Search className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="hidden sm:flex hover:bg-primary/5 h-14 w-14 rounded-none border border-transparent hover:border-primary/20">
+                <Search className="h-6 w-6" />
               </Button>
               
               <CreatePostModal />
 
               <Link to="/profile">
-                <Button variant="ghost" size="icon" className="rounded-full hover:bg-primary/5 h-12 w-12">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="rounded-none hover:bg-primary/5 h-14 w-14 border border-transparent hover:border-primary/20">
+                  <User className="h-6 w-6" />
                 </Button>
               </Link>
             </>
           )}
 
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-12 w-12">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="h-14 w-14 rounded-none">
+                  <Menu className="h-8 w-8" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right">
-                <div className="flex flex-col gap-6 mt-12">
-                  <Link to="/" className="text-2xl font-black tracking-tighter">Landing</Link>
-                  <Link to="/feed" className="text-2xl font-black tracking-tighter">Feed</Link>
-                  <Link to="/categories" className="text-2xl font-black tracking-tighter">Categories</Link>
-                  <Link to="/profile" className="text-2xl font-black tracking-tighter">My Profile</Link>
-                  <hr className="border-primary/5" />
+              <SheetContent side="right" className="bg-background/95 backdrop-blur-xl border-l-primary/10">
+                <div className="flex flex-col gap-8 mt-16">
+                  <Link to="/" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Landing</Link>
+                  <Link to="/feed" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Feed</Link>
+                  <Link to="/categories" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Categories</Link>
+                  <Link to="/profile" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">My Profile</Link>
+                  <div className="h-px bg-gradient-to-r from-primary/20 to-transparent" />
                   <CreatePostModal 
                     trigger={
-                      <Button className="w-full justify-start gap-3 rounded-2xl h-14 font-black">
-                        <PenSquare className="h-5 w-5" />
+                      <Button className="w-full justify-between rounded-none h-16 px-6 font-black text-lg uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
                         Post Verse
+                        <PenSquare className="h-6 w-6" />
                       </Button>
                     }
                   />
