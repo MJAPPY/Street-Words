@@ -6,10 +6,11 @@ import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, Calendar, BookOpen, Heart, MessageSquare, Settings, Quote, Sparkles } from 'lucide-react';
+import { MapPin, Calendar, BookOpen, Heart, MessageSquare, Quote, Sparkles } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
+import SettingsModal from '@/components/SettingsModal';
 
 const MOCK_USER: UserProfile = {
   id: 'u1',
@@ -87,9 +88,7 @@ const Profile = () => {
               
               <div className="flex gap-4">
                 <EditProfileModal user={user} onUpdate={handleUpdateUser} />
-                <Button variant="ghost" size="icon" className="rounded-2xl hover:bg-primary/5 h-12 w-12 border border-primary/5">
-                  <Settings className="h-5 w-5 text-muted-foreground" />
-                </Button>
+                <SettingsModal />
               </div>
             </div>
 
