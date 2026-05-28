@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
@@ -161,7 +161,6 @@ const Feed = () => {
             <CategoryPills 
               selectedCategory={selectedCategory} 
               onSelect={handleSelectCategory} 
-              onClose={() => {}}
             />
           </div>
         </div>

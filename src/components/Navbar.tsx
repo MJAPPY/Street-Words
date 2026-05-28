@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import CreatePostModal from './CreatePostModal';
 
