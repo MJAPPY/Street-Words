@@ -66,7 +66,7 @@ const Profile = () => {
       
       <main className="container max-w-4xl py-12">
         {/* Profile Header Card */}
-        <Card className="border-none bg-white/60 backdrop-blur-md shadow-2xl rounded-[3rem] overflow-hidden mb-12">
+        <Card className="border border-transparent dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-2xl rounded-[3rem] overflow-hidden mb-12">
           <div className="h-40 bg-gradient-to-r from-primary/30 via-primary/10 to-accent/30" />
           <CardContent className="px-10 pb-10 -mt-14">
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
@@ -75,7 +75,7 @@ const Profile = () => {
                   {user.avatar.length > 2 ? (
                     <img src={user.avatar} alt={user.name} className="h-full w-full object-cover rounded-[2.3rem]" />
                   ) : (
-                    <div className="h-full w-full rounded-[2.3rem] bg-white flex items-center justify-center text-5xl font-black text-primary">
+                    <div className="h-full w-full rounded-[2.3rem] bg-white dark:bg-zinc-950 flex items-center justify-center text-5xl font-black text-primary">
                       {user.avatar}
                     </div>
                   )}
@@ -98,21 +98,21 @@ const Profile = () => {
                   {user.bio}
                 </p>
                 <div className="flex flex-wrap gap-6 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                  <span className="flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full"><MapPin className="h-4 w-4" /> Urban Sanctuary</span>
-                  <span className="flex items-center gap-2 bg-primary/5 px-4 py-2 rounded-full"><Calendar className="h-4 w-4" /> {user.joinedDate}</span>
+                  <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><MapPin className="h-4 w-4" /> Urban Sanctuary</span>
+                  <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><Calendar className="h-4 w-4" /> {user.joinedDate}</span>
                 </div>
               </div>
               
               <div className="grid grid-cols-3 md:grid-cols-1 gap-4">
-                <div className="text-center md:text-left bg-primary/5 rounded-[2rem] p-5 border border-primary/5">
+                <div className="text-center md:text-left bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-5 border border-primary/5">
                   <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Verses</p>
                   <p className="text-2xl font-black">{user.stats.verses}</p>
                 </div>
-                <div className="text-center md:text-left bg-primary/5 rounded-[2rem] p-5 border border-primary/5">
+                <div className="text-center md:text-left bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-5 border border-primary/5">
                   <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Likes</p>
                   <p className="text-2xl font-black">{user.stats.likes}</p>
                 </div>
-                <div className="text-center md:text-left bg-primary/5 rounded-[2rem] p-5 border border-primary/5">
+                <div className="text-center md:text-left bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-5 border border-primary/5">
                   <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Reflections</p>
                   <p className="text-2xl font-black">{user.stats.reflections}</p>
                 </div>
@@ -121,7 +121,7 @@ const Profile = () => {
 
             {/* Favorite Verse Section */}
             {user.favoriteVerse && (
-              <div className="mt-12 p-8 md:p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-white/50 to-primary/5 border border-primary/10 relative overflow-hidden group">
+              <div className="mt-12 p-8 md:p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-white/50 dark:via-zinc-900/40 to-primary/5 border border-primary/10 dark:border-zinc-800/60 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Quote className="h-24 w-24 text-primary" />
                 </div>
@@ -172,7 +172,7 @@ const Profile = () => {
           </TabsContent>
 
           <TabsContent value="saved" className="text-center py-32 animate-in fade-in duration-700">
-            <div className="bg-white/40 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20">
+            <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20">
               <BookOpen className="h-16 w-16 text-primary/20 mx-auto mb-6" />
               <p className="text-muted-foreground font-bold italic text-lg">No saved verses yet. Browse the feed to find inspiration!</p>
               <Button variant="link" className="text-primary font-black uppercase tracking-widest text-xs mt-6">Go to Feed</Button>
@@ -180,7 +180,7 @@ const Profile = () => {
           </TabsContent>
 
           <TabsContent value="reflections" className="space-y-12 animate-in fade-in duration-700">
-             <div className="bg-white/40 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
+             <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
               <MessageSquare className="h-16 w-16 text-primary/20 mx-auto mb-6" />
               <p className="text-muted-foreground font-bold italic text-lg">Your journey of discernment will appear here.</p>
             </div>

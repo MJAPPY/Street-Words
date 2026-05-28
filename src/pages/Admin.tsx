@@ -43,7 +43,7 @@ const Admin = () => {
             </h1>
           </div>
           
-          <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-white/50 shadow-sm">
+          <div className="flex items-center gap-4 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm p-2 rounded-2xl border border-white/50 dark:border-zinc-800/60 shadow-sm">
             <div className="text-right px-4">
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Status</p>
               <p className="text-xs font-bold text-emerald-500">All Systems Operational</p>
@@ -57,10 +57,10 @@ const Admin = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {stats.map((stat) => (
-            <Card key={stat.label} className="border-none bg-white/50 backdrop-blur-sm shadow-lg rounded-[2rem]">
+            <Card key={stat.label} className="border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg rounded-[2rem]">
               <CardContent className="p-6">
                 <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-2xl bg-white shadow-sm ${stat.color}`}>
+                  <div className={`p-3 rounded-2xl bg-white dark:bg-zinc-950 shadow-sm ${stat.color}`}>
                     <stat.icon className="h-6 w-6" />
                   </div>
                   <span className="text-[10px] font-black bg-emerald-500/10 text-emerald-600 px-2 py-1 rounded-full">
@@ -79,8 +79,8 @@ const Admin = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Admin Management */}
           <div className="lg:col-span-2 space-y-8">
-            <Card className="border-none bg-white/50 backdrop-blur-sm shadow-lg rounded-[2.5rem] overflow-hidden">
-              <CardHeader className="p-8 border-b border-primary/5 bg-white/30">
+            <Card className="border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg rounded-[2.5rem] overflow-hidden">
+              <CardHeader className="p-8 border-b border-primary/5 bg-white/30 dark:bg-zinc-950/30">
                 <CardTitle className="text-xl font-black flex items-center gap-3">
                   <Users className="h-5 w-5 text-primary" />
                   Team Management
@@ -141,7 +141,7 @@ const Admin = () => {
 
           {/* Analytics Sidebar */}
           <div className="space-y-8">
-            <Card className="border-none bg-white/50 backdrop-blur-sm shadow-lg rounded-[2.5rem] p-8">
+            <Card className="border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg rounded-[2.5rem] p-8">
               <div className="flex items-center gap-3 mb-8">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 <h3 className="text-xl font-black">Top Categories</h3>

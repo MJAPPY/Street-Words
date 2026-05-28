@@ -95,12 +95,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   };
 
   return (
-    <Card className="group relative overflow-hidden border border-white/60 bg-white/60 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
+    <Card className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
       <div className="p-8 md:p-12">
         <div className="flex justify-between items-center mb-10">
           <div className="flex items-center gap-4">
             <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary to-[#ec4899] p-[2px] shadow-lg shadow-primary/20">
-              <div className="h-full w-full rounded-[14px] bg-white flex items-center justify-center font-black text-primary text-lg">
+              <div className="h-full w-full rounded-[14px] bg-white dark:bg-zinc-950 flex items-center justify-center font-black text-primary text-lg">
                 {post.author[0]}
               </div>
             </div>
@@ -129,7 +129,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
           </blockquote>
         </Link>
         
-        <div className="bg-primary/5 rounded-[2rem] p-8 md:p-10 border border-primary/5 shadow-inner">
+        <div className="bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-8 md:p-10 border border-primary/5 shadow-inner">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Community Reflection</h4>
@@ -140,7 +140,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
         </div>
       </div>
 
-      <CardFooter className="bg-white/40 border-t border-white/60 flex flex-col px-8 py-0">
+      <CardFooter className="bg-white/40 dark:bg-zinc-950/40 border-t border-white/60 dark:border-zinc-800/60 flex flex-col px-8 py-0">
         <div className="flex justify-between w-full py-6">
           <div className="flex gap-8">
             <button 
@@ -183,7 +183,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Share your discernment..." 
-                className="h-14 pl-6 pr-14 rounded-2xl bg-white border-white shadow-sm text-sm font-medium focus-visible:ring-primary/20"
+                className="h-14 pl-6 pr-14 rounded-2xl bg-white dark:bg-zinc-950 border-white dark:border-zinc-800 shadow-sm text-sm font-medium focus-visible:ring-primary/20"
               />
               <Button type="submit" size="icon" variant="ghost" className="absolute right-2 top-2 h-10 w-10 text-primary hover:bg-primary/5 rounded-xl">
                 <Send className="h-5 w-5" />

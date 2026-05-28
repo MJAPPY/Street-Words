@@ -38,8 +38,8 @@ const Categories = () => {
           {CATEGORY_DATA.map((cat) => {
             const Icon = iconMap[cat.icon] || Shield;
             return (
-              <Link key={cat.name} to={`/?category=${cat.name}`}>
-                <Card className="group relative overflow-hidden h-full border-none bg-white/50 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2rem] p-8">
+              <Link key={cat.name} to={`/feed?category=${cat.name}`}>
+                <Card className="group relative overflow-hidden h-full border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2rem] p-8">
                   <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${cat.color} opacity-5 group-hover:opacity-10 transition-opacity rounded-bl-full`} />
                   
                   <div className="relative z-10 space-y-6">
