@@ -3,13 +3,15 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn, PenSquare } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
 
 const Navbar = () => {
   const location = useLocation();
   const isLanding = location.pathname === '/';
+  const { theme, setTheme } = useTheme();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
@@ -51,6 +53,18 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center gap-4">
+          {/* Animated Theme Switcher Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="rounded-none hover:bg-primary/5 h-14 w-14 border border-transparent hover:border-primary/20 transition-all duration-300"
+            title="Toggle Theme"
+          >
+            <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+            <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-primary" />
+          </Button>
+
           {isLanding ? (
             <Link to="/feed">
               <Button className="rounded-none bg-primary hover:bg-primary/90 px-10 gap-3 text-xs font-black uppercase tracking-[0.2em] h-14 shadow-2xl shadow-primary/20 transition-all hover:translate-x-1">
