@@ -15,13 +15,13 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px]">
-              <div className="bg-white rounded-[10px] p-1">
-                <img src="/logo.png" alt="Street Words" className="h-8 w-8 object-contain" />
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2.5px] shadow-lg shadow-primary/10 transition-transform group-hover:scale-105 duration-300">
+              <div className="bg-white rounded-[14px] p-1.5">
+                <img src="/logo.png" alt="Street Words" className="h-9 w-9 object-contain" />
               </div>
             </div>
-            <span className="font-black text-xl tracking-tighter text-primary">
+            <span className="font-black text-2xl tracking-tighter text-primary">
               STREET<span className="text-muted-foreground font-light">WORDS</span>
             </span>
           </Link>
