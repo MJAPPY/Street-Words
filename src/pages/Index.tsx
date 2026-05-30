@@ -127,15 +127,20 @@ const Landing = () => {
 
       {/* CTA Section */}
       <section className="py-32 text-center space-y-12">
-        <div className="container max-w-3xl space-y-8">
-          <h2 className="text-5xl md:text-7xl font-black tracking-tighter">Ready to join the movement?</h2>
-          <p className="text-xl text-muted-foreground font-medium">
-            Join thousands of others illuminating the pavement with ancient truth.
+        <div className="container max-w-3xl space-y-8 animate-in fade-in duration-1000">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-[1.1] text-foreground">
+            "Thy word is a lamp unto my feet, and a light unto my path."
+          </h2>
+          <p className="text-lg md:text-xl text-muted-foreground font-serif italic max-w-2xl mx-auto">
+            — Psalm 119:105
+          </p>
+          <p className="text-base md:text-lg text-foreground font-medium max-w-xl mx-auto leading-relaxed">
+            Walk with us as we illuminate the pavement with the eternal light of the Lord's holy scriptures.
           </p>
           <div className="pt-6">
             <Link to="/feed">
-              <Button size="lg" className="rounded-full h-20 px-16 bg-foreground text-background hover:bg-foreground/90 font-black uppercase tracking-widest text-base shadow-2xl transition-transform hover:scale-105">
-                Get Started Now
+              <Button size="lg" className="rounded-full h-20 px-16 bg-primary hover:bg-primary/95 text-white font-black uppercase tracking-widest text-base shadow-[0_20px_50px_-12px_rgba(168,85,247,0.4)] transition-transform hover:scale-105">
+                Walk in His Light
               </Button>
             </Link>
           </div>
