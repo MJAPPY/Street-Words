@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Sparkles, Star, Tag, Info, Heart, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Sparkles, Star, Tag, Info, Heart, ArrowRight, ExternalLink } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 
@@ -18,6 +18,8 @@ interface StoreItem {
   image: string;
   badge?: string;
   rating: number;
+  isRedbubble?: boolean;
+  redbubbleUrl?: string;
 }
 
 const STORE_ITEMS: StoreItem[] = [
@@ -28,56 +30,67 @@ const STORE_ITEMS: StoreItem[] = [
     description: 'Ultra-heavy 240GSM cotton t-shirt with signature high-density print of John 16:33 on the back.',
     category: 'Apparel',
     image: '👕',
-    badge: 'Best Seller',
-    rating: 5
+    badge: 'Redbubble Merch',
+    rating: 5,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000000'
   },
   {
     id: 's2',
     name: 'Street Sanctuary Premium Hoodie',
     price: '$65.00',
-    description: 'Over-sized fit, 400GSM loopback terry fabric with embroidered Hebrew cross emblem on chest.',
+    description: 'Over-sized fit, loopback terry fabric with custom typographic scripture back print.',
     category: 'Apparel',
-    badge: 'Limited',
+    badge: 'Redbubble Merch',
     image: '🧥',
-    rating: 5
+    rating: 5,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000001'
   },
   {
     id: 's3',
-    name: 'Pavement Devotional Journal',
-    price: '$24.00',
-    description: 'Faux-leather custom journal with 160 dotted pages, designed to track daily street discernment.',
+    name: 'Pavement Discernment Matte Sticker',
+    price: '$4.50',
+    description: 'Vivid high-quality vinyl matte die-cut sticker. Water-resistant, perfect for laptops and bottles.',
     category: 'Accessories',
-    image: '📖',
-    rating: 4.8
+    image: '🏷️',
+    badge: 'Redbubble Best Seller',
+    rating: 4.9,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000002'
   },
   {
     id: 's4',
-    name: 'Ancient Words Heavy Sticker Pack',
-    price: '$12.00',
-    description: 'Set of 12 weather-proof, heavy-duty vinyl stickers featuring bold typographic scripture verses.',
+    name: '“Lamp unto my Feet” iPhone Case',
+    price: '$26.00',
+    description: 'Double-layer tough protection shell case featuring original Street Words typographic design.',
     category: 'Accessories',
-    image: '🏷️',
-    badge: 'Popular',
-    rating: 4.9
+    image: '📱',
+    badge: 'Redbubble Merch',
+    rating: 4.8,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000003'
   },
   {
     id: 's5',
-    name: '“Lamp unto my Feet” Cap',
-    price: '$28.00',
-    description: 'Unstructured vintage-washed canvas 6-panel cap with custom text embroidery.',
-    category: 'Apparel',
-    image: '🧢',
-    rating: 4.7
+    name: 'Yeshua (Jesus) Overcame Tote Bag',
+    price: '$22.00',
+    description: 'Durable 100% cotton canvas bag with heavy-duty shoulder straps and vibrant double-sided print.',
+    category: 'Accessories',
+    image: '👜',
+    badge: 'Redbubble Merch',
+    rating: 4.7,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000004'
   }
 ];
 
 const Store = () => {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Apparel' | 'Accessories'>('All');
-  const [cartCount, setCartCount] = useState(0);
 
-  const handleAddToCart = (name: string) => {
-    setCartCount(prev => prev + 1);
-    showSuccess(`Added "${name}" to bag!`);
+  const handleExternalClick = (item: StoreItem) => {
+    showSuccess(`Redirecting to our Redbubble store for checkout...`);
+    window.open(item.redbubbleUrl, '_blank', 'noopener,noreferrer');
   };
 
   const filteredItems = selectedCategory === 'All' 
@@ -91,15 +104,15 @@ const Store = () => {
       <main className="container max-w-6xl py-12 md:py-20">
         {/* Store Header */}
         <header className="mb-16 text-center space-y-6 relative">
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-2">
+          <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
             <ShoppingBag className="h-3.5 w-3.5" />
-            Official Sanctuary Merch
+            Redbubble Shop Integration
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.85]">
             THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">STORE</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
-            Wear the word. High-quality urban apparel and tools designed to carry ancient wisdom onto the modern pavement.
+            Our items are premium printed and shipped on demand by Redbubble, giving you quick global delivery and high-quality construction.
           </p>
 
           <div className="flex justify-center gap-4 pt-4">
@@ -127,6 +140,28 @@ const Store = () => {
           </div>
         </header>
 
+        {/* Informative Banner */}
+        <div className="bg-primary/5 dark:bg-zinc-900/60 border border-primary/10 rounded-[2rem] p-6 mb-12 flex flex-col md:flex-row items-center gap-6 justify-between max-w-5xl mx-auto">
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+              <Info className="h-6 w-6" />
+            </div>
+            <div className="text-left">
+              <h4 className="text-sm font-black uppercase tracking-wider text-primary">Global Secure Delivery</h4>
+              <p className="text-xs text-muted-foreground font-medium">
+                Payments, production, and worldwide shipping are securely handled directly through Redbubble.
+              </p>
+            </div>
+          </div>
+          <Button 
+            onClick={() => window.open('https://www.redbubble.com', '_blank')}
+            variant="outline" 
+            className="rounded-full font-black uppercase tracking-widest text-[9px] border-primary/20 hover:bg-primary/5 shrink-0 gap-2 h-10 px-6"
+          >
+            Our Store Profile <ExternalLink className="h-3 w-3" />
+          </Button>
+        </div>
+
         {/* Store Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredItems.map((item) => (
@@ -146,7 +181,7 @@ const Store = () => {
 
                 <div className="space-y-3">
                   <div className="flex justify-between items-start gap-4">
-                    <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors leading-tight">
+                    <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors leading-tight text-left">
                       {item.name}
                     </h3>
                     <span className="text-lg font-black text-primary whitespace-nowrap">
@@ -161,7 +196,7 @@ const Store = () => {
                     <span className="text-[10px] font-black text-muted-foreground ml-1">{item.rating}</span>
                   </div>
 
-                  <p className="text-muted-foreground font-medium text-sm leading-relaxed">
+                  <p className="text-muted-foreground font-medium text-sm leading-relaxed text-left">
                     {item.description}
                   </p>
                 </div>
@@ -169,16 +204,16 @@ const Store = () => {
 
               <CardFooter className="px-8 pb-8 pt-0 flex gap-3">
                 <Button 
-                  onClick={() => handleAddToCart(item.name)}
-                  className="flex-1 rounded-full h-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20"
+                  onClick={() => handleExternalClick(item)}
+                  className="flex-1 rounded-full h-12 bg-[#ec4899] hover:bg-[#ec4899]/95 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-[#ec4899]/20 gap-2"
                 >
-                  Add to Bag
+                  Buy on Redbubble <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
                 <Button 
                   variant="outline" 
                   size="icon" 
-                  className="h-12 w-12 rounded-full border-primary/10 hover:bg-primary/5 text-muted-foreground hover:text-primary"
-                  onClick={() => showSuccess("Added to wish list!")}
+                  className="h-12 w-12 rounded-full border-primary/10 hover:bg-primary/5 text-muted-foreground hover:text-[#ec4899]"
+                  onClick={() => showSuccess("Saved to wish list!")}
                 >
                   <Heart className="h-4 w-4" />
                 </Button>
