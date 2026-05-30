@@ -44,6 +44,7 @@ export interface UserProfile {
   socialLink?: string;
   videoLink?: string;
   websiteLink?: string;
+  location?: string;
   stats: {
     verses: number;
     likes: number;

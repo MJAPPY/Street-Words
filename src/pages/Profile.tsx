@@ -21,6 +21,7 @@ const MOCK_CURRENT_USER: UserProfile = {
   bio: 'Walking the city streets with ancient wisdom. Looking for the light in every corner. 🕊️',
   avatar: 'T',
   joinedDate: 'Joined March 2024',
+  location: 'Urban Sanctuary',
   favoriteVerse: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.',
   favoriteReference: 'Joshua 1:9',
   stats: {
@@ -38,6 +39,7 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
     bio: 'Curating the pavement. Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation.',
     avatar: 'S',
     joinedDate: 'Joined January 2024',
+    location: 'Concrete Vault',
     favoriteVerse: 'The light shines in the darkness, and the darkness has not overcome it.',
     favoriteReference: 'John 1:5',
     websiteLink: 'https://streetwords.sh',
@@ -54,6 +56,7 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
     bio: 'Seeking grace in the urban jungle. Lover of wisdom and community reflection. Let’s converse!',
     avatar: 'H',
     joinedDate: 'Joined February 2024',
+    location: 'Metropolis Core',
     favoriteVerse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
     favoriteReference: 'Hebrews 11:1',
     stats: {
@@ -133,6 +136,7 @@ const Profile = () => {
       bio: 'Searching for grace and shared Collective wisdom on Street Words.',
       avatar: (username ? username[0].toUpperCase() : 'D'),
       joinedDate: 'Joined recently',
+      location: 'The Sidewalks',
       stats: { verses: 3, likes: 14, reflections: 2 }
     };
   });
@@ -215,8 +219,14 @@ const Profile = () => {
                 {/* Meta details & Custom User links */}
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-6 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
-                    <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><MapPin className="h-4 w-4" /> Urban Sanctuary</span>
-                    <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full"><Calendar className="h-4 w-4" /> {user.joinedDate}</span>
+                    {user.location && (
+                      <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full">
+                        <MapPin className="h-4 w-4" /> {user.location}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-2 bg-primary/5 dark:bg-zinc-950/40 px-4 py-2 rounded-full">
+                      <Calendar className="h-4 w-4" /> {user.joinedDate}
+                    </span>
                   </div>
 
                   {(user.websiteLink || user.videoLink || user.socialLink) && (

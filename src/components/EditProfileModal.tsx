@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { UserProfile } from '@/types';
 import { showError, showSuccess } from '@/utils/toast';
-import { Camera, Edit3, Loader2, Globe, Video, Link2 } from 'lucide-react';
+import { Camera, Edit3, Loader2, Globe, Video, Link2, MapPin } from 'lucide-react';
 
 interface EditProfileModalProps {
   user: UserProfile;
@@ -22,6 +22,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
     name: user.name,
     bio: user.bio,
     avatar: user.avatar,
+    location: user.location || "",
     favoriteVerse: user.favoriteVerse || "",
     favoriteReference: user.favoriteReference || "",
     socialLink: user.socialLink || "",
@@ -112,6 +113,19 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                <MapPin className="h-3.5 w-3.5 text-primary" /> Location
+              </Label>
+              <Input
+                id="location"
+                value={formData.location}
+                placeholder="e.g. Urban Sanctuary, New York"
+                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                 className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
               />
             </div>

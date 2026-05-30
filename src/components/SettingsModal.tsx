@@ -2,16 +2,18 @@
 
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Settings, Moon, Sun, Bell, Shield, LogOut, Globe, Smartphone } from 'lucide-react';
+import { Settings, Moon, Sun, Bell, LogOut, Globe, Trash2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { showSuccess } from '@/utils/toast';
+import { useNavigate } from 'react-router-dom';
 
 const SettingsModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
   
   const [notifications, setNotifications] = useState(true);
   const [isPublic, setIsPublic] = useState(true);
@@ -19,6 +21,12 @@ const SettingsModal = () => {
   const handleLogout = () => {
     showSuccess("Logging out of the street...");
     setIsOpen(false);
+  };
+
+  const handleDeleteAccount = () => {
+    showSuccess("Your account and shared word associations have been deleted.");
+    setIsOpen(false);
+    navigate('/');
   };
 
   const handleSave = () => {
@@ -89,13 +97,43 @@ const SettingsModal = () => {
           {/* Account Section */}
           <div className="space-y-4">
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-destructive">Danger Zone</h4>
-            <Button 
-              variant="outline" 
-              onClick={handleLogout}
-              className="w-full justify-start gap-3 rounded-2xl h-12 border-destructive/20 text-destructive hover:bg-destructive/5 font-bold"
-            >
-              <LogOut className="h-4 w-4" /> Sign Out
-            </Button>
+            <div className="space-y-3">
+              <Button 
+                variant="outline" 
+                onClick={handleLogout}
+                className="w-full justify-start gap-3 rounded-2xl h-12 border-destructive/20 text-destructive hover:bg-destructive/5 font-bold"
+              >
+                <LogOut className="h-4 w-4" /> Sign Out
+              </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="destructive"
+                    className="w-full justify-start gap-3 rounded-2xl h-12 bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive hover:text-white font-bold"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="rounded-[2rem] border-none p-8">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-xl font-black text-foreground">Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-muted-foreground font-medium text-sm leading-relaxed">
+                      This action cannot be undone. This will permanently delete your account, remove your custom verse posts, and delete your reflections from our database.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter className="gap-3 mt-6">
+                    <AlertDialogCancel className="rounded-full font-black uppercase tracking-widest text-[10px] h-12 px-6 border-transparent bg-muted/40 hover:bg-muted/60">Cancel</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleDeleteAccount}
+                      className="rounded-full font-black uppercase tracking-widest text-[10px] h-12 px-6 bg-destructive hover:bg-destructive/90 text-white shadow-lg shadow-destructive/20"
+                    >
+                      Delete Forever
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         </div>
 
