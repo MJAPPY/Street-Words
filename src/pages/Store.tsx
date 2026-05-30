@@ -140,11 +140,15 @@ const Store = () => {
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.85]">
             THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">STORE</span>
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
             {activeShopName ? (
-              <span>Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.</span>
+              <span>
+                Share scripture in a fun way—whether it be stickers or a shower curtain! Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.
+              </span>
             ) : (
-              <span>Premium street apparel and custom accessories designed in-house and print-on-demand securely through Redbubble.</span>
+              <span>
+                Premium apparel and home decor designed to share scripture in a fun way—whether it be custom stickers or a shower curtain! Designed in-house and delivered securely through Redbubble.
+              </span>
             )}
           </p>
         </header>
