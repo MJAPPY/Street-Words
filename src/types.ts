@@ -1,7 +1,8 @@
 export type Category = 
   | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
   | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
-  | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness';
+  | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness'
+  | 'Perseverance';
 
 export interface CategoryInfo {
   name: Category;
@@ -69,4 +70,5 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Patience', description: 'Calm endurance under pressure or delay.', count: 64, color: 'from-amber-200 to-yellow-500', icon: 'Clock' },
   { name: 'Goodness', description: 'Moral excellence and virtue in daily living.', count: 48, color: 'from-lime-400 to-emerald-600', icon: 'CheckCircle2' },
   { name: 'Faithfulness', description: 'Reliability and steadfast loyalty to the truth.', count: 39, color: 'from-indigo-400 to-blue-700', icon: 'ShieldCheck' },
+  { name: 'Perseverance', description: 'Steadfast endurance and pressing on through trials.', count: 47, color: 'from-orange-500 to-yellow-600', icon: 'Anchor' },
 ];

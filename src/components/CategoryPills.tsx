@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 const categories: Category[] = [
   'Faith', 'Love', 'Despair', 'Anger', 'Hope', 'Wisdom', 'Truth',
   'Joy', 'Peace', 'Fear', 'Guilt', 'Justice', 'Mercy',
-  'Kindness', 'Longsuffering', 'Patience', 'Goodness', 'Faithfulness'
+  'Kindness', 'Longsuffering', 'Patience', 'Goodness', 'Faithfulness',
+  'Perseverance'
 ];
 
 interface CategoryPillsProps {
@@ -27,7 +28,7 @@ const CategoryPills = ({ selectedCategory, onSelect }: CategoryPillsProps) => {
             "rounded-full px-5 py-2 h-9 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border",
             selectedCategory === 'All' 
               ? "bg-primary text-white border-primary shadow-lg shadow-primary/25 scale-105" 
-              : "text-muted-foreground border-transparent hover:border-primary/20 hover:bg-primary/5"
+              : "text-muted-foreground dark:text-zinc-300 border-transparent hover:border-primary/20 hover:bg-primary/5 hover:text-primary dark:hover:text-primary"
           )}
         >
           All Feed
@@ -42,7 +43,7 @@ const CategoryPills = ({ selectedCategory, onSelect }: CategoryPillsProps) => {
               "rounded-full px-5 py-2 h-9 text-[10px] font-black uppercase tracking-widest transition-all duration-300 border whitespace-nowrap",
               selectedCategory === cat 
                 ? "bg-primary text-white border-primary shadow-lg shadow-primary/25 scale-105" 
-                : "text-muted-foreground border-transparent hover:border-primary/20 hover:bg-primary/5"
+                : "text-muted-foreground dark:text-zinc-300 border-transparent hover:border-primary/20 hover:bg-primary/5 hover:text-primary dark:hover:text-primary"
             )}
           >
             {cat}

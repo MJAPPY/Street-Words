@@ -1,4 +1,8 @@
-export type Category = 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth';
+export type Category = 
+  | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
+  | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
+  | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness'
+  | 'Perseverance';
 
 export interface Comment {
   id: string;
