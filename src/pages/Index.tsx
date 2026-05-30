@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { 
   Sparkles, ArrowRight, BookOpen, Users, 
-  MessageSquare, Heart, Quote, Compass 
+  Quote, Compass 
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 
@@ -151,15 +151,22 @@ const Landing = () => {
 
       <footer className="py-16 border-t border-primary/5">
         <div className="container flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="flex items-center gap-3">
-            <div className="bg-primary h-10 w-10 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-primary/20">S</div>
-            <span className="font-black tracking-tighter text-2xl">STREETWORDS</span>
-          </div>
-          <div className="flex gap-10 text-xs font-black uppercase tracking-widest text-muted-foreground">
-            <a href="#" className="hover:text-primary transition-colors">Twitter</a>
-            <a href="#" className="hover:text-primary transition-colors">Instagram</a>
-            <a href="#" className="hover:text-primary transition-colors">Discord</a>
-          </div>
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="relative h-12 w-12 overflow-hidden bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[1.5px] shadow-lg rounded-xl transition-all duration-300">
+              <div className="h-full w-full flex items-center justify-center overflow-hidden bg-background/20 backdrop-blur-md rounded-[10px]">
+                <img src="/logo.png" alt="Street Words" className="h-full w-full object-cover" />
+              </div>
+            </div>
+            <div className="flex flex-col -space-y-1 text-left">
+              <span className="font-black text-2xl tracking-tighter text-foreground group-hover:text-primary transition-colors">
+                STREET
+              </span>
+              <span className="font-light text-sm tracking-[0.3em] text-muted-foreground">
+                WORDS
+              </span>
+            </div>
+          </Link>
+          
           <MadeWithDyad />
         </div>
       </footer>
