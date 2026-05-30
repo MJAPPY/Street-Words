@@ -5,10 +5,9 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { ShoppingBag, Sparkles, Star, Info, Heart, ArrowRight, ExternalLink, RefreshCw, Link2, CheckCircle } from 'lucide-react';
+import { ShoppingBag, Star, Info, Heart, ArrowRight, ExternalLink } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import { showSuccess, showError } from '@/utils/toast';
+import { showSuccess } from '@/utils/toast';
 
 interface StoreItem {
   id: string;
@@ -21,7 +20,7 @@ interface StoreItem {
   rating: number;
   isRedbubble?: boolean;
   redbubbleUrl?: string;
-  isLiveSynced?: boolean; // New flag to track dynamic products
+  isLiveSynced?: boolean;
 }
 
 const DEFAULT_STORE_ITEMS: StoreItem[] = [
@@ -90,195 +89,37 @@ const DEFAULT_STORE_ITEMS: StoreItem[] = [
 const Store = () => {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Apparel' | 'Accessories'>('All');
   const [storeItems, setStoreItems] = useState<StoreItem[]>(DEFAULT_STORE_ITEMS);
-  const [storeInput, setStoreInput] = useState('');
-  const [isSyncing, setIsSyncing] = useState(false);
   const [activeShopName, setActiveShopName] = useState<string | null>(null);
-  const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
-  // Load custom shop name and items on mount if already configured
-  useEffect(() => {
+  // Sync products dynamically by consuming cached configuration set in Admin dashboard
+  const loadSyncedProducts = () => {
     const savedShopName = localStorage.getItem('redbubble_shop_name');
     const savedItems = localStorage.getItem('redbubble_synced_items');
-    if (savedShopName) {
-      setActiveShopName(savedShopName);
-      setStoreInput(savedShopName);
-      setLastSyncedTime("Loaded from cache");
-    }
-    if (savedItems) {
+    
+    if (savedShopName && savedItems) {
       try {
         setStoreItems(JSON.parse(savedItems));
+        setActiveShopName(savedShopName);
       } catch (e) {
         setStoreItems(DEFAULT_STORE_ITEMS);
+        setActiveShopName(null);
       }
+    } else {
+      setStoreItems(DEFAULT_STORE_ITEMS);
+      setActiveShopName(null);
     }
+  };
+
+  useEffect(() => {
+    loadSyncedProducts();
+    // Re-check live updates if admin updates configuration in other tabs
+    window.addEventListener('storage', loadSyncedProducts);
+    return () => window.removeEventListener('storage', loadSyncedProducts);
   }, []);
-
-  const handleSyncStore = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!storeInput.trim()) return;
-
-    setIsSyncing(true);
-    
-    // Extract username if they input a full Redbubble link
-    let username = storeInput.trim();
-    if (username.includes('redbubble.com')) {
-      const match = username.match(/people\/([^/]+)/);
-      if (match && match[1]) {
-        username = match[1];
-      } else {
-        username = username.split('.com/')[1] || username;
-      }
-    }
-
-    try {
-      // Use AllOrigins open CORS Proxy to request the Redbubble RSS feed safely
-      const rssUrl = `https://www.redbubble.com/people/${username}/shop.rss`;
-      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`;
-      
-      const response = await fetch(proxyUrl);
-      if (!response.ok) throw new Error("Could not reach Redbubble feed");
-      
-      const xmlText = await response.text();
-      
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlText, "text/xml");
-      const items = xmlDoc.getElementsByTagName("item");
-      
-      if (!items || items.length === 0) {
-        generateDynamicMockProducts(username);
-        return;
-      }
-
-      const parsedProducts: StoreItem[] = [];
-      
-      for (let i = 0; i < Math.min(items.length, 12); i++) {
-        const item = items[i];
-        const title = item.getElementsByTagName("title")[0]?.textContent || "Redbubble Merch";
-        const link = item.getElementsByTagName("link")[0]?.textContent || `https://www.redbubble.com/people/${username}/shop`;
-        const description = item.getElementsByTagName("description")[0]?.textContent || "";
-        
-        let imageUrl = "";
-        
-        // Extract high-res image from media contents or description HTML tags
-        const mediaContent = item.getElementsByTagName("media:content")[0] || item.getElementsByTagNameNS("http://search.yahoo.com/mrss/", "content")[0];
-        if (mediaContent) {
-          imageUrl = mediaContent.getAttribute("url") || "";
-        }
-        
-        if (!imageUrl && description) {
-          const imgMatch = description.match(/src="([^"]+)"/);
-          if (imgMatch) imageUrl = imgMatch[1];
-        }
-
-        // Extract price or generate standard mock print-on-demand pricing
-        let price = "$24.90";
-        const gPrice = item.getElementsByTagName("g:price")[0] || item.getElementsByTagNameNS("http://base.google.com/ns/1.0", "price")[0];
-        if (gPrice) {
-          price = gPrice.textContent || "$24.90";
-        } else {
-          const priceMatch = description.match(/\$[0-9.]+/);
-          if (priceMatch) price = priceMatch[0];
-        }
-
-        // Determine Category mapping
-        const isApparel = title.toLowerCase().includes("shirt") || 
-                           title.toLowerCase().includes("tee") || 
-                           title.toLowerCase().includes("hoodie") || 
-                           title.toLowerCase().includes("cap");
-
-        parsedProducts.push({
-          id: `rb-synced-${i}`,
-          name: title,
-          price: price,
-          description: description.replace(/<[^>]*>/g, '').substring(0, 100).trim() + "...",
-          category: isApparel ? "Apparel" : "Accessories",
-          image: imageUrl || (isApparel ? "👕" : "🎒"),
-          badge: "Live Merch",
-          rating: parseFloat((4.5 + Math.random() * 0.5).toFixed(1)),
-          isRedbubble: true,
-          redbubbleUrl: link,
-          isLiveSynced: true // Identify synced items
-        });
-      }
-
-      setStoreItems(parsedProducts);
-      setActiveShopName(username);
-      setLastSyncedTime(new Date().toLocaleTimeString());
-      localStorage.setItem('redbubble_shop_name', username);
-      localStorage.setItem('redbubble_synced_items', JSON.stringify(parsedProducts));
-      
-      showSuccess(`Successfully connected to ${username}'s Redbubble Store!`);
-    } catch (err) {
-      generateDynamicMockProducts(username);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  const generateDynamicMockProducts = (username: string) => {
-    const customMockItems: StoreItem[] = [
-      {
-        id: 'mock-1',
-        name: `“${username}” Classic Signature Tee`,
-        price: '$28.00',
-        description: `Official limited release logo premium cotton tee, print-on-demand by ${username}'s official Redbubble shop.`,
-        category: 'Apparel',
-        image: '👕',
-        badge: `${username} Shop`,
-        rating: 5,
-        isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
-        isLiveSynced: true
-      },
-      {
-        id: 'mock-2',
-        name: `Street Sanctuary x ${username} Hoodie`,
-        price: '$58.00',
-        description: `Ultra comfort heavyweight fleece pullover with customized typographic layout.`,
-        category: 'Apparel',
-        image: '🧥',
-        badge: 'Limited Collaboration',
-        rating: 5,
-        isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
-        isLiveSynced: true
-      },
-      {
-        id: 'mock-3',
-        name: `${username} High-Definition Vinyl Sticker Pack`,
-        price: '$8.50',
-        description: 'Set of multi-sized durable, weather-resistant gloss stickers curated for notebooks & bottles.',
-        category: 'Accessories',
-        image: '🏷️',
-        badge: 'Top Selling',
-        rating: 4.9,
-        isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
-        isLiveSynced: true
-      }
-    ];
-
-    setStoreItems(customMockItems);
-    setActiveShopName(username);
-    setLastSyncedTime(new Date().toLocaleTimeString());
-    localStorage.setItem('redbubble_shop_name', username);
-    localStorage.setItem('redbubble_synced_items', JSON.stringify(customMockItems));
-    showSuccess(`Connected & customized themed items for ${username}!`);
-  };
 
   const handleExternalClick = (item: StoreItem) => {
     showSuccess(`Opening Redbubble checkout portal...`);
     window.open(item.redbubbleUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const resetToDefault = () => {
-    localStorage.removeItem('redbubble_shop_name');
-    localStorage.removeItem('redbubble_synced_items');
-    setStoreItems(DEFAULT_STORE_ITEMS);
-    setActiveShopName(null);
-    setStoreInput('');
-    setLastSyncedTime(null);
-    showSuccess("Returned store to default inventory!");
   };
 
   const filteredItems = selectedCategory === 'All' 
@@ -294,78 +135,19 @@ const Store = () => {
         <header className="mb-16 text-center space-y-6 relative">
           <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
             <ShoppingBag className="h-3.5 w-3.5" />
-            Redbubble Live Sync
+            Redbubble Merchandise
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.85]">
             THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">STORE</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium">
-            Synchronize your Redbubble products dynamically to this storefront. Simply enter your store link or username below to import products in real-time.
+            {activeShopName ? (
+              <span>Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.</span>
+            ) : (
+              <span>Premium street apparel and custom accessories designed in-house and print-on-demand securely through Redbubble.</span>
+            )}
           </p>
         </header>
-
-        {/* Sync Panel Box */}
-        <div className="bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md border border-white/60 dark:border-zinc-800/60 rounded-[2.5rem] p-8 max-w-4xl mx-auto mb-16 shadow-xl space-y-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="text-left">
-              <h3 className="text-lg font-black uppercase tracking-wider text-primary flex items-center gap-2">
-                <Link2 className="h-5 w-5" /> Connect Redbubble Store
-              </h3>
-              <p className="text-xs text-muted-foreground font-medium">
-                Enter your Redbubble shop URL or artist profile name to instantly import and sync items.
-              </p>
-            </div>
-            {activeShopName && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={resetToDefault}
-                className="text-[10px] text-destructive hover:bg-destructive/5 font-black uppercase tracking-widest rounded-full px-4"
-              >
-                Reset Default Store
-              </Button>
-            )}
-          </div>
-
-          <form onSubmit={handleSyncStore} className="flex flex-col sm:flex-row gap-3">
-            <Input 
-              placeholder="e.g. https://www.redbubble.com/people/your-username/shop or just 'your-username'" 
-              className="flex-1 rounded-2xl h-14 bg-muted/40 border-primary/10 px-6 font-bold text-sm"
-              value={storeInput}
-              onChange={(e) => setStoreInput(e.target.value)}
-              disabled={isSyncing}
-            />
-            <Button 
-              type="submit" 
-              disabled={isSyncing || !storeInput.trim()}
-              className="rounded-full h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs gap-2 min-w-[160px] shadow-lg shadow-primary/25"
-            >
-              {isSyncing ? (
-                <>
-                  <RefreshCw className="h-4 w-4 animate-spin" /> Syncing...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="h-4 w-4" /> Sync Products
-                </>
-              )}
-            </Button>
-          </form>
-
-          {activeShopName && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20">
-              <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs">
-                <CheckCircle className="h-4 w-4" /> Active Storefront: <strong>{activeShopName}</strong> is synchronized live!
-              </div>
-              {lastSyncedTime && (
-                <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
-                  Last Synced: {lastSyncedTime}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
 
         {/* Informative Banner */}
         <div className="bg-primary/5 dark:bg-zinc-900/60 border border-primary/10 rounded-[2rem] p-6 mb-12 flex flex-col md:flex-row items-center gap-6 justify-between max-w-5xl mx-auto">
