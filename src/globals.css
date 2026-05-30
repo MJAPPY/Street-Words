@@ -37,33 +37,35 @@
   }
 
   .dark {
-    /* Reduced the black by several shades to a soft dark charcoal slate */
-    --background: 220 15% 12%;
+    /* Rich purple-tinted slate for the dark mode canvas */
+    --background: 262 18% 10%;
     --foreground: 210 20% 98%;
 
-    --card: 220 15% 15%;
+    /* Deep royal purple-gray cards for high structural visibility */
+    --card: 262 20% 14%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 220 15% 15%;
+    --popover: 262 20% 14%;
     --popover-foreground: 210 20% 98%;
 
     --primary: 263.4 70% 50.4%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 217.2 32.6% 22%;
+    --secondary: 262 25% 18%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 217.2 32.6% 22%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 262 25% 18%;
+    --muted-foreground: 262 15% 70%;
 
-    --accent: 217.2 32.6% 22%;
+    --accent: 262 25% 18%;
     --accent-foreground: 210 20% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 22%;
-    --input: 217.2 32.6% 22%;
+    /* Vivid violet borders and outlines to make frames and boxes pop */
+    --border: 262 30% 24%;
+    --input: 262 30% 24%;
     --ring: 263.4 70% 50.4%;
   }
 }
@@ -75,9 +77,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     background-image: 
-      radial-gradient(at 0% 0%, hsla(263,70%,50%,0.08) 0px, transparent 40%),
-      radial-gradient(at 100% 0%, hsla(330,81%,60%,0.08) 0px, transparent 40%),
-      radial-gradient(at 50% 100%, hsla(263,70%,50%,0.05) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, hsla(263,70%,50%,0.12) 0px, transparent 40%),
+      radial-gradient(at 100% 0%, hsla(330,81%,60%,0.10) 0px, transparent 40%),
+      radial-gradient(at 50% 100%, hsla(263,70%,50%,0.08) 0px, transparent 50%);
     background-attachment: fixed;
   }
 }
