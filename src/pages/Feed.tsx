@@ -159,7 +159,7 @@ const Feed = () => {
             )}
           </div>
           
-          <div className="bg-white/40 backdrop-blur-md border border-white/60 rounded-[2.5rem] p-4 md:p-6 shadow-sm">
+          <div className="bg-white/80 dark:bg-card/90 backdrop-blur-md border border-white/80 dark:border-border/60 rounded-[2.5rem] p-4 md:p-6 shadow-xl transition-all duration-350">
             <CategoryPills 
               selectedCategory={selectedCategory} 
               onSelect={handleSelectCategory} 
