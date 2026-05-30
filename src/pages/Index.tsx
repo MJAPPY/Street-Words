@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { 
   Sparkles, ArrowRight, BookOpen, Users, 
-  ShieldCheck, MessageSquare, Heart, Quote 
+  MessageSquare, Heart, Quote, Compass 
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 
@@ -55,38 +55,46 @@ const Landing = () => {
       </section>
 
       {/* Feature Grid */}
-      <section className="py-24 bg-white/20 backdrop-blur-md border-y border-primary/5">
+      <section className="py-24 bg-white/20 dark:bg-black/20 backdrop-blur-md border-y border-primary/5">
         <div className="container max-w-6xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* Card 1: Ancient Wisdom */}
+            <div className="relative overflow-hidden space-y-5 p-10 rounded-[3rem] bg-white/70 dark:bg-zinc-900/60 border border-white/80 dark:border-zinc-800/60 shadow-xl hover:shadow-2xl hover:border-primary/30 transition-all duration-300 group hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+              <div className="relative w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-300">
                 <BookOpen className="h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight">Ancient Wisdom</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed">
-                Source verses from thousands of years of tradition, filtered for today's urban context and spiritual hunger.
+              <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">Ancient Wisdom</h3>
+              <p className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed text-sm">
+                Source biblical verses from thousands of years of tradition, dynamically curated for today's urban context and deep spiritual hunger.
               </p>
             </div>
 
-            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-500">
+            {/* Card 2: Communal Discernment */}
+            <div className="relative overflow-hidden space-y-5 p-10 rounded-[3rem] bg-white/70 dark:bg-zinc-900/60 border border-white/80 dark:border-zinc-800/60 shadow-xl hover:shadow-2xl hover:border-pink-500/30 transition-all duration-300 group hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#ec4899]/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+              <div className="relative w-16 h-16 rounded-2xl bg-rose-500/10 dark:bg-rose-500/20 flex items-center justify-center text-rose-500 group-hover:scale-110 group-hover:bg-[#ec4899] group-hover:text-white transition-all duration-300">
                 <Users className="h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight">Communal Discernment</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed">
-                Don't walk alone. Engage in deep reflections and navigate life's complexities through shared collective insight.
+              <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">Communal Discernment</h3>
+              <p className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed text-sm">
+                Don't walk the pavement alone. Engage in raw, honest reflections and navigate life's complexities through shared collective insight.
               </p>
             </div>
 
-            <div className="space-y-4 p-10 rounded-[3rem] bg-white/40 border border-white/50 hover:shadow-2xl transition-all group hover:-translate-y-2">
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-500">
-                <ShieldCheck className="h-8 w-8" />
+            {/* Card 3: Pavement Sanctuary */}
+            <div className="relative overflow-hidden space-y-5 p-10 rounded-[3rem] bg-white/70 dark:bg-zinc-900/60 border border-white/80 dark:border-zinc-800/60 shadow-xl hover:shadow-2xl hover:border-amber-500/30 transition-all duration-300 group hover:-translate-y-2">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-500/10 to-transparent rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+              <div className="relative w-16 h-16 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
+                <Compass className="h-8 w-8" />
               </div>
-              <h3 className="text-2xl font-black tracking-tight">Member Identity</h3>
-              <p className="text-muted-foreground font-medium leading-relaxed">
-                Build your legacy of truth. Track your contributions, save favorite words, and grow your influence in the community.
+              <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">Pavement Sanctuary</h3>
+              <p className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed text-sm">
+                Transform chaotic commutes and cold concrete sidewalks into personal tabernacles of devotion, discovering holy moments in the urban rush.
               </p>
             </div>
+
           </div>
         </div>
       </section>
