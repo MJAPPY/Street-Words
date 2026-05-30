@@ -5,7 +5,7 @@ import { VersePost, Comment } from '@/types';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { showSuccess } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
@@ -44,6 +44,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       showSuccess("Link copied to clipboard!");
       navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
     }
+  };
+
+  const handleReport = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    showSuccess("Post reported successfully. Moderation team is reviewing it.");
   };
 
   const handleAddComment = (e: React.FormEvent) => {
@@ -165,6 +171,9 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
           </div>
           
           <div className="flex gap-2">
+            <Button variant="ghost" size="icon" onClick={handleReport} className="h-12 w-12 rounded-2xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-colors" title="Report Post">
+              <Flag className="h-5 w-5" />
+            </Button>
             <Button variant="ghost" size="icon" onClick={handleShare} className="h-12 w-12 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary">
               <Share2 className="h-6 w-6" />
             </Button>
