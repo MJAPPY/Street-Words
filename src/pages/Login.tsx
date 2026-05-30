@@ -36,7 +36,7 @@ const Login = () => {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">Street Sanctuary</span>
             </h1>
             <p className="text-muted-foreground text-sm font-medium">
-              Join custom disciples to post verses, meditate on life, and walk on the pavement of hope.
+              Join disciples to post verses, discern on life, and walk with faith on the pavement of hope.
             </p>
           </div>
 
