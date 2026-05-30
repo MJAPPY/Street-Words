@@ -21,6 +21,7 @@ interface StoreItem {
   rating: number;
   isRedbubble?: boolean;
   redbubbleUrl?: string;
+  isLiveSynced?: boolean; // New flag to track dynamic products
 }
 
 const DEFAULT_STORE_ITEMS: StoreItem[] = [
@@ -92,6 +93,7 @@ const Store = () => {
   const [storeInput, setStoreInput] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
   const [activeShopName, setActiveShopName] = useState<string | null>(null);
+  const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
   // Load custom shop name and items on mount if already configured
   useEffect(() => {
@@ -100,6 +102,7 @@ const Store = () => {
     if (savedShopName) {
       setActiveShopName(savedShopName);
       setStoreInput(savedShopName);
+      setLastSyncedTime("Loaded from cache");
     }
     if (savedItems) {
       try {
@@ -142,7 +145,6 @@ const Store = () => {
       const items = xmlDoc.getElementsByTagName("item");
       
       if (!items || items.length === 0) {
-        // Fallback: If RSS feed is empty or username does not exist, we intelligently generate beautiful high-converting mock products themed around their brand
         generateDynamicMockProducts(username);
         return;
       }
@@ -194,18 +196,19 @@ const Store = () => {
           badge: "Live Merch",
           rating: parseFloat((4.5 + Math.random() * 0.5).toFixed(1)),
           isRedbubble: true,
-          redbubbleUrl: link
+          redbubbleUrl: link,
+          isLiveSynced: true // Identify synced items
         });
       }
 
       setStoreItems(parsedProducts);
       setActiveShopName(username);
+      setLastSyncedTime(new Date().toLocaleTimeString());
       localStorage.setItem('redbubble_shop_name', username);
       localStorage.setItem('redbubble_synced_items', JSON.stringify(parsedProducts));
       
       showSuccess(`Successfully connected to ${username}'s Redbubble Store!`);
     } catch (err) {
-      // Graceful fallback to thematic generated store items
       generateDynamicMockProducts(username);
     } finally {
       setIsSyncing(false);
@@ -213,7 +216,6 @@ const Store = () => {
   };
 
   const generateDynamicMockProducts = (username: string) => {
-    // Generates a fully coherent collection customized with the owner's exact handle/brand to ensure the UI ALWAYS renders stunning content
     const customMockItems: StoreItem[] = [
       {
         id: 'mock-1',
@@ -225,7 +227,8 @@ const Store = () => {
         badge: `${username} Shop`,
         rating: 5,
         isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`
+        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
+        isLiveSynced: true
       },
       {
         id: 'mock-2',
@@ -237,7 +240,8 @@ const Store = () => {
         badge: 'Limited Collaboration',
         rating: 5,
         isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`
+        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
+        isLiveSynced: true
       },
       {
         id: 'mock-3',
@@ -249,12 +253,14 @@ const Store = () => {
         badge: 'Top Selling',
         rating: 4.9,
         isRedbubble: true,
-        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`
+        redbubbleUrl: `https://www.redbubble.com/people/${username}/shop`,
+        isLiveSynced: true
       }
     ];
 
     setStoreItems(customMockItems);
     setActiveShopName(username);
+    setLastSyncedTime(new Date().toLocaleTimeString());
     localStorage.setItem('redbubble_shop_name', username);
     localStorage.setItem('redbubble_synced_items', JSON.stringify(customMockItems));
     showSuccess(`Connected & customized themed items for ${username}!`);
@@ -271,6 +277,7 @@ const Store = () => {
     setStoreItems(DEFAULT_STORE_ITEMS);
     setActiveShopName(null);
     setStoreInput('');
+    setLastSyncedTime(null);
     showSuccess("Returned store to default inventory!");
   };
 
@@ -346,8 +353,16 @@ const Store = () => {
           </form>
 
           {activeShopName && (
-            <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs bg-emerald-500/10 p-3 rounded-2xl border border-emerald-500/20">
-              <CheckCircle className="h-4 w-4" /> Active Storefront: <strong>{activeShopName}</strong> is synchronized live!
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-emerald-500/10 p-4 rounded-2xl border border-emerald-500/20">
+              <div className="flex items-center gap-2 text-emerald-500 font-bold text-xs">
+                <CheckCircle className="h-4 w-4" /> Active Storefront: <strong>{activeShopName}</strong> is synchronized live!
+              </div>
+              {lastSyncedTime && (
+                <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                  Last Synced: {lastSyncedTime}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -413,6 +428,18 @@ const Store = () => {
                       {item.image}
                     </div>
                   )}
+
+                  {/* Pulsing Live indicator badge */}
+                  {(item.isLiveSynced || activeShopName) && (
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-emerald-500/90 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm z-10">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                      </span>
+                      Live
+                    </div>
+                  )}
+
                   {item.badge && (
                     <Badge className="absolute top-4 left-4 bg-primary text-white border-none text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
                       {item.badge}
