@@ -2,7 +2,7 @@ export type Category =
   | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
   | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
   | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness'
-  | 'Perseverance' | 'Grief' | 'Pain' | 'Humble';
+  | 'Perseverance' | 'Grief' | 'Pain' | 'Humble' | 'Forgiveness' | 'Trust';
 
 export interface CategoryInfo {
   name: Category;
@@ -58,6 +58,7 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Faith', description: 'Assurance in the unseen and trust in the divine.', count: 124, color: 'from-blue-500 to-indigo-600', icon: 'Shield' },
   { name: 'Faithfulness', description: 'Reliability and steadfast loyalty to the truth.', count: 39, color: 'from-indigo-400 to-blue-700', icon: 'ShieldCheck' },
   { name: 'Fear', description: 'Confronting anxieties with the presence of the Spirit.', count: 45, color: 'from-indigo-800 to-purple-950', icon: 'EyeOff' },
+  { name: 'Forgiveness', description: 'The healing power of releasing debts and embracing reconciliation.', count: 40, color: 'from-fuchsia-400 to-pink-600', icon: 'HeartHandshake' },
   { name: 'Goodness', description: 'Moral excellence and virtue in daily living.', count: 48, color: 'from-lime-400 to-emerald-600', icon: 'CheckCircle2' },
   { name: 'Grief', description: 'Mourning with hope and walking through deep loss.', count: 18, color: 'from-zinc-600 via-indigo-950 to-neutral-900', icon: 'Frown' },
   { name: 'Guilt', description: 'Navigating conviction towards the path of repentance.', count: 29, color: 'from-zinc-500 to-zinc-800', icon: 'History' },
@@ -73,6 +74,7 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Patience', description: 'Calm endurance under pressure or delay.', count: 64, color: 'from-amber-200 to-yellow-500', icon: 'Clock' },
   { name: 'Peace', description: 'The stillness that surpasses all human understanding.', count: 82, color: 'from-cyan-400 to-blue-500', icon: 'Wind' },
   { name: 'Perseverance', description: 'Steadfast endurance and pressing on through trials.', count: 47, color: 'from-orange-500 to-yellow-600', icon: 'Anchor' },
+  { name: 'Trust', description: "Unshakable reliance on God's sovereignty and timeless direction.", count: 58, color: 'from-blue-600 to-cyan-500', icon: 'ShieldCheck' },
   { name: 'Truth', description: 'Unwavering reality and the word that sets us free.', count: 95, color: 'from-violet-500 to-purple-700', icon: 'Key' },
   { name: 'Wisdom', description: 'Prudent discernment and the path of understanding.', count: 78, color: 'from-emerald-500 to-teal-700', icon: 'Compass' },
 ];
