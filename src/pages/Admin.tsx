@@ -10,8 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, BarChart3, ShieldAlert, Plus, 
-  TrendingUp, MessageSquare, Heart, Eye,
-  CheckCircle2, AlertTriangle, Trash2, Mail
+  TrendingUp, MessageSquare, Eye,
+  CheckCircle2, AlertTriangle, Trash2
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
@@ -29,39 +29,11 @@ interface FlaggedItem {
 const Admin = () => {
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [admins, setAdmins] = useState([
-    { name: "Super Admin", email: "admin@streetwords.com", role: "Owner" },
-    { name: "TruthSeeker", email: "mod@streetwords.com", role: "Moderator" },
+    { name: "Super Admin", email: "admin@streetwords.com", role: "Owner" }
   ]);
 
-  // Interactive Flagged Items State for Moderation
-  const [flaggedItems, setFlaggedItems] = useState<FlaggedItem[]>([
-    { 
-      id: 'f1', 
-      type: 'Post', 
-      author: 'StreetGamer', 
-      content: 'Click this external link for free game keys to level up your spiritual journey fast! http://scamlink.xyz', 
-      reason: 'Unapproved Link / Spam', 
-      reference: 'Proverbs 11:1',
-      date: '10m ago' 
-    },
-    { 
-      id: 'f2', 
-      type: 'Comment', 
-      author: 'Skeptic99', 
-      content: 'This comment section is full of gullible people who believe anything.', 
-      reason: 'Harassment / Incivil Tone', 
-      date: '1h ago' 
-    },
-    { 
-      id: 'f3', 
-      type: 'Post', 
-      author: 'LostInConcrete', 
-      content: 'I have lost all hope of finding light in this city. Every street is empty of love.', 
-      reason: 'Needs Support Reachout / Heavy Despair', 
-      reference: 'Psalm 13:1',
-      date: '3h ago' 
-    }
-  ]);
+  // Interactive Flagged Items State for Moderation - Cleared for Live Deployment
+  const [flaggedItems, setFlaggedItems] = useState<FlaggedItem[]>([]);
 
   const handleAddAdmin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,10 +66,10 @@ const Admin = () => {
   };
 
   const stats = [
-    { label: "Total Views", value: "12.4k", icon: Eye, color: "text-blue-500", trend: "+12%" },
-    { label: "Active Users", value: "1,204", icon: Users, color: "text-purple-500", trend: "+5%" },
-    { label: "Flagged Items", value: flaggedItems.length.toString(), icon: AlertTriangle, color: "text-amber-500", trend: "Needs review" },
-    { label: "Comments", value: "892", icon: MessageSquare, color: "text-orange-500", trend: "+2%" },
+    { label: "Total Views", value: "0", icon: Eye, color: "text-blue-500", trend: "0%" },
+    { label: "Active Users", value: "1", icon: Users, color: "text-purple-500", trend: "Live" },
+    { label: "Flagged Items", value: flaggedItems.length.toString(), icon: AlertTriangle, color: "text-amber-500", trend: "All Clear" },
+    { label: "Comments", value: "0", icon: MessageSquare, color: "text-orange-500", trend: "0%" },
   ];
 
   return (
@@ -327,10 +299,10 @@ const Admin = () => {
               </div>
               <div className="space-y-6">
                 {[
-                  { name: "Faith", value: 85, color: "bg-blue-500" },
-                  { name: "Love", value: 72, color: "bg-rose-500" },
-                  { name: "Joy", value: 64, color: "bg-amber-500" },
-                  { name: "Truth", value: 58, color: "bg-purple-500" },
+                  { name: "Faith", value: 0, color: "bg-blue-500" },
+                  { name: "Love", value: 0, color: "bg-rose-500" },
+                  { name: "Joy", value: 0, color: "bg-amber-500" },
+                  { name: "Truth", value: 0, color: "bg-purple-500" },
                 ].map((item) => (
                   <div key={item.name} className="space-y-2">
                     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">

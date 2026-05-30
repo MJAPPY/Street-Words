@@ -19,11 +19,9 @@ const MOCK_POSTS: VersePost[] = [
     relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
     category: 'Faith',
     author: 'StreetWords',
-    createdAt: '2 hours ago',
-    likes: 24,
-    comments: [
-      { id: 'c1', author: 'Hopeful', content: 'This is exactly what I needed today. Discernment starts with trust.', createdAt: '1 hour ago', replies: [] }
-    ]
+    createdAt: 'Just now',
+    likes: 0,
+    comments: []
   },
   {
     id: '2',
@@ -32,8 +30,8 @@ const MOCK_POSTS: VersePost[] = [
     relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
     category: 'Love',
     author: 'StreetWords',
-    createdAt: '5 hours ago',
-    likes: 42,
+    createdAt: 'Just now',
+    likes: 0,
     comments: []
   },
   {
@@ -43,8 +41,8 @@ const MOCK_POSTS: VersePost[] = [
     relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
     category: 'Despair',
     author: 'StreetWords',
-    createdAt: '1 day ago',
-    likes: 156,
+    createdAt: 'Just now',
+    likes: 0,
     comments: []
   },
   {
@@ -54,8 +52,8 @@ const MOCK_POSTS: VersePost[] = [
     relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
     category: 'Wisdom',
     author: 'StreetWords',
-    createdAt: '2 days ago',
-    likes: 88,
+    createdAt: 'Just now',
+    likes: 0,
     comments: []
   }
 ];
