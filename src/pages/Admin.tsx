@@ -29,7 +29,7 @@ interface FlaggedItem {
 const Admin = () => {
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [admins, setAdmins] = useState([
-    { name: "Super Admin", email: "admin@streetwords.com", role: "Owner" }
+    { name: "Super Admin", email: "streetwords21@proton.me", role: "Owner" }
   ]);
 
   // Interactive Flagged Items State for Moderation - Cleared for Live Deployment
