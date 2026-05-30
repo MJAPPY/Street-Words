@@ -41,31 +41,31 @@
     --background: 262 18% 10%;
     --foreground: 210 20% 98%;
 
-    /* Deep royal purple-gray cards for high structural visibility */
-    --card: 262 20% 14%;
+    /* Slightly lighter purple-gray cards for clear, vibrant visibility */
+    --card: 262 18% 20%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 262 20% 14%;
+    --popover: 262 18% 20%;
     --popover-foreground: 210 20% 98%;
 
     --primary: 263.4 70% 50.4%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 262 25% 18%;
+    --secondary: 262 20% 24%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 262 25% 18%;
+    --muted: 262 20% 24%;
     --muted-foreground: 262 15% 70%;
 
-    --accent: 262 25% 18%;
+    --accent: 262 20% 24%;
     --accent-foreground: 210 20% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    /* Vivid violet borders and outlines to make frames and boxes pop */
-    --border: 262 30% 24%;
-    --input: 262 30% 24%;
+    /* Vivid violet borders and outlines to outline the lighter boxes perfectly */
+    --border: 262 25% 30%;
+    --input: 262 25% 30%;
     --ring: 263.4 70% 50.4%;
   }
 }
