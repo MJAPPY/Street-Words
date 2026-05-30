@@ -2,7 +2,7 @@ export type Category =
   | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
   | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
   | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness'
-  | 'Perseverance';
+  | 'Perseverance' | 'Grief' | 'Pain' | 'Humble';
 
 export interface CategoryInfo {
   name: Category;
@@ -72,4 +72,7 @@ export const CATEGORY_DATA: CategoryInfo[] = [
   { name: 'Goodness', description: 'Moral excellence and virtue in daily living.', count: 48, color: 'from-lime-400 to-emerald-600', icon: 'CheckCircle2' },
   { name: 'Faithfulness', description: 'Reliability and steadfast loyalty to the truth.', count: 39, color: 'from-indigo-400 to-blue-700', icon: 'ShieldCheck' },
   { name: 'Perseverance', description: 'Steadfast endurance and pressing on through trials.', count: 47, color: 'from-orange-500 to-yellow-600', icon: 'Anchor' },
+  { name: 'Grief', description: 'Mourning with hope and walking through deep loss.', count: 18, color: 'from-zinc-600 via-indigo-950 to-neutral-900', icon: 'Frown' },
+  { name: 'Pain', description: 'Finding healing, strength, and comfort under physical or emotional trials.', count: 22, color: 'from-rose-700 via-red-800 to-stone-900', icon: 'HeartCrack' },
+  { name: 'Humble', description: 'Walking meekly before the Lord and loving modesty of spirit.', count: 15, color: 'from-teal-600 via-emerald-700 to-zinc-900', icon: 'Footprints' },
 ];

@@ -2,7 +2,7 @@ export type Category =
   | 'Faith' | 'Love' | 'Despair' | 'Anger' | 'Hope' | 'Wisdom' | 'Truth'
   | 'Joy' | 'Peace' | 'Fear' | 'Guilt' | 'Justice' | 'Mercy'
   | 'Kindness' | 'Longsuffering' | 'Patience' | 'Goodness' | 'Faithfulness'
-  | 'Perseverance';
+  | 'Perseverance' | 'Grief' | 'Pain' | 'Humble';
 
 export interface Comment {
   id: string;

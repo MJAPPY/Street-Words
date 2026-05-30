@@ -9,14 +9,16 @@ import { Link } from 'react-router-dom';
 import { 
   Shield, Heart, CloudRain, Flame, Sun, Compass, Key, 
   ArrowRight, Smile, Wind, EyeOff, History, Scale, HandHeart,
-  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck
+  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck,
+  Frown, HeartCrack, Footprints
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 
 const iconMap: Record<string, any> = {
   Shield, Heart, CloudRain, Flame, Sun, Compass, Key,
   Smile, Wind, EyeOff, History, Scale, HandHeart,
-  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck
+  Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck,
+  Frown, HeartCrack, Footprints
 };
 
 const Categories = () => {
