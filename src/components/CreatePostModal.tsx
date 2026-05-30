@@ -7,15 +7,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Category, CATEGORY_DATA } from '@/types';
+import { Category, CATEGORY_DATA, VersePost } from '@/types';
 import { showSuccess } from '@/utils/toast';
 import { PenSquare, Loader2, Quote, Sparkles } from 'lucide-react';
 
 interface CreatePostModalProps {
   trigger?: React.ReactNode;
+  onPostCreated?: () => void;
 }
 
-const CreatePostModal = ({ trigger }: CreatePostModalProps) => {
+const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,8 +32,29 @@ const CreatePostModal = ({ trigger }: CreatePostModalProps) => {
 
     setIsLoading(true);
     
-    // Simulate API call
+    // Simulate API call and persist locally so dynamic counts are completely accurate in real-time
     setTimeout(() => {
+      const newPost: VersePost = {
+        id: Date.now().toString(),
+        verse: formData.verse,
+        reference: formData.reference,
+        relevance: formData.relevance,
+        category: formData.category,
+        author: 'TruthSeeker',
+        createdAt: 'Just now',
+        likes: 0,
+        comments: []
+      };
+
+      try {
+        const stored = localStorage.getItem('streetwords_posts');
+        const postsList = stored ? JSON.parse(stored) : [];
+        postsList.unshift(newPost);
+        localStorage.setItem('streetwords_posts', JSON.stringify(postsList));
+      } catch (err) {
+        console.error(err);
+      }
+
       showSuccess("Verse shared with the community!");
       setIsLoading(false);
       setIsOpen(false);
@@ -42,6 +64,14 @@ const CreatePostModal = ({ trigger }: CreatePostModalProps) => {
         relevance: "",
         category: "Truth"
       });
+
+      if (onPostCreated) {
+        onPostCreated();
+      } else {
+        // Trigger page refresh to update feed and category count dynamically
+        window.dispatchEvent(new Event('storage'));
+        window.location.reload();
+      }
     }, 1000);
   };
 

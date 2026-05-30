@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { CATEGORY_DATA } from '@/types';
 import { Card } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import {
   Frown, HeartCrack, Footprints, HeartHandshake
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
+import { INITIAL_POSTS } from '@/utils/posts';
 
 const iconMap: Record<string, any> = {
   Shield, Heart, CloudRain, Flame, Sun, Compass, Key,
@@ -22,6 +23,20 @@ const iconMap: Record<string, any> = {
 };
 
 const Categories = () => {
+  // Read any custom created posts from localStorage if present, to keep counts accurately updating in real-time
+  const [localPosts, setLocalPosts] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('streetwords_posts');
+      if (stored) {
+        setLocalPosts(JSON.parse(stored));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen urban-pattern bg-background/50">
       <Navbar />
@@ -39,6 +54,12 @@ const Categories = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {CATEGORY_DATA.map((cat) => {
             const Icon = iconMap[cat.icon] || Shield;
+            
+            // Calculate active dynamic count (centralized posts + any live added ones)
+            const activeCount = 
+              INITIAL_POSTS.filter(p => p.category === cat.name).length + 
+              localPosts.filter(p => p.category === cat.name).length;
+
             return (
               <Link key={cat.name} to={`/feed?category=${cat.name}`}>
                 <Card className="group relative overflow-hidden h-full border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2rem] p-8">
@@ -58,7 +79,7 @@ const Categories = () => {
 
                     <div className="flex items-center justify-between pt-4 border-t border-primary/5">
                       <span className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">
-                        {cat.count} Verses
+                        {activeCount} {activeCount === 1 ? 'Verse' : 'Verses'}
                       </span>
                       <Button variant="ghost" size="sm" className="rounded-full group-hover:translate-x-1 transition-transform h-8">
                         Explore <ArrowRight className="ml-2 h-4 w-4" />

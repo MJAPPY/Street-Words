@@ -10,58 +10,34 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Sparkles, X, ArrowRight, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CreatePostModal from '@/components/CreatePostModal';
-
-const MOCK_POSTS: VersePost[] = [
-  {
-    id: '1',
-    verse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
-    reference: 'Hebrews 11:1',
-    relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
-    category: 'Faith',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '2',
-    verse: 'Love is patient and kind; love does not envy or boast; it is not arrogant or rude.',
-    reference: '1 Corinthians 13:4',
-    relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
-    category: 'Love',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '3',
-    verse: 'The Lord is near to the brokenhearted and saves the crushed in spirit.',
-    reference: 'Psalm 34:18',
-    relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
-    category: 'Despair',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '4',
-    verse: 'The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.',
-    reference: 'Proverbs 13:4',
-    relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
-    category: 'Wisdom',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  }
-];
+import { INITIAL_POSTS } from '@/utils/posts';
 
 const Feed = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') as Category | null;
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
+  const [allPosts, setAllPosts] = useState<VersePost[]>(INITIAL_POSTS);
+
+  const loadPosts = () => {
+    try {
+      const stored = localStorage.getItem('streetwords_posts');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setAllPosts([...parsed, ...INITIAL_POSTS]);
+      } else {
+        setAllPosts(INITIAL_POSTS);
+      }
+    } catch (e) {
+      setAllPosts(INITIAL_POSTS);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts();
+    // Re-load whenever storage changes
+    window.addEventListener('storage', loadPosts);
+    return () => window.removeEventListener('storage', loadPosts);
+  }, []);
 
   useEffect(() => {
     if (categoryParam) {
@@ -82,8 +58,8 @@ const Feed = () => {
   };
 
   const filteredPosts = selectedCategory === 'All' 
-    ? MOCK_POSTS 
-    : MOCK_POSTS.filter(p => p.category === selectedCategory);
+    ? allPosts 
+    : allPosts.filter(p => p.category === selectedCategory);
 
   return (
     <div className="min-h-screen urban-pattern bg-background/30">
@@ -117,6 +93,7 @@ const Feed = () => {
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
               <CreatePostModal 
+                onPostCreated={loadPosts}
                 trigger={
                   <Button className="rounded-full h-14 px-8 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/25 group transition-all hover:scale-105">
                     Post a Verse <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -180,6 +157,7 @@ const Feed = () => {
                 No verses shared in this category yet. <br /> Be the first to bring the light!
               </p>
               <CreatePostModal 
+                onPostCreated={loadPosts}
                 trigger={
                   <Button className="mt-8 rounded-full h-12 px-6 bg-primary/10 hover:bg-primary/20 text-primary border-none font-black uppercase tracking-widest text-[10px]">
                     Create First Post
