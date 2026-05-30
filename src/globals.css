@@ -37,32 +37,33 @@
   }
 
   .dark {
-    --background: 224 71.4% 4.1%;
+    /* Reduced the black by several shades to a soft dark charcoal slate */
+    --background: 220 15% 12%;
     --foreground: 210 20% 98%;
 
-    --card: 224 71.4% 4.1%;
+    --card: 220 15% 15%;
     --card-foreground: 210 20% 98%;
 
-    --popover: 224 71.4% 4.1%;
+    --popover: 220 15% 15%;
     --popover-foreground: 210 20% 98%;
 
     --primary: 263.4 70% 50.4%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217.2 32.6% 22%;
     --secondary-foreground: 210 20% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
+    --muted: 217.2 32.6% 22%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 217.2 32.6% 22%;
     --accent-foreground: 210 20% 98%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
+    --border: 217.2 32.6% 22%;
+    --input: 217.2 32.6% 22%;
     --ring: 263.4 70% 50.4%;
   }
 }
