@@ -3,15 +3,17 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
+import { useSession } from './SessionProvider';
 
 const Navbar = () => {
   const location = useLocation();
   const isLanding = location.pathname === '/';
   const { theme, setTheme } = useTheme();
+  const { session, signOut } = useSession();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
@@ -41,10 +43,10 @@ const Navbar = () => {
             </div>
           </Link>
           
-          <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.25em] text-muted-foreground/70">
+          <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
             <Link to="/feed" className="transition-all hover:text-primary hover:tracking-[0.4em]">Feed</Link>
             <Link to="/categories" className="transition-all hover:text-primary hover:tracking-[0.4em]">Categories</Link>
-            {!isLanding && (
+            {session && (
               <Link to="/admin" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2">
                 <Settings className="h-4 w-4" /> Admin
               </Link>
@@ -65,8 +67,8 @@ const Navbar = () => {
             <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-primary" />
           </Button>
 
-          {isLanding ? (
-            <Link to="/feed">
+          {!session ? (
+            <Link to="/login">
               <Button className="rounded-none bg-primary hover:bg-primary/90 px-10 gap-3 text-xs font-black uppercase tracking-[0.2em] h-14 shadow-2xl shadow-primary/20 transition-all hover:translate-x-1">
                 <LogIn className="h-5 w-5" />
                 Join
@@ -85,6 +87,16 @@ const Navbar = () => {
                   <User className="h-6 w-6" />
                 </Button>
               </Link>
+
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={signOut}
+                className="rounded-none hover:bg-red-500/5 hover:text-red-500 h-14 w-14 border border-transparent"
+                title="Sign Out"
+              >
+                <LogOut className="h-5 w-5" />
+              </Button>
             </>
           )}
 
@@ -100,16 +112,25 @@ const Navbar = () => {
                   <Link to="/" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Landing</Link>
                   <Link to="/feed" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Feed</Link>
                   <Link to="/categories" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Categories</Link>
-                  <Link to="/profile" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">My Profile</Link>
+                  {session ? (
+                    <>
+                      <Link to="/profile" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">My Profile</Link>
+                      <button onClick={signOut} className="text-left text-4xl font-black tracking-tighter hover:text-red-500 transition-colors">Sign Out</button>
+                    </>
+                  ) : (
+                    <Link to="/login" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Join Street Sanctuary</Link>
+                  )}
                   <div className="h-px bg-gradient-to-r from-primary/20 to-transparent" />
-                  <CreatePostModal 
-                    trigger={
-                      <Button className="w-full justify-between rounded-none h-16 px-6 font-black text-lg uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
-                        Post Verse
-                        <PenSquare className="h-6 w-6" />
-                      </Button>
-                    }
-                  />
+                  {session && (
+                    <CreatePostModal 
+                      trigger={
+                        <Button className="w-full justify-between rounded-none h-16 px-6 font-black text-lg uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
+                          Post Verse
+                          <PenSquare className="h-6 w-6" />
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
               </SheetContent>
             </Sheet>
