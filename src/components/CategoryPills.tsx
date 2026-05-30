@@ -6,10 +6,9 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 const categories: Category[] = [
-  'Faith', 'Love', 'Despair', 'Anger', 'Hope', 'Wisdom', 'Truth',
-  'Joy', 'Peace', 'Fear', 'Guilt', 'Justice', 'Mercy',
-  'Kindness', 'Longsuffering', 'Patience', 'Goodness', 'Faithfulness',
-  'Perseverance', 'Grief', 'Pain', 'Humble'
+  'Anger', 'Despair', 'Faith', 'Faithfulness', 'Fear', 'Goodness', 'Grief',
+  'Guilt', 'Hope', 'Humble', 'Joy', 'Justice', 'Kindness', 'Longsuffering',
+  'Love', 'Mercy', 'Pain', 'Patience', 'Peace', 'Perseverance', 'Truth', 'Wisdom'
 ];
 
 interface CategoryPillsProps {
