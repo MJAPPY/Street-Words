@@ -276,7 +276,7 @@ const Profile = () => {
                   <p className="text-2xl font-black">{user.stats.likes}</p>
                 </div>
                 <div className="text-center md:text-left bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-5 border border-primary/5">
-                  <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Reflections</p>
+                  <p className="text-[10px] font-black text-primary/60 uppercase tracking-widest mb-1">Comments</p>
                   <p className="text-2xl font-black">{user.stats.reflections}</p>
                 </div>
               </div>
@@ -324,7 +324,7 @@ const Profile = () => {
               value="reflections" 
               className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
-              Reflections
+              Comments
             </TabsTrigger>
           </TabsList>
 
@@ -351,7 +351,7 @@ const Profile = () => {
           <TabsContent value="reflections" className="space-y-12 animate-in fade-in duration-700">
              <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
               <MessageSquare className="h-16 w-16 text-primary/20 mx-auto mb-6" />
-              <p className="text-muted-foreground font-bold italic text-lg">Journey of discernment will appear here.</p>
+              <p className="text-muted-foreground font-bold italic text-lg">Your community discussion replies will appear here.</p>
             </div>
           </TabsContent>
         </Tabs>

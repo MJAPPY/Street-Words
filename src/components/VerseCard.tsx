@@ -69,7 +69,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       comments: [comment, ...prev.comments]
     }));
     setNewComment("");
-    showSuccess("Reflection shared!");
+    showSuccess("Comment shared!");
   };
 
   const handleReply = (parentId: string, content: string) => {
@@ -138,7 +138,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
         <div className="bg-primary/5 dark:bg-zinc-950/40 rounded-[2rem] p-8 md:p-10 border border-primary/5 shadow-inner">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Community Reflection</h4>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Author's Discernment</h4>
           </div>
           <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic opacity-90">
             {post.relevance}
@@ -191,7 +191,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
               <Input 
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Share your discernment..." 
+                placeholder="Share your perspective on this verse..." 
                 className="h-14 pl-6 pr-14 rounded-2xl bg-white dark:bg-zinc-950 border-white dark:border-zinc-800 shadow-sm text-sm font-medium focus-visible:ring-primary/20"
               />
               <Button type="submit" size="icon" variant="ghost" className="absolute right-2 top-2 h-10 w-10 text-primary hover:bg-primary/5 rounded-xl">
@@ -210,7 +210,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
             </div>
             
             <Link to={`/post/${post.id}`} className="flex items-center justify-center gap-2 group/all text-[11px] font-black uppercase tracking-[0.2em] text-primary">
-              View All Reflections <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+              View Discussion Thread <ArrowRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
         )}

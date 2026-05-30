@@ -103,7 +103,7 @@ const PostDetail = () => {
       comments: [comment, ...post.comments]
     });
     setNewComment("");
-    showSuccess("Reflection shared!");
+    showSuccess("Comment shared!");
   };
 
   const handleReply = (parentId: string, content: string) => {
@@ -202,13 +202,13 @@ const PostDetail = () => {
           </div>
 
           <div className="space-y-6">
-            <h3 className="text-xl font-black tracking-tight px-4">Reflections ({post.comments.length})</h3>
+            <h3 className="text-xl font-black tracking-tight px-4">Community Discussion ({post.comments.length})</h3>
             
             <form onSubmit={handleAddComment} className="relative group">
               <Input 
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Add your reflection..." 
+                placeholder="Share your perspective on this verse..." 
                 className="h-16 pl-6 pr-16 rounded-full bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm border border-white/50 dark:border-zinc-800/60 shadow-sm focus:ring-primary/20 text-base font-medium placeholder:text-muted-foreground/50"
               />
               <Button 
