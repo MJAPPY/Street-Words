@@ -79,7 +79,7 @@ const Landing = () => {
               </div>
               <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">Communal Discernment</h3>
               <p className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed text-sm">
-                Don't walk the pavement alone. Engage in raw, honest reflections and navigate life's complexities through shared collective insight.
+                Don't walk alone. Engage in raw, honest reflections and navigate life's complexities through shared collective insight.
               </p>
             </div>
 
@@ -135,7 +135,7 @@ const Landing = () => {
             — Psalm 119:105
           </p>
           <p className="text-base md:text-lg text-foreground font-medium max-w-xl mx-auto leading-relaxed">
-            Walk with us as we illuminate the pavement with the eternal light of the Lord's holy scriptures.
+            Walk with us in the eternal light of the Lord's holy scriptures.
           </p>
           <div className="pt-6">
             <Link to="/feed">
