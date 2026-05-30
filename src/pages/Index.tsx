@@ -42,7 +42,7 @@ const Landing = () => {
             <div className="flex flex-wrap items-center justify-center gap-6 pt-8 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
               <Link to="/feed">
                 <Button className="rounded-full h-16 px-12 bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-sm shadow-[0_20px_50px_-12px_rgba(168,85,247,0.4)] group transition-all hover:scale-105">
-                  Enter Community <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  Walk the Street <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
             </div>
