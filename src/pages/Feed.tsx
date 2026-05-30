@@ -109,9 +109,11 @@ const Feed = () => {
                 <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed">
                   Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation fulfilled by our Creator’s only begotten Son — our Savior Yeshua (Jesus).
                 </p>
-                <p className="text-xs md:text-sm font-serif italic text-primary/60 tracking-wide">
-                  “For where two or three are gathered in my name, there am I among them.” — Matthew 18:20
-                </p>
+                <div className="inline-block py-2 px-6 rounded-3xl bg-primary/5 border border-primary/10 backdrop-blur-sm animate-title-glow">
+                  <p className="text-sm md:text-base font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary animate-shimmer-text">
+                    “For where two or three are gathered in my name, there am I among them.” — Matthew 18:20
+                  </p>
+                </div>
               </div>
             </div>
 
