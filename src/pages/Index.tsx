@@ -45,9 +45,6 @@ const Landing = () => {
                   Enter Community <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
-              <Button variant="outline" className="rounded-full h-16 px-12 border-primary/20 hover:bg-primary/5 font-black uppercase tracking-widest text-sm backdrop-blur-sm bg-white/30 transition-all hover:border-primary/40">
-                Our Vision
-              </Button>
             </div>
           </div>
         </div>
