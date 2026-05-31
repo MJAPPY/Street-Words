@@ -20,18 +20,18 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
       <div className="container flex h-24 items-center justify-between">
         <div className="flex items-center gap-10">
-          <Link to="/" className="flex items-center gap-6 group">
-            <div className="relative flex items-center justify-center">
-              {/* Sharp Glow Effect */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-primary/30 via-[#ec4899]/30 to-primary/30 blur-2xl opacity-0 group-hover:opacity-100 transition duration-700" />
-              <div className="absolute -inset-1 bg-gradient-to-r from-primary to-[#ec4899] opacity-40 group-hover:opacity-80 transition duration-500" />
+          <Link to="/" className="flex items-center gap-5 group">
+            <div className="relative flex items-center justify-center h-16 w-16">
+              {/* Vibrant Logo Glow Effects */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary via-[#ec4899] to-primary rounded-full blur-xl opacity-70 group-hover:opacity-100 group-hover:scale-110 transition duration-500" />
+              <div className="absolute inset-1 bg-gradient-to-r from-primary to-[#ec4899] rounded-full blur-md opacity-50 group-hover:opacity-80 transition duration-500" />
               
-              {/* Square Logo Container */}
-              <div className="relative h-16 w-16 overflow-hidden bg-gradient-to-br from-[#a855f7] to-[#ec4899] p-[2px] shadow-[0_0_30px_-5px_rgba(168,85,247,0.3)] transition-all group-hover:scale-105 duration-500">
-                <div className="h-full w-full flex items-center justify-center overflow-hidden bg-background/20 backdrop-blur-md">
-                  <img src="/logo.png" alt="Street Words" className="h-full w-full object-cover" />
-                </div>
-              </div>
+              {/* Logo Image directly standing out */}
+              <img 
+                src="/logo.png" 
+                alt="Street Words" 
+                className="relative z-10 h-14 w-14 object-contain filter drop-shadow-[0_0_15px_rgba(168,85,247,0.65)] group-hover:scale-105 transition-transform duration-500" 
+              />
             </div>
             
             <div className="flex flex-col -space-y-2">
