@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
 import SettingsModal from '@/components/SettingsModal';
 import { showSuccess } from '@/utils/toast';
+import { useSession } from '@/components/SessionProvider';
 
 const MOCK_CURRENT_USER: UserProfile = {
   id: 'u1',
@@ -67,8 +68,6 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
   }
 };
 
-const MOCK_MY_POSTS: VersePost[] = [];
-
 const MOCK_OTHER_POSTS: Record<string, VersePost[]> = {
   'streetwords': [
     {
@@ -120,25 +119,60 @@ const MOCK_OTHER_POSTS: Record<string, VersePost[]> = {
 
 const Profile = () => {
   const { username } = useParams<{ username?: string }>();
+  const { session, user: authUser } = useSession();
   
   // Decide whether viewing own profile or another member
-  const isOwnProfile = !username || username.toLowerCase() === 'truthseeker';
+  const isOwnProfile = !username || (session && authUser && username.toLowerCase() === authUser.email?.split('@')[0].toLowerCase()) || username.toLowerCase() === 'truthseeker';
   const profileKey = username?.toLowerCase() || '';
   
   // Resolve active profile details
-  const [user, setUser] = useState<UserProfile>(() => {
-    if (isOwnProfile) return MOCK_CURRENT_USER;
-    return MOCK_OTHER_PROFILES[profileKey] || {
-      id: 'temp',
-      name: username || 'Street Disciple',
-      handle: `@${username?.toLowerCase() || 'disciple'}`,
-      bio: 'Searching for grace and shared Collective wisdom on Street Words.',
-      avatar: (username ? username[0].toUpperCase() : 'D'),
-      joinedDate: 'Joined recently',
-      location: 'The Sidewalks',
-      stats: { verses: 0, likes: 0, reflections: 0 }
-    };
-  });
+  const [user, setUser] = useState<UserProfile>(MOCK_CURRENT_USER);
+  const [myPosts, setMyPosts] = useState<VersePost[]>([]);
+
+  // Load custom posts from localStorage for the active user if owned profile
+  useEffect(() => {
+    if (isOwnProfile) {
+      const activeName = authUser?.email?.split('@')[0] || 'TruthSeeker';
+      const defaultUser = {
+        ...MOCK_CURRENT_USER,
+        name: activeName,
+        handle: `@${activeName.toLowerCase()}`,
+        avatar: activeName[0].toUpperCase()
+      };
+      
+      setUser(defaultUser);
+
+      try {
+        const stored = localStorage.getItem('streetwords_posts');
+        if (stored) {
+          const parsed = JSON.parse(stored) as VersePost[];
+          const filtered = parsed.filter(p => p.author.toLowerCase() === activeName.toLowerCase());
+          setMyPosts(filtered);
+          setUser(prev => ({
+            ...prev,
+            stats: {
+              ...prev.stats,
+              verses: filtered.length
+            }
+          }));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      const selectedProfile = MOCK_OTHER_PROFILES[profileKey] || {
+        id: 'temp',
+        name: username || 'Street Disciple',
+        handle: `@${username?.toLowerCase() || 'disciple'}`,
+        bio: 'Searching for grace and shared Collective wisdom on Street Words.',
+        avatar: (username ? username[0].toUpperCase() : 'D'),
+        joinedDate: 'Joined recently',
+        location: 'The Sidewalks',
+        stats: { verses: 0, likes: 0, reflections: 0 }
+      };
+      setUser(selectedProfile);
+    }
+  }, [isOwnProfile, authUser, profileKey, username]);
 
   const handleUpdateUser = (updatedData: Partial<UserProfile>) => {
     setUser(prev => ({ ...prev, ...updatedData }));
@@ -154,7 +188,7 @@ const Profile = () => {
 
   // Resolve posts to render
   const postsToRender = isOwnProfile 
-    ? MOCK_MY_POSTS 
+    ? myPosts 
     : (MOCK_OTHER_POSTS[profileKey] || []);
 
   return (
@@ -170,7 +204,7 @@ const Profile = () => {
               <div className="flex items-end gap-6">
                 <div className="h-32 w-32 rounded-[2.5rem] bg-gradient-to-tr from-primary to-[#ec4899] p-1 shadow-2xl overflow-hidden">
                   {user.avatar.length > 2 ? (
-                    <img src={user.avatar} alt={user.name} className="h-full w-full object-cover rounded-[2.3rem]" />
+                    <img src={user.avatar} alt={user.name} className="h-full w-full object-cover rounded-2xl" />
                   ) : (
                     <div className="h-full w-full rounded-[2.3rem] bg-white dark:bg-zinc-950 flex items-center justify-center text-5xl font-black text-primary">
                       {user.avatar}
