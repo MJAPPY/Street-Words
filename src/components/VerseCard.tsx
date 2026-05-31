@@ -6,16 +6,19 @@ import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { showSuccess } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
 import CommentItem from './CommentItem';
+import { useSession } from '@/components/SessionProvider';
 
 interface VerseCardProps {
   post: VersePost;
 }
 
 const VerseCard = ({ post: initialPost }: VerseCardProps) => {
+  const { session, user } = useSession();
+  const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
   const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -24,6 +27,11 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const handleLike = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!session) {
+      showSuccess("Join the sanctuary to like posts!");
+      navigate('/login');
+      return;
+    }
     setIsLiked(!isLiked);
     setPost(prev => ({
       ...prev,
@@ -49,16 +57,22 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const handleReport = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!session) {
+      showSuccess("Join the sanctuary to report posts!");
+      navigate('/login');
+      return;
+    }
     showSuccess("Post reported successfully. Moderation team is reviewing it.");
   };
 
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    if (!newComment.trim() || !session) return;
 
+    const authorName = user?.email?.split('@')[0] || 'You';
     const comment: Comment = {
       id: Date.now().toString(),
-      author: 'You',
+      author: authorName,
       content: newComment,
       createdAt: 'Just now',
       replies: []
@@ -73,6 +87,11 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   };
 
   const handleReply = (parentId: string, content: string) => {
+    if (!session) {
+      navigate('/login');
+      return;
+    }
+    const authorName = user?.email?.split('@')[0] || 'You';
     const addReplyToComments = (comments: Comment[]): Comment[] => {
       return comments.map(c => {
         if (c.id === parentId) {
@@ -80,7 +99,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
             ...c,
             replies: [...(c.replies || []), {
               id: Date.now().toString(),
-              author: 'You',
+              author: authorName,
               content: content,
               createdAt: 'Just now',
               replies: []
@@ -187,17 +206,31 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
 
         {showComments && (
           <div className="w-full pb-10 pt-4 space-y-8 border-t border-primary/5 animate-in slide-in-from-top-4 duration-500">
-            <form onSubmit={handleAddComment} className="relative">
-              <Input 
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Share your perspective on this verse..." 
-                className="h-14 pl-6 pr-14 rounded-2xl bg-white dark:bg-zinc-950 border-white dark:border-zinc-800 shadow-sm text-sm font-medium focus-visible:ring-primary/20"
-              />
-              <Button type="submit" size="icon" variant="ghost" className="absolute right-2 top-2 h-10 w-10 text-primary hover:bg-primary/5 rounded-xl">
-                <Send className="h-5 w-5" />
-              </Button>
-            </form>
+            {session ? (
+              <form onSubmit={handleAddComment} className="relative">
+                <Input 
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Share your perspective on this verse..." 
+                  className="h-14 pl-6 pr-14 rounded-2xl bg-white dark:bg-zinc-950 border-white dark:border-zinc-800 shadow-sm text-sm font-medium focus-visible:ring-primary/20"
+                />
+                <Button type="submit" size="icon" variant="ghost" className="absolute right-2 top-2 h-10 w-10 text-primary hover:bg-primary/5 rounded-xl">
+                  <Send className="h-5 w-5" />
+                </Button>
+              </form>
+            ) : (
+              <div className="bg-primary/5 rounded-[2rem] p-6 text-center border border-primary/10 max-w-xl mx-auto space-y-3">
+                <p className="text-sm font-bold text-muted-foreground">
+                  Join the street sanctuary to share your reflections on this scripture.
+                </p>
+                <Button 
+                  onClick={() => navigate('/login')} 
+                  className="rounded-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest text-xs h-10 px-6"
+                >
+                  Sign In to Comment
+                </Button>
+              </div>
+            )}
 
             <div className="space-y-6 max-h-[500px] overflow-y-auto px-1 scrollbar-hide">
               {post.comments.map((comment) => (

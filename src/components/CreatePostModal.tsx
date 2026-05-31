@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Category, CATEGORY_DATA, VersePost } from '@/types';
 import { showSuccess } from '@/utils/toast';
 import { PenSquare, Loader2, Quote, Sparkles } from 'lucide-react';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface CreatePostModalProps {
   trigger?: React.ReactNode;
@@ -17,6 +19,8 @@ interface CreatePostModalProps {
 }
 
 const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
+  const { session, user } = useSession();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,6 +30,14 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     category: "Truth" as Category
   });
 
+  const handleTriggerClick = (e: React.MouseEvent) => {
+    if (!session) {
+      e.preventDefault();
+      e.stopPropagation();
+      navigate('/login');
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.verse || !formData.reference) return;
@@ -34,13 +46,14 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     
     // Simulate API call and persist locally so dynamic counts are completely accurate in real-time
     setTimeout(() => {
+      const authorName = user?.email?.split('@')[0] || 'TruthSeeker';
       const newPost: VersePost = {
         id: Date.now().toString(),
         verse: formData.verse,
         reference: formData.reference,
         relevance: formData.relevance,
         category: formData.category,
-        author: 'TruthSeeker',
+        author: authorName,
         createdAt: 'Just now',
         likes: 0,
         comments: []
@@ -75,15 +88,35 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     }, 1000);
   };
 
+  const renderTrigger = () => {
+    if (trigger) {
+      return (
+        <div onClick={handleTriggerClick} className="cursor-pointer">
+          {trigger}
+        </div>
+      );
+    }
+
+    return (
+      <Button 
+        onClick={handleTriggerClick}
+        className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-full px-6 gap-2 text-[10px] font-black uppercase tracking-widest h-9"
+      >
+        <PenSquare className="h-3.5 w-3.5" />
+        Post Verse
+      </Button>
+    );
+  };
+
+  // If there is no active session, clicking simply triggers redirect to login via renderTrigger helper.
+  if (!session) {
+    return renderTrigger();
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        {trigger || (
-          <Button className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 rounded-full px-6 gap-2 text-[10px] font-black uppercase tracking-widest h-9">
-            <PenSquare className="h-3.5 w-3.5" />
-            Post Verse
-          </Button>
-        )}
+        {renderTrigger()}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-8 md:p-10">
         <DialogHeader>
