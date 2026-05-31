@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, BarChart3, ShieldAlert, Plus, 
   TrendingUp, MessageSquare, Eye,
-  CheckCircle2, AlertTriangle, Trash2, ShoppingBag, Link2, RefreshCw, CheckCircle
+  CheckCircle2, AlertTriangle, Trash2, ShoppingBag, RefreshCw, CheckCircle
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess, showError } from '@/utils/toast';
+import { useSession } from '@/components/SessionProvider';
+import { useNavigate } from 'react-router-dom';
 
 interface FlaggedItem {
   id: string;
@@ -40,34 +42,10 @@ interface StoreItem {
   isLiveSynced?: boolean;
 }
 
-const DEFAULT_STORE_ITEMS: StoreItem[] = [
-  {
-    id: 's1',
-    name: '“Overcome the World” Heavyweight Tee',
-    price: '$35.00',
-    description: 'Ultra-heavy 240GSM cotton t-shirt with signature high-density print of John 16:33 on the back.',
-    category: 'Apparel',
-    image: '👕',
-    badge: 'Redbubble Merch',
-    rating: 5,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000000'
-  },
-  {
-    id: 's2',
-    name: 'Street Sanctuary Premium Hoodie',
-    price: '$65.00',
-    description: 'Over-sized fit, loopback terry fabric with custom typographic scripture back print.',
-    category: 'Apparel',
-    badge: 'Redbubble Merch',
-    image: '🧥',
-    rating: 5,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000001'
-  }
-];
-
 const Admin = () => {
+  const { session, user, loading } = useSession();
+  const navigate = useNavigate();
+
   const [newAdminEmail, setNewAdminEmail] = useState("");
   const [admins, setAdmins] = useState([
     { name: "Super Admin", email: "streetwords21@proton.me", role: "Owner" }
@@ -80,6 +58,15 @@ const Admin = () => {
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!loading) {
+      if (!session || user?.email !== 'streetwords21@proton.me') {
+        showError("Unauthorized access to admin panel.");
+        navigate('/');
+      }
+    }
+  }, [session, user, loading, navigate]);
+
+  useEffect(() => {
     const savedShopName = localStorage.getItem('redbubble_shop_name');
     if (savedShopName) {
       setActiveShopName(savedShopName);
@@ -87,6 +74,21 @@ const Admin = () => {
       setLastSyncedTime("Loaded from cache");
     }
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center font-black bg-background text-foreground">
+        <div className="flex flex-col items-center gap-4">
+          <RefreshCw className="h-8 w-8 animate-spin text-primary" />
+          <span>Verifying Authorized Session...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session || user?.email !== 'streetwords21@proton.me') {
+    return null;
+  }
 
   const handleSyncStore = async (e: React.FormEvent) => {
     e.preventDefault();

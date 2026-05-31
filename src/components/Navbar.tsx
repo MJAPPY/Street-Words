@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut, ShoppingBag } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
@@ -11,9 +11,10 @@ import { useSession } from './SessionProvider';
 
 const Navbar = () => {
   const location = useLocation();
-  const isLanding = location.pathname === '/';
   const { theme, setTheme } = useTheme();
-  const { session, signOut } = useSession();
+  const { session, user, signOut } = useSession();
+
+  const isAdmin = user?.email === 'streetwords21@proton.me';
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
@@ -47,7 +48,7 @@ const Navbar = () => {
             <Link to="/feed" className="transition-all hover:text-primary hover:tracking-[0.4em]">Feed</Link>
             <Link to="/categories" className="transition-all hover:text-primary hover:tracking-[0.4em]">Categories</Link>
             <Link to="/store" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-1.5">Store</Link>
-            {session && (
+            {isAdmin && (
               <Link to="/admin" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2">
                 <Settings className="h-4 w-4" /> Admin
               </Link>
@@ -114,6 +115,9 @@ const Navbar = () => {
                   <Link to="/feed" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Feed</Link>
                   <Link to="/categories" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Categories</Link>
                   <Link to="/store" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Store</Link>
+                  {isAdmin && (
+                    <Link to="/admin" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Admin</Link>
+                  )}
                   {session ? (
                     <>
                       <Link to="/profile" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">My Profile</Link>
