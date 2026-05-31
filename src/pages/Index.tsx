@@ -167,7 +167,14 @@ const Landing = () => {
             </div>
           </Link>
           
-          <MadeWithDyad />
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <Link to="/store">
+              <Button variant="outline" className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm">
+                Shop Stickers 🏷️
+              </Button>
+            </Link>
+            <MadeWithDyad />
+          </div>
         </div>
       </footer>
     </div>

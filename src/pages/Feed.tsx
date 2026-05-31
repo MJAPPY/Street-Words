@@ -170,7 +170,12 @@ const Feed = () => {
       </main>
 
       <footer className="mt-32 border-t border-primary/5 py-12">
-        <div className="container text-center">
+        <div className="container flex flex-col sm:flex-row items-center justify-between gap-6">
+          <Link to="/store">
+            <Button variant="outline" className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm">
+              Shop Stickers 🏷️
+            </Button>
+          </Link>
           <MadeWithDyad />
         </div>
       </footer>
