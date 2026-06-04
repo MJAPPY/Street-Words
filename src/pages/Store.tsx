@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Star, Info, Heart, ArrowRight, ExternalLink } from 'lucide-react';
+import { ShoppingBag, Star, Info, Heart, ArrowRight, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 import { StoreItem } from '@/types';
@@ -74,6 +74,14 @@ const DEFAULT_STORE_ITEMS: StoreItem[] = [
   }
 ];
 
+interface Department {
+  name: string;
+  description: string;
+  icon: any;
+  iaCode: string; // Redbubble category code parameter
+  color: string;
+}
+
 const Store = () => {
   const [selectedCategory, setSelectedCategory] = useState<'All' | 'Apparel' | 'Accessories'>('All');
   const [storeItems, setStoreItems] = useState<StoreItem[]>(DEFAULT_STORE_ITEMS);
@@ -82,7 +90,6 @@ const Store = () => {
   // Sync products dynamically by consuming Supabase config, falling back to local storage
   const loadSyncedProducts = async () => {
     try {
-      // 1. Attempt to fetch active Redbubble configuration from Supabase store_config
       const { data: configData, error: configError } = await supabase
         .from('store_config')
         .select('*');
@@ -98,10 +105,9 @@ const Store = () => {
         }
       }
     } catch (e) {
-      console.log("Supabase table store_config does not exist yet. Falling back to LocalStorage.");
+      console.log("Supabase table store_config fallback.");
     }
 
-    // 2. LocalStorage Fallback (if Supabase tables are not created or accessible)
     const savedShopName = localStorage.getItem('redbubble_shop_name');
     const savedItems = localStorage.getItem('redbubble_synced_items');
     
@@ -121,7 +127,6 @@ const Store = () => {
 
   useEffect(() => {
     loadSyncedProducts();
-    // Re-check live updates if admin updates configuration in other tabs
     window.addEventListener('storage', loadSyncedProducts);
     return () => window.removeEventListener('storage', loadSyncedProducts);
   }, []);
@@ -131,9 +136,57 @@ const Store = () => {
     window.open(item.redbubbleUrl, '_blank', 'noopener,noreferrer');
   };
 
+  const getRedbubbleDepartmentUrl = (iaCode: string) => {
+    const shop = activeShopName || "streetwords";
+    return `https://www.redbubble.com/people/${shop}/shop?iaCode=${iaCode}`;
+  };
+
+  const handleDepartmentClick = (iaCode: string, name: string) => {
+    showSuccess(`Opening ${name} collection on Redbubble...`);
+    window.open(getRedbubbleDepartmentUrl(iaCode), '_blank', 'noopener,noreferrer');
+  };
+
   const filteredItems = selectedCategory === 'All' 
     ? storeItems 
     : storeItems.filter(item => item.category === selectedCategory);
+
+  const departments: Department[] = [
+    { 
+      name: 'Apparel & T-Shirts', 
+      description: 'Discipleship graphics screen-printed on heavy cotton streetwear, activewear, and hoodies.', 
+      icon: Shirt, 
+      iaCode: 'u-apparel',
+      color: 'from-blue-500 to-indigo-600'
+    },
+    { 
+      name: 'Stickers & Decals', 
+      description: 'Die-cut high-durability waterproof matte vinyl sticker packs to customize gear.', 
+      icon: Laptop, 
+      iaCode: 'u-stickers',
+      color: 'from-pink-500 to-rose-600'
+    },
+    { 
+      name: 'Device & Phone Cases', 
+      description: 'Heavy duty, double layer shockproof tough phone cases with typographical prints.', 
+      icon: Smartphone, 
+      iaCode: 'u-phone-cases',
+      color: 'from-violet-500 to-purple-600'
+    },
+    { 
+      name: 'Wall Art & Posters', 
+      description: 'Premium photographic prints, canvases, and framed posters to light up your environment.', 
+      icon: Image, 
+      iaCode: 'u-prints',
+      color: 'from-amber-400 to-orange-500'
+    },
+    { 
+      name: 'Home & Living Decor', 
+      description: 'Cozy throw pillows, ceramic mugs, and custom shower curtains decorated with timeless scripture.', 
+      icon: Home, 
+      iaCode: 'u-home-decor',
+      color: 'from-emerald-400 to-teal-500'
+    },
+  ];
 
   return (
     <div className="min-h-screen urban-pattern bg-background/50">
@@ -144,7 +197,7 @@ const Store = () => {
         <header className="mb-16 text-center space-y-6 relative">
           <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
             <ShoppingBag className="h-3.5 w-3.5" />
-            Redbubble Merchandise
+            Redbubble Department Directory
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.85]">
             THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">STORE</span>
@@ -152,7 +205,7 @@ const Store = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
             {activeShopName ? (
               <span>
-                Share scripture in a fun way—whether it be stickers or a shower curtain! Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.
+                Browse official departments dynamically synced with Redbubble storefront: <strong className="text-primary font-black underline">@{activeShopName}</strong>. Select any department to shop directly.
               </span>
             ) : (
               <span>
@@ -161,6 +214,54 @@ const Store = () => {
             )}
           </p>
         </header>
+
+        {/* Dynamic Department / Category Navigator Section */}
+        <section className="mb-20 space-y-8">
+          <div className="text-left max-w-xl mx-auto md:mx-0">
+            <h2 className="text-2xl font-black tracking-tight flex items-center gap-2.5">
+              <Sparkles className="h-5 w-5 text-primary" />
+              Shop by Department on Redbubble
+            </h2>
+            <p className="text-sm text-muted-foreground font-semibold mt-1">
+              Select an official category below to view and filter complete collections directly inside our print-on-demand store.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {departments.map((dept) => {
+              const IconComponent = dept.icon;
+              return (
+                <Card 
+                  key={dept.name} 
+                  className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-[2rem] flex flex-col justify-between"
+                >
+                  <div className="p-8 space-y-6">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${dept.color} flex items-center justify-center text-white shadow-lg`}>
+                      <IconComponent className="h-7 w-7" />
+                    </div>
+                    <div className="space-y-2 text-left">
+                      <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors">
+                        {dept.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                        {dept.description}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <CardFooter className="px-8 pb-8 pt-0">
+                    <Button 
+                      onClick={() => handleDepartmentClick(dept.iaCode, dept.name)}
+                      className="w-full rounded-full h-11 bg-primary/5 hover:bg-primary text-primary hover:text-white font-black uppercase tracking-widest text-[9px] gap-2 border border-primary/10 transition-all"
+                    >
+                      Browse Department <ExternalLink className="h-3 w-3" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
 
         {/* Informative Banner */}
         <div className="bg-primary/5 dark:bg-zinc-900/60 border border-primary/10 rounded-[2rem] p-6 mb-12 flex flex-col md:flex-row items-center gap-6 justify-between max-w-5xl mx-auto">
@@ -184,26 +285,37 @@ const Store = () => {
           </Button>
         </div>
 
-        {/* Filter Navigation */}
-        <div className="flex justify-center gap-4 pb-12">
+        {/* Showcase Section Title */}
+        <div className="text-left max-w-xl mx-auto md:mx-0 mb-8 pt-8 border-t border-primary/5">
+          <h2 className="text-2xl font-black tracking-tight flex items-center gap-2.5">
+            <ShoppingBag className="h-5 w-5 text-primary" />
+            Featured Merch Showcase
+          </h2>
+          <p className="text-sm text-muted-foreground font-semibold mt-1">
+            A small look at custom typographies and styles.
+          </p>
+        </div>
+
+        {/* Filter Showcase Navigation */}
+        <div className="flex justify-start gap-3 pb-10">
           <Button 
             variant={selectedCategory === 'All' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('All')}
-            className="rounded-full font-black uppercase tracking-widest text-[10px] h-10 px-6"
+            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
           >
-            All
+            All Showcase
           </Button>
           <Button 
             variant={selectedCategory === 'Apparel' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('Apparel')}
-            className="rounded-full font-black uppercase tracking-widest text-[10px] h-10 px-6"
+            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
           >
             Apparel
           </Button>
           <Button 
             variant={selectedCategory === 'Accessories' ? 'default' : 'outline'}
             onClick={() => setSelectedCategory('Accessories')}
-            className="rounded-full font-black uppercase tracking-widest text-[10px] h-10 px-6"
+            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
           >
             Accessories
           </Button>
