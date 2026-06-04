@@ -155,14 +155,14 @@ const Store = () => {
       name: 'Apparel & T-Shirts', 
       description: 'Discipleship graphics screen-printed on heavy cotton streetwear, activewear, and hoodies.', 
       icon: Shirt, 
-      iaCode: 'u-apparel',
+      iaCode: 'u-clothing',
       color: 'from-blue-500 to-indigo-600'
     },
     { 
       name: 'Stickers & Decals', 
       description: 'Die-cut high-durability waterproof matte vinyl sticker packs to customize gear.', 
       icon: Laptop, 
-      iaCode: 'u-stickers',
+      iaCode: 'u-stationery',
       color: 'from-pink-500 to-rose-600'
     },
     { 
