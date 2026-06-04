@@ -18,7 +18,7 @@ const DEFAULT_STORE_ITEMS: StoreItem[] = [
     price: '$35.00',
     description: 'Ultra-heavy 240GSM cotton t-shirt with signature high-density print of John 16:33 on the back.',
     category: 'Apparel',
-    image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800&auto=format&fit=crop',
+    image: '👕',
     badge: 'Redbubble Merch',
     rating: 5,
     isRedbubble: true,
@@ -31,7 +31,7 @@ const DEFAULT_STORE_ITEMS: StoreItem[] = [
     description: 'Over-sized fit, loopback terry fabric with custom typographic scripture back print.',
     category: 'Apparel',
     badge: 'Redbubble Merch',
-    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800&auto=format&fit=crop',
+    image: '🧥',
     rating: 5,
     isRedbubble: true,
     redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000001'
@@ -42,11 +42,35 @@ const DEFAULT_STORE_ITEMS: StoreItem[] = [
     price: '$4.50',
     description: 'Vivid high-quality vinyl matte die-cut sticker. Water-resistant, perfect for laptops and bottles.',
     category: 'Accessories',
-    image: 'https://images.unsplash.com/photo-1572375995301-40164f1fd0db?q=80&w=800&auto=format&fit=crop',
+    image: '🏷️',
     badge: 'Redbubble Best Seller',
     rating: 4.9,
     isRedbubble: true,
     redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000002'
+  },
+  {
+    id: 's4',
+    name: '“Lamp unto my Feet” iPhone Case',
+    price: '$26.00',
+    description: 'Double-layer tough protection shell case featuring original Street Words typographic design.',
+    category: 'Accessories',
+    image: '📱',
+    badge: 'Redbubble Merch',
+    rating: 4.8,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000003'
+  },
+  {
+    id: 's5',
+    name: 'Yeshua (Jesus) Overcame Tote Bag',
+    price: '$22.00',
+    description: 'Durable 100% cotton canvas bag with heavy-duty shoulder straps and vibrant double-sided print.',
+    category: 'Accessories',
+    image: '👜',
+    badge: 'Redbubble Merch',
+    rating: 4.7,
+    isRedbubble: true,
+    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000004'
   }
 ];
 
@@ -128,11 +152,11 @@ const Store = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
             {activeShopName ? (
               <span>
-                Share scripture in a fun way—whether it be stickers or apparel! Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.
+                Share scripture in a fun way—whether it be stickers or a shower curtain! Currently showing items dynamically synchronized live with our Redbubble storefront: <strong>@{activeShopName}</strong>.
               </span>
             ) : (
               <span>
-                Premium apparel and accessories designed to share scripture in a fun way! Designed in-house and delivered securely through Redbubble.
+                Premium apparel and home decor designed to share scripture in a fun way—whether it be custom stickers or a shower curtain! Designed in-house and delivered securely through Redbubble.
               </span>
             )}
           </p>
