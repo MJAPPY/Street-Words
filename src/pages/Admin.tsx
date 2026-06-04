@@ -17,6 +17,8 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess, showError } from '@/utils/toast';
 import { useSession } from '@/components/SessionProvider';
 import { useNavigate } from 'react-router-dom';
+import { StoreItem } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FlaggedItem {
   id: string;
@@ -26,20 +28,6 @@ interface FlaggedItem {
   reason: string;
   reference?: string;
   date: string;
-}
-
-interface StoreItem {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  category: string;
-  image: string;
-  badge?: string;
-  rating: number;
-  isRedbubble?: boolean;
-  redbubbleUrl?: string;
-  isLiveSynced?: boolean;
 }
 
 const Admin = () => {
@@ -67,12 +55,32 @@ const Admin = () => {
   }, [session, user, loading, navigate]);
 
   useEffect(() => {
-    const savedShopName = localStorage.getItem('redbubble_shop_name');
-    if (savedShopName) {
-      setActiveShopName(savedShopName);
-      setStoreInput(savedShopName);
-      setLastSyncedTime("Loaded from cache");
-    }
+    // Attempt loading current synced shop from Supabase or LocalStorage
+    const fetchCurrentConfig = async () => {
+      try {
+        const { data, error } = await supabase.from('store_config').select('*');
+        if (!error && data && data.length > 0) {
+          const activeShop = data.find(c => c.key === 'redbubble_shop_name')?.value;
+          if (activeShop) {
+            setActiveShopName(activeShop);
+            setStoreInput(activeShop);
+            setLastSyncedTime("Synced with Database");
+            return;
+          }
+        }
+      } catch (e) {
+        console.log("Supabase table store_config does not exist yet. Relying on LocalStorage.");
+      }
+
+      const savedShopName = localStorage.getItem('redbubble_shop_name');
+      if (savedShopName) {
+        setActiveShopName(savedShopName);
+        setStoreInput(savedShopName);
+        setLastSyncedTime("Loaded from cache");
+      }
+    };
+    
+    fetchCurrentConfig();
   }, []);
 
   if (loading) {
@@ -162,16 +170,16 @@ const Admin = () => {
         });
       }
 
-      setStoreItemsLocally(parsedProducts, username);
+      await setStoreItemsLocally(parsedProducts, username);
       showSuccess(`Successfully connected to ${username}'s Redbubble Store!`);
     } catch (err) {
-      generateDynamicMockProducts(username);
+      await generateDynamicMockProducts(username);
     } finally {
       setIsSyncing(false);
     }
   };
 
-  const generateDynamicMockProducts = (username: string) => {
+  const generateDynamicMockProducts = async (username: string) => {
     const customMockItems: StoreItem[] = [
       {
         id: 'mock-1',
@@ -201,25 +209,49 @@ const Admin = () => {
       }
     ];
 
-    setStoreItemsLocally(customMockItems, username);
+    await setStoreItemsLocally(customMockItems, username);
     showSuccess(`Connected & customized themed items for ${username}!`);
   };
 
-  const setStoreItemsLocally = (items: StoreItem[], username: string) => {
+  const setStoreItemsLocally = async (items: StoreItem[], username: string) => {
     setActiveShopName(username);
     setLastSyncedTime(new Date().toLocaleTimeString());
+    
+    // 1. Save locally to keep instant reactive sync
     localStorage.setItem('redbubble_shop_name', username);
     localStorage.setItem('redbubble_synced_items', JSON.stringify(items));
     window.dispatchEvent(new Event('storage'));
+
+    // 2. Publish to Supabase so that every visitor globally accesses the same live feed!
+    try {
+      await supabase
+        .from('store_config')
+        .upsert([
+          { key: 'redbubble_shop_name', value: username },
+          { key: 'redbubble_synced_items', value: JSON.stringify(items) }
+        ]);
+    } catch (e) {
+      console.log("Could not save to Supabase table store_config. Relying on local sync fallback.");
+    }
   };
 
-  const resetToDefault = () => {
+  const resetToDefault = async () => {
     localStorage.removeItem('redbubble_shop_name');
     localStorage.removeItem('redbubble_synced_items');
     setActiveShopName(null);
     setStoreInput('');
     setLastSyncedTime(null);
     window.dispatchEvent(new Event('storage'));
+
+    try {
+      await supabase
+        .from('store_config')
+        .delete()
+        .in('key', ['redbubble_shop_name', 'redbubble_synced_items']);
+    } catch (e) {
+      console.log("Could not clear Supabase store_config database.");
+    }
+
     showSuccess("Returned store to default inventory!");
   };
 

@@ -8,20 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { ShoppingBag, Star, Info, Heart, ArrowRight, ExternalLink } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
-
-interface StoreItem {
-  id: string;
-  name: string;
-  price: string;
-  description: string;
-  category: string;
-  image: string; // Emoji fallback or actual Image URL
-  badge?: string;
-  rating: number;
-  isRedbubble?: boolean;
-  redbubbleUrl?: string;
-  isLiveSynced?: boolean;
-}
+import { StoreItem } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 const DEFAULT_STORE_ITEMS: StoreItem[] = [
   {
@@ -91,8 +79,29 @@ const Store = () => {
   const [storeItems, setStoreItems] = useState<StoreItem[]>(DEFAULT_STORE_ITEMS);
   const [activeShopName, setActiveShopName] = useState<string | null>(null);
 
-  // Sync products dynamically by consuming cached configuration set in Admin dashboard
-  const loadSyncedProducts = () => {
+  // Sync products dynamically by consuming Supabase config, falling back to local storage
+  const loadSyncedProducts = async () => {
+    try {
+      // 1. Attempt to fetch active Redbubble configuration from Supabase store_config
+      const { data: configData, error: configError } = await supabase
+        .from('store_config')
+        .select('*');
+
+      if (!configError && configData && configData.length > 0) {
+        const activeShop = configData.find(c => c.key === 'redbubble_shop_name')?.value;
+        const activeItemsJson = configData.find(c => c.key === 'redbubble_synced_items')?.value;
+
+        if (activeShop && activeItemsJson) {
+          setStoreItems(JSON.parse(activeItemsJson));
+          setActiveShopName(activeShop);
+          return;
+        }
+      }
+    } catch (e) {
+      console.log("Supabase table store_config does not exist yet. Falling back to LocalStorage.");
+    }
+
+    // 2. LocalStorage Fallback (if Supabase tables are not created or accessible)
     const savedShopName = localStorage.getItem('redbubble_shop_name');
     const savedItems = localStorage.getItem('redbubble_synced_items');
     

@@ -32,6 +32,20 @@ export interface VersePost {
   comments: Comment[];
 }
 
+export interface StoreItem {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  category: string;
+  image: string;
+  badge?: string;
+  rating: number;
+  isRedbubble?: boolean;
+  redbubbleUrl?: string;
+  isLiveSynced?: boolean;
+}
+
 export interface UserProfile {
   id: string;
   name: string;
