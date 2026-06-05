@@ -202,7 +202,7 @@ const Store = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 opacity-5 rounded-bl-full pointer-events-none" />
           <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Support the Site</h2>
           <p className="text-white/80 font-medium max-w-xl mx-auto leading-relaxed">
-            100% of proceeds are invested in funding local street discipleship groups, community resources, and public Bible prints.
+            100% of proceeds are invested in supporting local areas with street scripture and vouchers for those in need.
           </p>
           <div className="pt-2">
             <Button variant="secondary" className="rounded-full h-14 px-8 font-black uppercase tracking-widest text-xs gap-2">
