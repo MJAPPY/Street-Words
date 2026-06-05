@@ -1,10 +1,9 @@
 import { supabase } from '@/integrations/supabase/client';
-import { VersePost, Comment, Category } from '@/types';
+import { VersePost, Comment, Category, UserProfile } from '@/types';
 import { INITIAL_POSTS } from './posts';
 
 // Helper to convert db row to VersePost type
 const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => {
-  // Recursively build comment tree
   const buildCommentTree = (list: any[], parentId: string | null = null): Comment[] => {
     return list
       .filter(c => c.parent_id === parentId)
@@ -36,7 +35,6 @@ export const supabaseService = {
   // Fetch all posts from Supabase (with automatic fallback to localStorage)
   async getPosts(): Promise<VersePost[]> {
     try {
-      // 1. Fetch posts
       const { data: postsData, error: postsError } = await supabase
         .from('posts')
         .select('*')
@@ -48,7 +46,6 @@ export const supabaseService = {
         return this.getLocalPosts();
       }
 
-      // 2. Fetch comments
       const { data: commentsData, error: commentsError } = await supabase
         .from('comments')
         .select('*')
@@ -61,7 +58,6 @@ export const supabaseService = {
         return mapDbPostToVersePost(post, postComments);
       });
 
-      // Combine with initial default posts
       const initialIds = INITIAL_POSTS.map(p => p.id);
       const uniqueParsed = parsedPosts.filter(p => !initialIds.includes(p.id));
       return [...uniqueParsed, ...INITIAL_POSTS];
@@ -71,13 +67,11 @@ export const supabaseService = {
     }
   },
 
-  // Fallback to local storage posts
   getLocalPosts(): VersePost[] {
     try {
       const stored = localStorage.getItem('streetwords_posts');
       if (stored) {
         const parsed = JSON.parse(stored) as VersePost[];
-        // Filter out duplicates of INITIAL_POSTS
         const initialIds = INITIAL_POSTS.map(p => p.id);
         const filteredParsed = parsed.filter(p => !initialIds.includes(p.id));
         return [...filteredParsed, ...INITIAL_POSTS];
@@ -88,7 +82,6 @@ export const supabaseService = {
     return INITIAL_POSTS;
   },
 
-  // Create a new post
   async createPost(post: Omit<VersePost, 'id' | 'createdAt' | 'likes' | 'comments'>): Promise<VersePost> {
     const tempId = Date.now().toString();
     const newPost: VersePost = {
@@ -99,7 +92,6 @@ export const supabaseService = {
       comments: []
     };
 
-    // 1. Always save to LocalStorage first (instant responsiveness)
     try {
       const stored = localStorage.getItem('streetwords_posts');
       const postsList = stored ? JSON.parse(stored) : [];
@@ -109,7 +101,6 @@ export const supabaseService = {
       console.error(err);
     }
 
-    // 2. Save to Supabase database
     try {
       const { data, error } = await supabase
         .from('posts')
@@ -133,11 +124,9 @@ export const supabaseService = {
     return newPost;
   },
 
-  // Like or Unlike a post
   async toggleLike(postId: string, currentLikes: number, isLiked: boolean): Promise<number> {
     const nextLikes = isLiked ? currentLikes - 1 : currentLikes + 1;
 
-    // Local update
     try {
       const stored = localStorage.getItem('streetwords_posts');
       if (stored) {
@@ -149,7 +138,6 @@ export const supabaseService = {
       console.error(e);
     }
 
-    // Supabase update
     try {
       const { error } = await supabase
         .from('posts')
@@ -164,7 +152,6 @@ export const supabaseService = {
     return nextLikes;
   },
 
-  // Add a comment or reply
   async addComment(postId: string, author: string, content: string, parentId: string | null = null): Promise<Comment> {
     const tempId = Date.now().toString();
     const newComment: Comment = {
@@ -175,7 +162,6 @@ export const supabaseService = {
       replies: []
     };
 
-    // Update locally
     try {
       const stored = localStorage.getItem('streetwords_posts');
       if (stored) {
@@ -213,7 +199,6 @@ export const supabaseService = {
       console.error(e);
     }
 
-    // Update globally in Supabase
     try {
       const { data, error } = await supabase
         .from('comments')
@@ -240,5 +225,111 @@ export const supabaseService = {
     }
 
     return newComment;
+  },
+
+  // GET user profile from Supabase with dynamic stat calculations
+  async getProfile(userId: string, email: string): Promise<UserProfile> {
+    const defaultName = email.split('@')[0];
+    const defaultProfile: UserProfile = {
+      id: userId,
+      name: defaultName,
+      handle: `@${defaultName.toLowerCase()}`,
+      bio: 'Walking the city streets with ancient wisdom. Looking for the light in every corner. 🕊️',
+      avatar: defaultName[0].toUpperCase(),
+      joinedDate: 'Joined recently',
+      location: 'Urban Sanctuary',
+      stats: {
+        verses: 0,
+        likes: 0,
+        reflections: 0
+      }
+    };
+
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      let profile = defaultProfile;
+      if (data) {
+        profile = {
+          id: data.id,
+          name: data.name || defaultName,
+          handle: data.handle || `@${defaultName.toLowerCase()}`,
+          bio: data.bio || defaultProfile.bio,
+          avatar: data.avatar || defaultProfile.avatar,
+          joinedDate: 'Joined recently',
+          favoriteVerse: data.favorite_verse || undefined,
+          favoriteReference: data.favorite_reference || undefined,
+          socialLink: data.social_link || undefined,
+          videoLink: data.video_link || undefined,
+          websiteLink: data.website_link || undefined,
+          location: data.location || undefined,
+          stats: defaultProfile.stats
+        };
+      }
+
+      // Calculate stats live
+      const posts = await this.getPosts();
+      const userPosts = posts.filter(p => p.author.toLowerCase() === defaultName.toLowerCase());
+      const userPostCount = userPosts.length;
+      
+      let totalLikes = 0;
+      userPosts.forEach(p => { totalLikes += (p.likes || 0); });
+
+      let commentCount = 0;
+      posts.forEach(p => {
+        p.comments.forEach(c => {
+          if (c.author.toLowerCase() === defaultName.toLowerCase()) {
+            commentCount++;
+          }
+          c.replies?.forEach(r => {
+            if (r.author.toLowerCase() === defaultName.toLowerCase()) {
+              commentCount++;
+            }
+          });
+        });
+      });
+
+      profile.stats = {
+        verses: userPostCount,
+        likes: totalLikes,
+        reflections: commentCount
+      };
+
+      return profile;
+    } catch (err) {
+      console.warn("Could not load profile from Supabase. Falling back to local values.", err);
+      return defaultProfile;
+    }
+  },
+
+  // UPDATE user profile in Supabase & LocalStorage
+  async updateProfile(userId: string, profile: Partial<UserProfile>): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userId,
+          name: profile.name,
+          bio: profile.bio,
+          avatar: profile.avatar,
+          location: profile.location,
+          favorite_verse: profile.favoriteVerse,
+          favorite_reference: profile.favoriteReference,
+          social_link: profile.socialLink,
+          video_link: profile.videoLink,
+          website_link: profile.websiteLink,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+    } catch (err) {
+      console.error("Could not sync profile update to database.", err);
+    }
   }
 };

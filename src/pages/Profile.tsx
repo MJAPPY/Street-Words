@@ -7,30 +7,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams } from 'react-router-dom';
-import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send } from 'lucide-react';
+import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send, Loader2 } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
 import SettingsModal from '@/components/SettingsModal';
 import { showSuccess } from '@/utils/toast';
 import { useSession } from '@/components/SessionProvider';
-
-const MOCK_CURRENT_USER: UserProfile = {
-  id: 'u1',
-  name: 'TruthSeeker',
-  handle: '@truth_seeker',
-  bio: 'Walking the city streets with ancient wisdom. Looking for the light in every corner. 🕊️',
-  avatar: 'T',
-  joinedDate: 'Joined March 2024',
-  location: 'Urban Sanctuary',
-  favoriteVerse: 'Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.',
-  favoriteReference: 'Joshua 1:9',
-  stats: {
-    verses: 0,
-    likes: 0,
-    reflections: 0
-  }
-};
+import { supabaseService } from '@/utils/supabaseService';
 
 const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
   'streetwords': {
@@ -49,116 +33,29 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
       likes: 0,
       reflections: 0
     }
-  },
-  'hopeful': {
-    id: 'u3',
-    name: 'Hopeful',
-    handle: '@hopeful_spirit',
-    bio: 'Seeking grace in the urban jungle. Lover of wisdom and community reflection. Let’s converse!',
-    avatar: 'H',
-    joinedDate: 'Joined February 2024',
-    location: 'Metropolis Core',
-    favoriteVerse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
-    favoriteReference: 'Hebrews 11:1',
-    stats: {
-      verses: 0,
-      likes: 0,
-      reflections: 0
-    }
   }
-};
-
-const MOCK_OTHER_POSTS: Record<string, VersePost[]> = {
-  'streetwords': [
-    {
-      id: '1',
-      verse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
-      reference: 'Hebrews 11:1',
-      relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
-      category: 'Faith',
-      author: 'StreetWords',
-      createdAt: 'Just now',
-      likes: 0,
-      comments: []
-    },
-    {
-      id: '2',
-      verse: 'Love is patient and kind; love does not envy or boast; it is not arrogant or rude.',
-      reference: '1 Corinthians 13:4',
-      relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
-      category: 'Love',
-      author: 'StreetWords',
-      createdAt: 'Just now',
-      likes: 0,
-      comments: []
-    },
-    {
-      id: '3',
-      verse: 'The Lord is near to the brokenhearted and saves the crushed in spirit.',
-      reference: 'Psalm 34:18',
-      relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
-      category: 'Despair',
-      author: 'StreetWords',
-      createdAt: 'Just now',
-      likes: 0,
-      comments: []
-    },
-    {
-      id: '4',
-      verse: 'The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.',
-      reference: 'Proverbs 13:4',
-      relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
-      category: 'Wisdom',
-      author: 'StreetWords',
-      createdAt: 'Just now',
-      likes: 0,
-      comments: []
-    }
-  ]
 };
 
 const Profile = () => {
   const { username } = useParams<{ username?: string }>();
-  const { session, user: authUser } = useSession();
+  const { session, user: authUser, loading: authLoading } = useSession();
   
-  // Decide whether viewing own profile or another member
   const isOwnProfile = !username || (session && authUser && username.toLowerCase() === authUser.email?.split('@')[0].toLowerCase()) || username.toLowerCase() === 'truthseeker';
   const profileKey = username?.toLowerCase() || '';
   
-  // Resolve active profile details
-  const [user, setUser] = useState<UserProfile>(MOCK_CURRENT_USER);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [myPosts, setMyPosts] = useState<VersePost[]>([]);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
-  // Load custom posts from localStorage for the active user if owned profile
-  useEffect(() => {
-    if (isOwnProfile) {
-      const activeName = authUser?.email?.split('@')[0] || 'TruthSeeker';
-      const defaultUser = {
-        ...MOCK_CURRENT_USER,
-        name: activeName,
-        handle: `@${activeName.toLowerCase()}`,
-        avatar: activeName[0].toUpperCase()
-      };
-      
-      setUser(defaultUser);
+  const fetchProfileDetails = async () => {
+    setLoadingProfile(true);
+    if (isOwnProfile && session && authUser) {
+      const data = await supabaseService.getProfile(authUser.id, authUser.email || '');
+      setUser(data);
 
-      try {
-        const stored = localStorage.getItem('streetwords_posts');
-        if (stored) {
-          const parsed = JSON.parse(stored) as VersePost[];
-          const filtered = parsed.filter(p => p.author.toLowerCase() === activeName.toLowerCase());
-          setMyPosts(filtered);
-          setUser(prev => ({
-            ...prev,
-            stats: {
-              ...prev.stats,
-              verses: filtered.length
-            }
-          }));
-        }
-      } catch (e) {
-        console.error(e);
-      }
+      const allPosts = await supabaseService.getPosts();
+      const filtered = allPosts.filter(p => p.author.toLowerCase() === data.name.toLowerCase());
+      setMyPosts(filtered);
     } else {
       const selectedProfile = MOCK_OTHER_PROFILES[profileKey] || {
         id: 'temp',
@@ -171,32 +68,55 @@ const Profile = () => {
         stats: { verses: 0, likes: 0, reflections: 0 }
       };
       setUser(selectedProfile);
-    }
-  }, [isOwnProfile, authUser, profileKey, username]);
 
-  const handleUpdateUser = (updatedData: Partial<UserProfile>) => {
-    setUser(prev => ({ ...prev, ...updatedData }));
+      const allPosts = await supabaseService.getPosts();
+      const filtered = allPosts.filter(p => p.author.toLowerCase() === selectedProfile.name.toLowerCase());
+      setMyPosts(filtered);
+    }
+    setLoadingProfile(false);
+  };
+
+  useEffect(() => {
+    if (!authLoading) {
+      fetchProfileDetails();
+    }
+  }, [isOwnProfile, authUser, authLoading, profileKey, username, session]);
+
+  const handleUpdateUser = async (updatedData: Partial<UserProfile>) => {
+    if (user) {
+      const nextUser = { ...user, ...updatedData };
+      setUser(nextUser);
+      if (session && authUser) {
+        await supabaseService.updateProfile(authUser.id, nextUser);
+        fetchProfileDetails();
+      }
+    }
   };
 
   const handleFollow = () => {
-    showSuccess(`You are now following ${user.name}!`);
+    showSuccess(`You are now following ${user?.name || 'User'}!`);
   };
 
   const handleMessage = () => {
-    showSuccess(`Message request sent to ${user.name}`);
+    showSuccess(`Message request sent to ${user?.name || 'User'}`);
   };
 
-  // Resolve posts to render
-  const postsToRender = isOwnProfile 
-    ? myPosts 
-    : (MOCK_OTHER_POSTS[profileKey] || []);
+  if (authLoading || loadingProfile || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center font-black bg-background text-foreground">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span>Syncing Profile data...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen urban-pattern bg-background/80">
       <Navbar />
       
       <main className="container max-w-4xl py-12">
-        {/* Profile Header Card */}
         <Card className="border border-transparent dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-2xl rounded-[3rem] overflow-hidden mb-12">
           <div className="h-40 bg-gradient-to-r from-primary/30 via-primary/10 to-accent/30" />
           <CardContent className="px-10 pb-10 -mt-14">
@@ -249,7 +169,6 @@ const Profile = () => {
                   {user.bio}
                 </p>
                 
-                {/* Meta details & Custom User links */}
                 <div className="space-y-4">
                   <div className="flex flex-wrap gap-6 text-xs font-black text-muted-foreground uppercase tracking-[0.2em]">
                     {user.location && (
@@ -315,7 +234,6 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Favorite Verse Section */}
             {user.favoriteVerse && (
               <div className="mt-12 p-8 md:p-10 rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-white/50 dark:via-zinc-900/40 to-primary/5 border border-primary/10 dark:border-zinc-800/60 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -338,7 +256,6 @@ const Profile = () => {
           </CardContent>
         </Card>
 
-        {/* Content Tabs */}
         <Tabs defaultValue="verses" className="space-y-12">
           <TabsList className="w-full justify-start bg-transparent h-auto p-0 space-x-12 border-b border-primary/10 rounded-none">
             <TabsTrigger 
@@ -362,8 +279,8 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="verses" className="space-y-12 animate-in fade-in duration-700">
-            {postsToRender.length > 0 ? (
-              postsToRender.map(post => (
+            {myPosts.length > 0 ? (
+              myPosts.map(post => (
                 <VerseCard key={post.id} post={post} />
               ))
             ) : (
