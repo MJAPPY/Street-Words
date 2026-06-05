@@ -189,7 +189,7 @@ const Store = () => {
             </div>
           </div>
           <Button 
-            onClick={() => window.open(activeShopName ? `https://www.redbubble.com/people/${activeShopName}/shop` : 'https://www.redbubble.com', '_blank')}
+            onClick={() => window.open(`https://www.redbubble.com/people/${activeShopName || "streetwords"}/shop`, '_blank')}
             variant="outline" 
             className="rounded-full font-black uppercase tracking-widest text-[9px] border-primary/20 hover:bg-primary/5 shrink-0 gap-2 h-10 px-6"
           >
