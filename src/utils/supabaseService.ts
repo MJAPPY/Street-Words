@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { VersePost, Comment, Category, UserProfile } from '@/types';
 import { INITIAL_POSTS } from './posts';
+import { getDailyVerseForToday } from './dailyVerses';
 
 // Helper to convert db row to VersePost type
 const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => {
@@ -35,6 +36,10 @@ export const supabaseService = {
   // Fetch all posts from Supabase (with automatic fallback to localStorage)
   async getPosts(): Promise<VersePost[]> {
     try {
+      // 1. Get current user session to see if we can do background auto-provisioning
+      const { data: { session } } = await supabase.auth.getSession();
+
+      // 2. Query posts from database
       const { data: postsData, error: postsError } = await supabase
         .from('posts')
         .select('*')
@@ -42,10 +47,41 @@ export const supabaseService = {
 
       if (postsError) throw postsError;
 
-      if (!postsData || postsData.length === 0) {
+      let finalPostsData = postsData || [];
+
+      // 3. Automated Daily Verse background check & creation
+      const daily = getDailyVerseForToday();
+      const hasDailyPost = finalPostsData.some(
+        p => p.reference.toLowerCase() === daily.reference.toLowerCase() && p.author === 'StreetWords'
+      );
+
+      // If today's verse isn't in Supabase yet, and we have a logged-in session, let's auto-post it!
+      if (!hasDailyPost && session) {
+        try {
+          const { data: insertedPost, error: insertError } = await supabase
+            .from('posts')
+            .insert([{
+              verse: daily.verse,
+              reference: daily.reference,
+              relevance: daily.discernment,
+              category: daily.category,
+              author: 'StreetWords'
+            }])
+            .select();
+
+          if (!insertError && insertedPost && insertedPost[0]) {
+            finalPostsData = [insertedPost[0], ...finalPostsData];
+          }
+        } catch (e) {
+          console.warn("Background auto-posting of Daily Verse failed.", e);
+        }
+      }
+
+      if (finalPostsData.length === 0) {
         return this.getLocalPosts();
       }
 
+      // 4. Fetch all comments for posts
       const { data: commentsData, error: commentsError } = await supabase
         .from('comments')
         .select('*')
@@ -53,7 +89,7 @@ export const supabaseService = {
 
       const allComments = commentsError ? [] : (commentsData || []);
 
-      const parsedPosts = postsData.map(post => {
+      const parsedPosts = finalPostsData.map(post => {
         const postComments = allComments.filter(c => c.post_id === post.id);
         return mapDbPostToVersePost(post, postComments);
       });
@@ -265,9 +301,9 @@ export const supabaseService = {
           joinedDate: 'Joined recently',
           favoriteVerse: data.favorite_verse || undefined,
           favoriteReference: data.favorite_reference || undefined,
-          socialLink: data.social_link || undefined,
-          videoLink: data.video_link || undefined,
-          websiteLink: data.website_link || undefined,
+          social_link: data.social_link || undefined,
+          video_link: data.video_link || undefined,
+          website_link: data.website_link || undefined,
           location: data.location || undefined,
           stats: defaultProfile.stats
         };
