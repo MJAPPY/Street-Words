@@ -2,77 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ShoppingBag, Star, Info, Heart, ArrowRight, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
+import { ShoppingBag, Info, ArrowRight, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
-import { StoreItem } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
-
-const DEFAULT_STORE_ITEMS: StoreItem[] = [
-  {
-    id: 's1',
-    name: '“Overcome the World” Heavyweight Tee',
-    price: '$35.00',
-    description: 'Ultra-heavy 240GSM cotton t-shirt with signature high-density print of John 16:33 on the back.',
-    category: 'Apparel',
-    image: '👕',
-    badge: 'Redbubble Merch',
-    rating: 5,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000000'
-  },
-  {
-    id: 's2',
-    name: 'Street Sanctuary Premium Hoodie',
-    price: '$65.00',
-    description: 'Over-sized fit, loopback terry fabric with custom typographic scripture back print.',
-    category: 'Apparel',
-    badge: 'Redbubble Merch',
-    image: '🧥',
-    rating: 5,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000001'
-  },
-  {
-    id: 's3',
-    name: 'Pavement Discernment Matte Sticker',
-    price: '$4.50',
-    description: 'Vivid high-quality vinyl matte die-cut sticker. Water-resistant, perfect for laptops and bottles.',
-    category: 'Accessories',
-    image: '🏷️',
-    badge: 'Redbubble Best Seller',
-    rating: 4.9,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000002'
-  },
-  {
-    id: 's4',
-    name: '“Lamp unto my Feet” iPhone Case',
-    price: '$26.00',
-    description: 'Double-layer tough protection shell case featuring original Street Words typographic design.',
-    category: 'Accessories',
-    image: '📱',
-    badge: 'Redbubble Merch',
-    rating: 4.8,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000003'
-  },
-  {
-    id: 's5',
-    name: 'Yeshua (Jesus) Overcame Tote Bag',
-    price: '$22.00',
-    description: 'Durable 100% cotton canvas bag with heavy-duty shoulder straps and vibrant double-sided print.',
-    category: 'Accessories',
-    image: '👜',
-    badge: 'Redbubble Merch',
-    rating: 4.7,
-    isRedbubble: true,
-    redbubbleUrl: 'https://www.redbubble.com/shop/ap/145000004'
-  }
-];
 
 interface Department {
   name: string;
@@ -83,12 +18,10 @@ interface Department {
 }
 
 const Store = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'All' | 'Apparel' | 'Accessories'>('All');
-  const [storeItems, setStoreItems] = useState<StoreItem[]>(DEFAULT_STORE_ITEMS);
   const [activeShopName, setActiveShopName] = useState<string | null>(null);
 
-  // Sync products dynamically by consuming Supabase config, falling back to local storage
-  const loadSyncedProducts = async () => {
+  // Sync active shop config by consuming Supabase config, falling back to local storage
+  const loadConfig = async () => {
     try {
       const { data: configData, error: configError } = await supabase
         .from('store_config')
@@ -96,10 +29,7 @@ const Store = () => {
 
       if (!configError && configData && configData.length > 0) {
         const activeShop = configData.find(c => c.key === 'redbubble_shop_name')?.value;
-        const activeItemsJson = configData.find(c => c.key === 'redbubble_synced_items')?.value;
-
-        if (activeShop && activeItemsJson) {
-          setStoreItems(JSON.parse(activeItemsJson));
+        if (activeShop) {
           setActiveShopName(activeShop);
           return;
         }
@@ -109,32 +39,18 @@ const Store = () => {
     }
 
     const savedShopName = localStorage.getItem('redbubble_shop_name');
-    const savedItems = localStorage.getItem('redbubble_synced_items');
-    
-    if (savedShopName && savedItems) {
-      try {
-        setStoreItems(JSON.parse(savedItems));
-        setActiveShopName(savedShopName);
-      } catch (e) {
-        setStoreItems(DEFAULT_STORE_ITEMS);
-        setActiveShopName(null);
-      }
+    if (savedShopName) {
+      setActiveShopName(savedShopName);
     } else {
-      setStoreItems(DEFAULT_STORE_ITEMS);
       setActiveShopName(null);
     }
   };
 
   useEffect(() => {
-    loadSyncedProducts();
-    window.addEventListener('storage', loadSyncedProducts);
-    return () => window.removeEventListener('storage', loadSyncedProducts);
+    loadConfig();
+    window.addEventListener('storage', loadConfig);
+    return () => window.removeEventListener('storage', loadConfig);
   }, []);
-
-  const handleExternalClick = (item: StoreItem) => {
-    showSuccess(`Opening Redbubble checkout portal...`);
-    window.open(item.redbubbleUrl, '_blank', 'noopener,noreferrer');
-  };
 
   const getRedbubbleDepartmentUrl = (iaCode: string) => {
     const shop = activeShopName || "streetwords";
@@ -145,10 +61,6 @@ const Store = () => {
     showSuccess(`Opening ${name} collection on Redbubble...`);
     window.open(getRedbubbleDepartmentUrl(iaCode), '_blank', 'noopener,noreferrer');
   };
-
-  const filteredItems = selectedCategory === 'All' 
-    ? storeItems 
-    : storeItems.filter(item => item.category === selectedCategory);
 
   const departments: Department[] = [
     { 
@@ -285,118 +197,6 @@ const Store = () => {
           </Button>
         </div>
 
-        {/* Showcase Section Title */}
-        <div className="text-left max-w-xl mx-auto md:mx-0 mb-8 pt-8 border-t border-primary/5">
-          <h2 className="text-2xl font-black tracking-tight flex items-center gap-2.5">
-            <ShoppingBag className="h-5 w-5 text-primary" />
-            Featured Merch Showcase
-          </h2>
-          <p className="text-sm text-muted-foreground font-semibold mt-1">
-            A small look at custom typographies and styles.
-          </p>
-        </div>
-
-        {/* Filter Showcase Navigation */}
-        <div className="flex justify-start gap-3 pb-10">
-          <Button 
-            variant={selectedCategory === 'All' ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory('All')}
-            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
-          >
-            All Showcase
-          </Button>
-          <Button 
-            variant={selectedCategory === 'Apparel' ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory('Apparel')}
-            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
-          >
-            Apparel
-          </Button>
-          <Button 
-            variant={selectedCategory === 'Accessories' ? 'default' : 'outline'}
-            onClick={() => setSelectedCategory('Accessories')}
-            className="rounded-full font-black uppercase tracking-widest text-[9px] h-9 px-5"
-          >
-            Accessories
-          </Button>
-        </div>
-
-        {/* Store Items Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredItems.map((item) => (
-            <Card key={item.id} className="group relative overflow-hidden h-full border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] flex flex-col justify-between">
-              <div className="p-8 space-y-6">
-                {/* Image Container */}
-                <div className="relative h-64 rounded-3xl bg-gradient-to-tr from-primary/10 to-[#ec4899]/15 flex items-center justify-center border border-primary/5 shadow-inner overflow-hidden group-hover:scale-[1.02] transition-transform duration-500">
-                  {item.image.startsWith('http') ? (
-                    <img src={item.image} alt={item.name} className="h-full w-full object-cover rounded-3xl" />
-                  ) : (
-                    <div className="text-7xl select-none group-hover:scale-110 transition-transform duration-500">
-                      {item.image}
-                    </div>
-                  )}
-
-                  {/* Pulsing Live indicator badge */}
-                  {(item.isLiveSynced || activeShopName) && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 bg-emerald-500/90 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-md backdrop-blur-sm z-10">
-                      <span className="relative flex h-2 w-2">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-                      </span>
-                      Live
-                    </div>
-                  )}
-
-                  {item.badge && (
-                    <Badge className="absolute top-4 left-4 bg-primary text-white border-none text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
-                      {item.badge}
-                    </Badge>
-                  )}
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start gap-4">
-                    <h3 className="text-xl font-black tracking-tight group-hover:text-primary transition-colors leading-tight text-left">
-                      {item.name}
-                    </h3>
-                    <span className="text-lg font-black text-primary whitespace-nowrap">
-                      {item.price}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-1 text-amber-500">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`h-3.5 w-3.5 ${i < Math.floor(item.rating) ? 'fill-current' : 'opacity-30'}`} />
-                    ))}
-                    <span className="text-[10px] font-black text-muted-foreground ml-1">{item.rating}</span>
-                  </div>
-
-                  <p className="text-muted-foreground font-medium text-sm leading-relaxed text-left line-clamp-3">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-
-              <CardFooter className="px-8 pb-8 pt-0 flex gap-3">
-                <Button 
-                  onClick={() => handleExternalClick(item)}
-                  className="flex-1 rounded-full h-12 bg-[#ec4899] hover:bg-[#ec4899]/95 text-white font-black uppercase tracking-widest text-[10px] shadow-lg shadow-[#ec4899]/20 gap-2"
-                >
-                  Buy on Redbubble <ExternalLink className="h-3.5 w-3.5" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  className="h-12 w-12 rounded-full border-primary/10 hover:bg-primary/5 text-muted-foreground hover:text-[#ec4899]"
-                  onClick={() => showSuccess("Saved to wish list!")}
-                >
-                  <Heart className="h-4 w-4" />
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
-
         {/* Bottom Banner */}
         <section className="mt-24 p-12 md:p-16 rounded-[4rem] bg-gradient-to-r from-primary to-[#ec4899] text-white shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 opacity-5 rounded-bl-full pointer-events-none" />
@@ -415,7 +215,7 @@ const Store = () => {
       <footer className="mt-32 border-t border-primary/5 py-12">
         <div className="container flex flex-col sm:flex-row items-center justify-between gap-6">
           <Button 
-            onClick={() => setSelectedCategory('Accessories')}
+            onClick={() => handleDepartmentClick('u-stationery', 'Stickers')}
             variant="outline" 
             className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm"
           >
