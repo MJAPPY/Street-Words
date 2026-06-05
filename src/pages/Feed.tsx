@@ -1,29 +1,24 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, Check } from 'lucide-react';
+import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CreatePostModal from '@/components/CreatePostModal';
 import { supabaseService } from '@/utils/supabaseService';
 import { INITIAL_POSTS } from '@/utils/posts';
-
-// Selected beautiful verse specifically to anchor the daily street word promise interaction
-const DAILY_WORD = {
-  verse: "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.",
-  reference: "Jeremiah 29:11",
-  discernment: "Amidst the urban rush and noisy concrete lanes, His plans are sovereign, calculated, and filled with deep security. Take a breath—your future is anchored."
-};
+import { getDailyVerseForToday } from '@/utils/dailyVerses';
 
 const Feed = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') as Category | null;
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
   const [allPosts, setAllPosts] = useState<VersePost[]>(INITIAL_POSTS);
   
@@ -32,6 +27,7 @@ const Feed = () => {
   
   // Interactive Daily Word Reveal states
   const [isRevealed, setIsRevealed] = useState(false);
+  const dailyVerse = getDailyVerseForToday();
 
   const loadPosts = async () => {
     const posts = await supabaseService.getPosts();
@@ -66,6 +62,11 @@ const Feed = () => {
     setSearchParams(searchParams);
     setSelectedCategory(cat);
   };
+
+  // Find the generated dynamic post object that matches today's daily verse reference
+  const matchingDailyPost = allPosts.find(
+    p => p.reference.toLowerCase() === dailyVerse.reference.toLowerCase()
+  );
 
   // Combine Category filter + Active Search Query filter
   const filteredPosts = allPosts.filter(p => {
@@ -155,24 +156,47 @@ const Feed = () => {
                 ) : (
                   <div className="space-y-4 pt-2 animate-in fade-in duration-500">
                     <p className="text-2xl md:text-3xl font-serif italic text-white leading-tight">
-                      "{DAILY_WORD.verse}"
+                      "{dailyVerse.verse}"
                     </p>
                     <p className="font-black text-xs uppercase tracking-[0.2em] text-white/70 text-right">
-                      — {DAILY_WORD.reference}
+                      — {dailyVerse.reference}
                     </p>
                     <div className="mt-4 p-4 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-md">
                       <p className="text-xs font-semibold leading-relaxed text-white/90">
-                        {DAILY_WORD.discernment}
+                        {dailyVerse.discernment}
                       </p>
                     </div>
                   </div>
                 )}
               </div>
               
-              <div className="shrink-0 flex items-center justify-center">
-                <Button className="rounded-full h-14 px-6 bg-white hover:bg-white/95 text-primary font-black uppercase tracking-widest text-xs shadow-lg gap-2">
-                  {isRevealed ? "Hide Promise" : "Tap to Open"} <ArrowRight className="h-4 w-4" />
-                </Button>
+              <div className="shrink-0 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                {!isRevealed ? (
+                  <Button 
+                    onClick={() => setIsRevealed(true)}
+                    className="rounded-full h-14 px-6 bg-white hover:bg-white/95 text-primary font-black uppercase tracking-widest text-xs shadow-lg gap-2"
+                  >
+                    Tap to Open <ArrowRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    {matchingDailyPost && (
+                      <Button 
+                        onClick={() => navigate(`/post/${matchingDailyPost.id}`)}
+                        className="rounded-full h-14 px-6 bg-white hover:bg-white/95 text-primary font-black uppercase tracking-widest text-xs shadow-lg gap-2"
+                      >
+                        <MessageSquare className="h-4 w-4" /> Discussion Thread
+                      </Button>
+                    )}
+                    <Button 
+                      variant="ghost"
+                      onClick={() => setIsRevealed(false)}
+                      className="rounded-full h-14 px-6 text-white hover:bg-white/10 font-black uppercase tracking-widest text-xs gap-2"
+                    >
+                      Hide
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

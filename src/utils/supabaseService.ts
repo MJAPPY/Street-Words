@@ -301,9 +301,9 @@ export const supabaseService = {
           joinedDate: 'Joined recently',
           favoriteVerse: data.favorite_verse || undefined,
           favoriteReference: data.favorite_reference || undefined,
-          social_link: data.social_link || undefined,
-          video_link: data.video_link || undefined,
-          website_link: data.website_link || undefined,
+          socialLink: data.social_link || undefined,
+          videoLink: data.video_link || undefined,
+          websiteLink: data.website_link || undefined,
           location: data.location || undefined,
           stats: defaultProfile.stats
         };
