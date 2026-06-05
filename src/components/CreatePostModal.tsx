@@ -7,11 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Category, CATEGORY_DATA, VersePost } from '@/types';
+import { Category, CATEGORY_DATA } from '@/types';
 import { showSuccess } from '@/utils/toast';
 import { PenSquare, Loader2, Quote, Sparkles } from 'lucide-react';
 import { useSession } from '@/components/SessionProvider';
 import { useNavigate } from 'react-router-dom';
+import { supabaseService } from '@/utils/supabaseService';
 
 interface CreatePostModalProps {
   trigger?: React.ReactNode;
@@ -38,38 +39,23 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.verse || !formData.reference) return;
 
     setIsLoading(true);
-    
-    // Simulate API call and persist locally so dynamic counts are completely accurate in real-time
-    setTimeout(() => {
-      const authorName = user?.email?.split('@')[0] || 'TruthSeeker';
-      const newPost: VersePost = {
-        id: Date.now().toString(),
+    const authorName = user?.email?.split('@')[0] || 'TruthSeeker';
+
+    try {
+      await supabaseService.createPost({
         verse: formData.verse,
         reference: formData.reference,
         relevance: formData.relevance,
         category: formData.category,
-        author: authorName,
-        createdAt: 'Just now',
-        likes: 0,
-        comments: []
-      };
-
-      try {
-        const stored = localStorage.getItem('streetwords_posts');
-        const postsList = stored ? JSON.parse(stored) : [];
-        postsList.unshift(newPost);
-        localStorage.setItem('streetwords_posts', JSON.stringify(postsList));
-      } catch (err) {
-        console.error(err);
-      }
+        author: authorName
+      });
 
       showSuccess("Verse shared with the community!");
-      setIsLoading(false);
       setIsOpen(false);
       setFormData({
         verse: "",
@@ -81,11 +67,13 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
       if (onPostCreated) {
         onPostCreated();
       } else {
-        // Trigger page refresh to update feed and category count dynamically
         window.dispatchEvent(new Event('storage'));
-        window.location.reload();
       }
-    }, 1000);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderTrigger = () => {
@@ -108,7 +96,6 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     );
   };
 
-  // If there is no active session, clicking simply triggers redirect to login via renderTrigger helper.
   if (!session) {
     return renderTrigger();
   }

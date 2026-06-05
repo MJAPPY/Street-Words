@@ -11,6 +11,7 @@ import { showSuccess } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
 import CommentItem from './CommentItem';
 import { useSession } from '@/components/SessionProvider';
+import { supabaseService } from '@/utils/supabaseService';
 
 interface VerseCardProps {
   post: VersePost;
@@ -24,7 +25,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
 
-  const handleLike = (e: React.MouseEvent) => {
+  const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     if (!session) {
@@ -32,11 +33,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       navigate('/login');
       return;
     }
-    setIsLiked(!isLiked);
-    setPost(prev => ({
-      ...prev,
-      likes: isLiked ? prev.likes - 1 : prev.likes + 1
-    }));
+
+    const nextLiked = !isLiked;
+    setIsLiked(nextLiked);
+    
+    const updatedLikesCount = await supabaseService.toggleLike(post.id, post.likes, isLiked);
+    setPost(prev => ({ ...prev, likes: updatedLikesCount }));
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -65,18 +67,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     showSuccess("Post reported successfully. Moderation team is reviewing it.");
   };
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim() || !session) return;
 
     const authorName = user?.email?.split('@')[0] || 'You';
-    const comment: Comment = {
-      id: Date.now().toString(),
-      author: authorName,
-      content: newComment,
-      createdAt: 'Just now',
-      replies: []
-    };
+    const comment = await supabaseService.addComment(post.id, authorName, newComment);
 
     setPost(prev => ({
       ...prev,
@@ -86,24 +82,20 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     showSuccess("Comment shared!");
   };
 
-  const handleReply = (parentId: string, content: string) => {
+  const handleReply = async (parentId: string, content: string) => {
     if (!session) {
       navigate('/login');
       return;
     }
     const authorName = user?.email?.split('@')[0] || 'You';
-    const addReplyToComments = (comments: Comment[]): Comment[] => {
-      return comments.map(c => {
+    const comment = await supabaseService.addComment(post.id, authorName, content, parentId);
+
+    const addReplyToComments = (commentsList: Comment[]): Comment[] => {
+      return commentsList.map(c => {
         if (c.id === parentId) {
           return {
             ...c,
-            replies: [...(c.replies || []), {
-              id: Date.now().toString(),
-              author: authorName,
-              content: content,
-              createdAt: 'Just now',
-              replies: []
-            }]
+            replies: [...(c.replies || []), comment]
           };
         }
         if (c.replies && c.replies.length > 0) {

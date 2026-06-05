@@ -10,6 +10,7 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Sparkles, X, ArrowRight, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CreatePostModal from '@/components/CreatePostModal';
+import { supabaseService } from '@/utils/supabaseService';
 import { INITIAL_POSTS } from '@/utils/posts';
 
 const Feed = () => {
@@ -18,25 +19,20 @@ const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
   const [allPosts, setAllPosts] = useState<VersePost[]>(INITIAL_POSTS);
 
-  const loadPosts = () => {
-    try {
-      const stored = localStorage.getItem('streetwords_posts');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setAllPosts([...parsed, ...INITIAL_POSTS]);
-      } else {
-        setAllPosts(INITIAL_POSTS);
-      }
-    } catch (e) {
-      setAllPosts(INITIAL_POSTS);
-    }
+  const loadPosts = async () => {
+    const posts = await supabaseService.getPosts();
+    setAllPosts(posts);
   };
 
   useEffect(() => {
     loadPosts();
-    // Re-load whenever storage changes
+    // Re-load whenever local storage changes or window gets focus (for multi-client live sync)
     window.addEventListener('storage', loadPosts);
-    return () => window.removeEventListener('storage', loadPosts);
+    window.addEventListener('focus', loadPosts);
+    return () => {
+      window.removeEventListener('storage', loadPosts);
+      window.removeEventListener('focus', loadPosts);
+    };
   }, []);
 
   useEffect(() => {
