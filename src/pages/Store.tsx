@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Info, ArrowRight, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
+import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -204,10 +204,15 @@ const Store = () => {
           <p className="text-white/80 font-medium max-w-xl mx-auto leading-relaxed">
             100% of proceeds are invested in supporting local areas with street scripture and vouchers for those in need.
           </p>
-          <div className="pt-2">
-            <Button variant="secondary" className="rounded-full h-14 px-8 font-black uppercase tracking-widest text-xs gap-2">
-              Learn More <ArrowRight className="h-4 w-4" />
-            </Button>
+          <div className="pt-2 flex justify-center">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-white/20 rounded-full blur-xl scale-110 group-hover:scale-125 transition-transform duration-500" />
+              <img 
+                src="/logo.png" 
+                alt="Street Words" 
+                className="relative z-10 h-16 w-16 object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] transform hover:scale-105 transition-transform duration-500"
+              />
+            </div>
           </div>
         </section>
       </main>
