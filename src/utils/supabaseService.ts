@@ -331,5 +331,36 @@ export const supabaseService = {
     } catch (err) {
       console.error("Could not sync profile update to database.", err);
     }
+  },
+
+  // Get list of bookmarked/saved post IDs
+  getSavedPostIds(): string[] {
+    try {
+      const stored = localStorage.getItem('streetwords_saved_posts');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  // Toggle bookmarked status of a post
+  toggleSavePost(postId: string): boolean {
+    try {
+      const current = this.getSavedPostIds();
+      const index = current.indexOf(postId);
+      let isSaved = false;
+      if (index > -1) {
+        current.splice(index, 1);
+      } else {
+        current.push(postId);
+        isSaved = true;
+      }
+      localStorage.setItem('streetwords_saved_posts', JSON.stringify(current));
+      window.dispatchEvent(new Event('storage'));
+      return isSaved;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
   }
 };

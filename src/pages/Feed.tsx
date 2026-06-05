@@ -7,17 +7,31 @@ import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
 import { MadeWithDyad } from '@/components/made-with-dyad';
-import { Sparkles, X, ArrowRight, BookOpen } from 'lucide-react';
+import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import CreatePostModal from '@/components/CreatePostModal';
 import { supabaseService } from '@/utils/supabaseService';
 import { INITIAL_POSTS } from '@/utils/posts';
+
+// Selected beautiful verse specifically to anchor the daily street word promise interaction
+const DAILY_WORD = {
+  verse: "For I know the plans I have for you, declares the Lord, plans for welfare and not for evil, to give you a future and a hope.",
+  reference: "Jeremiah 29:11",
+  discernment: "Amidst the urban rush and noisy concrete lanes, His plans are sovereign, calculated, and filled with deep security. Take a breath—your future is anchored."
+};
 
 const Feed = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category') as Category | null;
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>(categoryParam || 'All');
   const [allPosts, setAllPosts] = useState<VersePost[]>(INITIAL_POSTS);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Interactive Daily Word Reveal states
+  const [isRevealed, setIsRevealed] = useState(false);
 
   const loadPosts = async () => {
     const posts = await supabaseService.getPosts();
@@ -53,9 +67,15 @@ const Feed = () => {
     setSelectedCategory(cat);
   };
 
-  const filteredPosts = selectedCategory === 'All' 
-    ? allPosts 
-    : allPosts.filter(p => p.category === selectedCategory);
+  // Combine Category filter + Active Search Query filter
+  const filteredPosts = allPosts.filter(p => {
+    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    const matchesSearch = searchQuery.trim() === "" || 
+      p.verse.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.reference.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.author.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   return (
     <div className="min-h-screen urban-pattern bg-background/30">
@@ -110,14 +130,81 @@ const Feed = () => {
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-64 h-64 bg-[#ec4899]/10 rounded-full blur-[100px] pointer-events-none" />
       </section>
 
-      <main className="container max-w-4xl py-16 md:py-24">
-        {/* Filters Section */}
+      <main className="container max-w-4xl py-12 md:py-20">
+        
+        {/* Interactive Daily Promise Reveal Card Widget */}
+        <div className="mb-16">
+          <div 
+            onClick={() => setIsRevealed(!isRevealed)}
+            className="group relative cursor-pointer overflow-hidden p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-br from-[#a855f7] to-[#ec4899] text-white shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-pink-500/20"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 opacity-10 rounded-bl-full pointer-events-none" />
+            <Quote className="absolute -top-10 -left-10 h-40 w-40 text-white/5 pointer-events-none" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 text-left">
+              <div className="space-y-3 flex-1">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/20 text-[9px] font-black uppercase tracking-widest text-white backdrop-blur-md">
+                  <Sparkles className="h-3 w-3 text-amber-300 animate-pulse" /> Daily Promise Card
+                </span>
+                
+                {!isRevealed ? (
+                  <div className="space-y-1.5 pt-2">
+                    <h3 className="text-3xl font-black tracking-tight leading-none">Your Daily Promise is Ready</h3>
+                    <p className="text-sm text-white/80 font-medium">Click this beautiful banner to flip and reveal today's sanctuary encouragement.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 pt-2 animate-in fade-in duration-500">
+                    <p className="text-2xl md:text-3xl font-serif italic text-white leading-tight">
+                      "{DAILY_WORD.verse}"
+                    </p>
+                    <p className="font-black text-xs uppercase tracking-[0.2em] text-white/70 text-right">
+                      — {DAILY_WORD.reference}
+                    </p>
+                    <div className="mt-4 p-4 rounded-2xl bg-white/10 border border-white/10 backdrop-blur-md">
+                      <p className="text-xs font-semibold leading-relaxed text-white/90">
+                        {DAILY_WORD.discernment}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="shrink-0 flex items-center justify-center">
+                <Button className="rounded-full h-14 px-6 bg-white hover:bg-white/95 text-primary font-black uppercase tracking-widest text-xs shadow-lg gap-2">
+                  {isRevealed ? "Hide Promise" : "Tap to Open"} <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Real-Time Filter Search & Categories Section */}
         <div className="mb-16 space-y-6">
-          <div className="flex items-center justify-between px-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-2">
             <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
               <BookOpen className="h-6 w-6 text-primary" />
               {selectedCategory === 'All' ? 'Latest Feed' : `${selectedCategory} Verses`}
             </h2>
+            
+            {/* Functional Search Bar */}
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+              <Input
+                placeholder="Search scripture or author..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-full h-11 pl-11 pr-10 bg-white/50 dark:bg-zinc-900/60 border border-primary/10 backdrop-blur-sm text-xs font-semibold focus-visible:ring-primary/20"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 h-5 w-5 bg-muted/40 hover:bg-muted/80 rounded-full flex items-center justify-center text-muted-foreground transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </div>
+
             {selectedCategory !== 'All' && (
               <Button 
                 variant="ghost" 
@@ -150,7 +237,7 @@ const Feed = () => {
                 <Sparkles className="h-8 w-8 text-primary/20" />
               </div>
               <p className="text-muted-foreground font-bold italic text-lg">
-                No verses shared in this category yet. <br /> Be the first to bring the light!
+                No verses shared matching your query. <br /> Be the first to bring the light!
               </p>
               <CreatePostModal 
                 onPostCreated={loadPosts}

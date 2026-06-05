@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { VersePost, Comment } from '@/types';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag } from 'lucide-react';
+import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag, Bookmark } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { showSuccess } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
@@ -22,8 +22,15 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const navigate = useNavigate();
   const [post, setPost] = useState(initialPost);
   const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
+
+  useEffect(() => {
+    // Check saved status on load
+    const savedIds = supabaseService.getSavedPostIds();
+    setIsSaved(savedIds.includes(post.id));
+  }, [post.id]);
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -39,6 +46,18 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     
     const updatedLikesCount = await supabaseService.toggleLike(post.id, post.likes, isLiked);
     setPost(prev => ({ ...prev, likes: updatedLikesCount }));
+  };
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const nowSaved = supabaseService.toggleSavePost(post.id);
+    setIsSaved(nowSaved);
+    if (nowSaved) {
+      showSuccess("Verse saved to your profile!");
+    } else {
+      showSuccess("Removed from saved verses.");
+    }
   };
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -182,6 +201,15 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
           </div>
           
           <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleSave} 
+              className={`h-12 w-12 rounded-2xl hover:bg-amber-500/10 transition-colors ${isSaved ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500'}`} 
+              title="Save Post"
+            >
+              <Bookmark className={`h-5 w-5 ${isSaved ? 'fill-amber-500' : ''}`} />
+            </Button>
             <Button variant="ghost" size="icon" onClick={handleReport} className="h-12 w-12 rounded-2xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-colors" title="Report Post">
               <Flag className="h-5 w-5" />
             </Button>

@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams } from 'react-router-dom';
-import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send, Loader2 } from 'lucide-react';
+import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send, Loader2, Bookmark } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
@@ -45,17 +45,26 @@ const Profile = () => {
   
   const [user, setUser] = useState<UserProfile | null>(null);
   const [myPosts, setMyPosts] = useState<VersePost[]>([]);
+  const [savedPosts, setSavedPosts] = useState<VersePost[]>([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
   const fetchProfileDetails = async () => {
     setLoadingProfile(true);
+    
+    // Load all general community posts
+    const allPosts = await supabaseService.getPosts();
+
+    // Load bookmarked/saved posts
+    const savedIds = supabaseService.getSavedPostIds();
+    const filteredSaved = allPosts.filter(p => savedIds.includes(p.id));
+    setSavedPosts(filteredSaved);
+
     if (isOwnProfile && session && authUser) {
       const data = await supabaseService.getProfile(authUser.id, authUser.email || '');
       setUser(data);
 
-      const allPosts = await supabaseService.getPosts();
-      const filtered = allPosts.filter(p => p.author.toLowerCase() === data.name.toLowerCase());
-      setMyPosts(filtered);
+      const filteredMy = allPosts.filter(p => p.author.toLowerCase() === data.name.toLowerCase());
+      setMyPosts(filteredMy);
     } else {
       const selectedProfile = MOCK_OTHER_PROFILES[profileKey] || {
         id: 'temp',
@@ -69,9 +78,8 @@ const Profile = () => {
       };
       setUser(selectedProfile);
 
-      const allPosts = await supabaseService.getPosts();
-      const filtered = allPosts.filter(p => p.author.toLowerCase() === selectedProfile.name.toLowerCase());
-      setMyPosts(filtered);
+      const filteredMy = allPosts.filter(p => p.author.toLowerCase() === selectedProfile.name.toLowerCase());
+      setMyPosts(filteredMy);
     }
     setLoadingProfile(false);
   };
@@ -268,7 +276,7 @@ const Profile = () => {
               value="saved" 
               className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
-              Saved Words
+              Saved Words ({savedPosts.length})
             </TabsTrigger>
             <TabsTrigger 
               value="reflections" 
@@ -291,11 +299,17 @@ const Profile = () => {
             )}
           </TabsContent>
 
-          <TabsContent value="saved" className="text-center py-32 animate-in fade-in duration-700">
-            <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20">
-              <BookOpen className="h-16 w-16 text-primary/20 mx-auto mb-6" />
-              <p className="text-muted-foreground font-bold italic text-lg">No saved verses yet.</p>
-            </div>
+          <TabsContent value="saved" className="space-y-12 animate-in fade-in duration-700">
+            {savedPosts.length > 0 ? (
+              savedPosts.map(post => (
+                <VerseCard key={post.id} post={post} />
+              ))
+            ) : (
+              <div className="bg-white/40 dark:bg-zinc-900/80 backdrop-blur-sm rounded-[3rem] p-16 border-2 border-dashed border-primary/20 text-center">
+                <Bookmark className="h-16 w-16 text-primary/20 mx-auto mb-6" />
+                <p className="text-muted-foreground font-bold italic text-lg">No saved verses yet. Browse the Feed to bookmark wisdom!</p>
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="reflections" className="space-y-12 animate-in fade-in duration-700">
