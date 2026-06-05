@@ -167,7 +167,7 @@ const Store = () => {
     },
     { 
       name: 'Device & Phone Cases', 
-      description: 'Heavy duty, double layer shockproof tough phone cases with typographical prints.', 
+      description: 'Heavy duty, double layer shockproof tough phone cases with typographic prints.', 
       icon: Smartphone, 
       iaCode: 'u-phone-cases',
       color: 'from-violet-500 to-purple-600'
@@ -183,7 +183,7 @@ const Store = () => {
       name: 'Home & Living Decor', 
       description: 'Cozy throw pillows, ceramic mugs, and custom shower curtains decorated with timeless scripture.', 
       icon: Home, 
-      iaCode: 'u-home-decor',
+      iaCode: 'u-home-living',
       color: 'from-emerald-400 to-teal-500'
     },
   ];
