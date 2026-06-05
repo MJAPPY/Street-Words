@@ -200,7 +200,7 @@ const Store = () => {
         {/* Bottom Banner */}
         <section className="mt-24 p-12 md:p-16 rounded-[4rem] bg-gradient-to-r from-primary to-[#ec4899] text-white shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 opacity-5 rounded-bl-full pointer-events-none" />
-          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Support the Mission</h2>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Support the Site</h2>
           <p className="text-white/80 font-medium max-w-xl mx-auto leading-relaxed">
             100% of proceeds are invested in funding local street discipleship groups, community resources, and public Bible prints.
           </p>
