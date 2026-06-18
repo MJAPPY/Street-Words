@@ -1,3 +1,5 @@
+"use client";
+
 import { VersePost } from '@/types';
 
 export const INITIAL_POSTS: VersePost[] = [
@@ -8,8 +10,8 @@ export const INITIAL_POSTS: VersePost[] = [
     relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
     category: 'Faith',
     author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
+    createdAt: '3 days ago',
+    likes: 12,
     comments: []
   },
   {
@@ -19,8 +21,8 @@ export const INITIAL_POSTS: VersePost[] = [
     relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
     category: 'Love',
     author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
+    createdAt: '5 days ago',
+    likes: 8,
     comments: []
   },
   {
@@ -30,8 +32,8 @@ export const INITIAL_POSTS: VersePost[] = [
     relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
     category: 'Despair',
     author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
+    createdAt: '1 week ago',
+    likes: 24,
     comments: []
   },
   {
@@ -41,8 +43,8 @@ export const INITIAL_POSTS: VersePost[] = [
     relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
     category: 'Wisdom',
     author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
+    createdAt: '2 weeks ago',
+    likes: 15,
     comments: []
   }
 ];

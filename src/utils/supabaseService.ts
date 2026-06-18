@@ -3,6 +3,29 @@ import { VersePost, Comment, Category, UserProfile } from '@/types';
 import { INITIAL_POSTS } from './posts';
 import { getDailyVerseForToday } from './dailyVerses';
 
+// Formats absolute ISO timestamps into natural relative strings or clean local dates
+export const formatPostDate = (dateVal: string | Date | undefined): string => {
+  if (!dateVal) return 'Just now';
+  const date = new Date(dateVal);
+  if (isNaN(date.getTime())) return 'Just now';
+  
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  
+  // If date is in the future or within the last minute
+  if (diffMs < 60000) return 'Just now';
+  
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
 // Helper to convert db row to VersePost type
 const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => {
   const buildCommentTree = (list: any[], parentId: string | null = null): Comment[] => {
@@ -12,7 +35,7 @@ const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => 
         id: c.id,
         author: c.author,
         content: c.content,
-        createdAt: new Date(c.created_at).toLocaleDateString() || 'Just now',
+        createdAt: formatPostDate(c.created_at),
         replies: buildCommentTree(list, c.id)
       }));
   };
@@ -26,7 +49,7 @@ const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => 
     relevance: row.relevance,
     category: row.category as Category,
     author: row.author,
-    createdAt: new Date(row.created_at).toLocaleDateString() || 'Just now',
+    createdAt: formatPostDate(row.created_at),
     likes: row.likes || 0,
     comments: postComments
   };
@@ -252,7 +275,7 @@ export const supabaseService = {
           id: data[0].id,
           author: data[0].author,
           content: data[0].content,
-          createdAt: new Date(data[0].created_at).toLocaleDateString() || 'Just now',
+          createdAt: formatPostDate(data[0].created_at),
           replies: []
         };
       }
@@ -349,8 +372,7 @@ export const supabaseService = {
     try {
       const { error } = await supabase
         .from('profiles')
-        .upsert({
-          id: userId,
+        .update({
           name: profile.name,
           bio: profile.bio,
           avatar: profile.avatar,
@@ -361,7 +383,8 @@ export const supabaseService = {
           video_link: profile.videoLink,
           website_link: profile.websiteLink,
           updated_at: new Date().toISOString()
-        });
+        })
+        .eq('id', userId);
 
       if (error) throw error;
     } catch (err) {

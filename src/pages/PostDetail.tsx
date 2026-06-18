@@ -1,82 +1,53 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import { VersePost, Comment } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Send, Heart, MessageSquare, Share2, Quote } from 'lucide-react';
+import { ArrowLeft, Send, Heart, MessageSquare, Share2, Quote, Loader2 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 import CommentItem from '@/components/CommentItem';
 import { useSession } from '@/components/SessionProvider';
-
-const MOCK_POSTS: VersePost[] = [
-  {
-    id: '1',
-    verse: 'Now faith is the assurance of things hoped for, the conviction of things not seen.',
-    reference: 'Hebrews 11:1',
-    relevance: 'In a world that demands proof for everything, faith is our anchor. It allows us to walk confidently into the unknown because we trust the One who holds the future.',
-    category: 'Faith',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '2',
-    verse: 'Love is patient and kind; love does not envy or boast; it is not arrogant or rude.',
-    reference: '1 Corinthians 13:4',
-    relevance: 'Street life can be hard and cold. Practicing this kind of love is the ultimate counter-culture movement. It is how we show the truth of the Gospel.',
-    category: 'Love',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '3',
-    verse: 'The Lord is near to the brokenhearted and saves the crushed in spirit.',
-    reference: 'Psalm 34:18',
-    relevance: 'When you feel like the walls are closing in, remember that He is closest in the cracks of our despair. Brokenness is the entry point for grace.',
-    category: 'Despair',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  },
-  {
-    id: '4',
-    verse: 'The soul of the sluggard craves and gets nothing, while the soul of the diligent is richly supplied.',
-    reference: 'Proverbs 13:4',
-    relevance: 'Street wisdom often talks about the grind, but biblical diligence is about character and faithfulness in the small things.',
-    category: 'Wisdom',
-    author: 'StreetWords',
-    createdAt: 'Just now',
-    likes: 0,
-    comments: []
-  }
-];
+import { supabaseService } from '@/utils/supabaseService';
 
 const PostDetail = () => {
   const { id } = useParams();
   const { session, user } = useSession();
   const navigate = useNavigate();
-  const [post, setPost] = useState<VersePost | undefined>(MOCK_POSTS.find(p => p.id === id));
+  const [post, setPost] = useState<VersePost | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
   const [isLiked, setIsLiked] = useState(false);
 
-  if (!post) return <div className="p-20 text-center font-black">Verse not found</div>;
+  const fetchPostDetails = async () => {
+    setLoading(true);
+    const posts = await supabaseService.getPosts();
+    const found = posts.find(p => p.id === id);
+    if (found) {
+      setPost(found);
+    }
+    setLoading(false);
+  };
 
-  const handleLike = () => {
+  useEffect(() => {
+    fetchPostDetails();
+  }, [id]);
+
+  const handleLike = async () => {
     if (!session) {
       showSuccess("Join the sanctuary to like posts!");
       navigate('/login');
       return;
     }
-    setIsLiked(!isLiked);
-    setPost(prev => prev ? { ...prev, likes: isLiked ? prev.likes - 1 : prev.likes + 1 } : prev);
+    if (!post) return;
+    
+    const nextLiked = !isLiked;
+    setIsLiked(nextLiked);
+    const updatedLikes = await supabaseService.toggleLike(post.id, post.likes, isLiked);
+    setPost(prev => prev ? { ...prev, likes: updatedLikes } : prev);
   };
 
   const handleShare = () => {
@@ -84,18 +55,12 @@ const PostDetail = () => {
     showSuccess("Link copied to clipboard!");
   };
 
-  const handleAddComment = (e: React.FormEvent) => {
+  const handleAddComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !session) return;
+    if (!newComment.trim() || !session || !post) return;
 
     const authorName = user?.email?.split('@')[0] || 'You';
-    const comment: Comment = {
-      id: Date.now().toString(),
-      author: authorName,
-      content: newComment,
-      createdAt: 'Just now',
-      replies: []
-    };
+    const comment = await supabaseService.addComment(post.id, authorName, newComment);
 
     setPost({
       ...post,
@@ -105,24 +70,20 @@ const PostDetail = () => {
     showSuccess("Comment shared!");
   };
 
-  const handleReply = (parentId: string, content: string) => {
-    if (!session) {
+  const handleReply = async (parentId: string, content: string) => {
+    if (!session || !post) {
       navigate('/login');
       return;
     }
     const authorName = user?.email?.split('@')[0] || 'You';
+    const comment = await supabaseService.addComment(post.id, authorName, content, parentId);
+
     const addReplyToComments = (comments: Comment[]): Comment[] => {
       return comments.map(c => {
         if (c.id === parentId) {
           return {
             ...c,
-            replies: [...(c.replies || []), {
-              id: Date.now().toString(),
-              author: authorName,
-              content: content,
-              createdAt: 'Just now',
-              replies: []
-            }]
+            replies: [...(c.replies || []), comment]
           };
         }
         if (c.replies && c.replies.length > 0) {
@@ -132,13 +93,25 @@ const PostDetail = () => {
       });
     };
 
-    if (post) {
-      setPost({
-        ...post,
-        comments: addReplyToComments(post.comments)
-      });
-    }
+    setPost({
+      ...post,
+      comments: addReplyToComments(post.comments)
+    });
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen urban-pattern bg-background/50">
+        <Navbar />
+        <div className="container max-w-3xl py-32 text-center flex flex-col items-center justify-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="font-bold text-sm text-muted-foreground">Opening sanctuary details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) return <div className="p-20 text-center font-black">Verse not found</div>;
 
   return (
     <div className="min-h-screen urban-pattern bg-background/50">
