@@ -71,9 +71,9 @@ const Navbar = () => {
 
           {!session ? (
             <Link to="/login">
-              <Button className="rounded-none bg-primary hover:bg-primary/90 px-10 gap-3 text-xs font-black uppercase tracking-[0.2em] h-14 shadow-2xl shadow-primary/20 transition-all hover:translate-x-1">
+              <Button className="rounded-none bg-primary hover:bg-primary/90 px-8 gap-3 text-xs font-black uppercase tracking-[0.2em] h-14 shadow-2xl shadow-primary/20 transition-all hover:translate-x-1">
                 <LogIn className="h-5 w-5" />
-                Join
+                Login / Join
               </Button>
             </Link>
           ) : (
@@ -124,7 +124,7 @@ const Navbar = () => {
                       <button onClick={signOut} className="text-left text-4xl font-black tracking-tighter hover:text-red-500 transition-colors">Sign Out</button>
                     </>
                   ) : (
-                    <Link to="/login" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Join Street Sanctuary</Link>
+                    <Link to="/login" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Login / Join</Link>
                   )}
                   <div className="h-px bg-gradient-to-r from-primary/20 to-transparent" />
                   {session && (
