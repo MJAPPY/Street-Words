@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SessionProvider } from "@/components/SessionProvider";
+import AuthHandler from "@/components/AuthHandler";
 import Index from "./pages/Index";
 import Feed from "./pages/Feed";
 import Categories from "./pages/Categories";
@@ -25,6 +26,8 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            {/* Catch password recovery tokens globally and redirect the user */}
+            <AuthHandler />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />

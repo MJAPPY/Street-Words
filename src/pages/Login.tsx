@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import Navbar from '@/components/Navbar';
-import { Sparkles, Key, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,17 +16,25 @@ import { showSuccess, showError } from '@/utils/toast';
 const Login = () => {
   const { session } = useSession();
   const navigate = useNavigate();
-  const [authView, setAuthView] = useState<"standard" | "update_password">("standard");
+  const [searchParams] = useSearchParams();
+  const [authView, setAuthView] = useState<"standard" | "update_password" | "loading">("loading");
   const [newPassword, setNewPassword] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    // Listen specifically for Supabase password recovery session events
+    // Check if recovery is flagged in search parameters or active session state
+    const isRecoveryFlagged = searchParams.get('recovery') === 'true' || window.location.hash.includes('type=recovery');
+    
+    if (isRecoveryFlagged) {
+      setAuthView("update_password");
+    } else {
+      setAuthView("standard");
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'PASSWORD_RECOVERY') {
         setAuthView("update_password");
-        showSuccess("Password recovery token verified. Please enter your new password.");
-      } else if (event === 'SIGNED_IN' && authView !== 'update_password') {
+      } else if (event === 'SIGNED_IN' && !isRecoveryFlagged) {
         navigate('/feed');
       } else if (event === 'USER_UPDATED') {
         showSuccess("Your password has been successfully updated!");
@@ -38,11 +46,11 @@ const Login = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, authView]);
+  }, [navigate, searchParams]);
 
   useEffect(() => {
-    // If already logged in and not in a recovery state, send to feed
-    if (session && authView !== "update_password") {
+    // Only redirect if they are signed in and NOT trying to recover/update their password
+    if (session && authView === "standard") {
       navigate('/feed');
     }
   }, [session, navigate, authView]);
@@ -58,7 +66,7 @@ const Login = () => {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      showSuccess("Password updated! Sign in with your new password.");
+      showSuccess("Password updated! Please sign in with your new password.");
       setAuthView("standard");
       navigate('/login');
     } catch (err: any) {
@@ -67,6 +75,14 @@ const Login = () => {
       setIsUpdating(false);
     }
   };
+
+  if (authView === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen urban-pattern bg-background/50 flex flex-col">
