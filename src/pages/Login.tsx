@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import Navbar from '@/components/Navbar';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Sparkles, Loader2, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -20,6 +20,9 @@ const Login = () => {
   const [authView, setAuthView] = useState<"standard" | "update_password" | "loading">("loading");
   const [newPassword, setNewPassword] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+
+  // Dynamically obtain the origin so the email redirect links go to the exact current live environment
+  const redirectUrl = `${window.location.origin}/login`;
 
   useEffect(() => {
     // Check if recovery is flagged in search parameters or active session state
@@ -136,27 +139,38 @@ const Login = () => {
                 </Button>
               </form>
             ) : (
-              <Auth
-                supabaseClient={supabase}
-                appearance={{
-                  theme: ThemeSupa,
-                  variables: {
-                    default: {
-                      colors: {
-                        brand: 'hsl(var(--primary))',
-                        brandAccent: 'hsl(var(--primary))',
-                        inputBackground: 'transparent',
-                      },
-                      radii: {
-                        buttonBorderRadius: '9999px',
-                        inputBorderRadius: '16px',
+              <div className="space-y-6">
+                <Auth
+                  supabaseClient={supabase}
+                  redirectTo={redirectUrl}
+                  appearance={{
+                    theme: ThemeSupa,
+                    variables: {
+                      default: {
+                        colors: {
+                          brand: 'hsl(var(--primary))',
+                          brandAccent: 'hsl(var(--primary))',
+                          inputBackground: 'transparent',
+                        },
+                        radii: {
+                          buttonBorderRadius: '9999px',
+                          inputBorderRadius: '16px',
+                        }
                       }
                     }
-                  }
-                }}
-                providers={[]}
-                theme="dark"
-              />
+                  }}
+                  providers={[]}
+                  theme="dark"
+                />
+
+                {/* Helpful note about Supabase free tier email rate limits */}
+                <div className="flex gap-3 bg-primary/5 border border-primary/10 rounded-2xl p-4 text-left">
+                  <Info className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                  <p className="text-[10px] text-muted-foreground font-semibold leading-normal">
+                    <strong>Note:</strong> Free Supabase accounts are rate-limited to sending 3 authentication emails per hour. If you don't receive an email, please wait a bit or check your Spam/Junk folder.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </div>
