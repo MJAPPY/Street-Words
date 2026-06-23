@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -11,14 +11,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Users, BarChart3, ShieldAlert, Plus, 
   TrendingUp, MessageSquare, Eye,
-  CheckCircle2, AlertTriangle, Trash2, ShoppingBag, RefreshCw, CheckCircle
+  CheckCircle2, AlertTriangle, Trash2, ShoppingBag, RefreshCw, CheckCircle, BookOpen, Send
 } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess, showError } from '@/utils/toast';
 import { useSession } from '@/components/SessionProvider';
 import { useNavigate } from 'react-router-dom';
-import { StoreItem } from '@/types';
+import { StoreItem, VersePost } from '@/types';
 import { supabase } from '@/integrations/supabase/client';
+import { supabaseService } from '@/utils/supabaseService';
+import { WEEKLY_SCRIPTURE_POOL, PoolScripture } from '@/utils/scripturePool';
 
 interface FlaggedItem {
   id: string;
@@ -39,11 +41,14 @@ const Admin = () => {
     { name: "Super Admin", email: "streetwords21@proton.me", role: "Owner" }
   ]);
 
-  // Redbubble sync state managed inside Admin
+  // Redbubble sync state
   const [storeInput, setStoreInput] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
   const [activeShopName, setActiveShopName] = useState<string | null>(null);
   const [lastSyncedTime, setLastSyncedTime] = useState<string | null>(null);
+
+  // Scripture Pool State
+  const [postingScriptureId, setPostingScriptureId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading) {
@@ -55,7 +60,6 @@ const Admin = () => {
   }, [session, user, loading, navigate]);
 
   useEffect(() => {
-    // Attempt loading current synced shop from Supabase or LocalStorage
     const fetchCurrentConfig = async () => {
       try {
         const { data, error } = await supabase.from('store_config').select('*');
@@ -69,7 +73,7 @@ const Admin = () => {
           }
         }
       } catch (e) {
-        console.log("Supabase table store_config does not exist yet. Relying on LocalStorage.");
+        console.log("Supabase table store_config fallback.");
       }
 
       const savedShopName = localStorage.getItem('redbubble_shop_name');
@@ -97,6 +101,25 @@ const Admin = () => {
   if (!session || user?.email !== 'streetwords21@proton.me') {
     return null;
   }
+
+  // Handle publishing scripture from pool to community feed
+  const handlePublishScripture = async (scrip: PoolScripture) => {
+    setPostingScriptureId(scrip.id);
+    try {
+      await supabaseService.createPost({
+        verse: scrip.verse,
+        reference: scrip.reference,
+        relevance: scrip.relevance,
+        category: scrip.category,
+        author: 'StreetWords'
+      });
+      showSuccess(`"${scrip.reference}" successfully published to the live feed!`);
+    } catch (err) {
+      showError("Could not publish selected scripture drop.");
+    } finally {
+      setPostingScriptureId(null);
+    }
+  };
 
   const handleSyncStore = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -217,12 +240,10 @@ const Admin = () => {
     setActiveShopName(username);
     setLastSyncedTime(new Date().toLocaleTimeString());
     
-    // 1. Save locally to keep instant reactive sync
     localStorage.setItem('redbubble_shop_name', username);
     localStorage.setItem('redbubble_synced_items', JSON.stringify(items));
     window.dispatchEvent(new Event('storage'));
 
-    // 2. Publish to Supabase so that every visitor globally accesses the same live feed!
     try {
       await supabase
         .from('store_config')
@@ -349,15 +370,18 @@ const Admin = () => {
           {/* Main Dashboard Panel */}
           <div className="lg:col-span-2 space-y-8">
             <Tabs defaultValue="moderation" className="space-y-6">
-              <TabsList className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-sm border border-primary/5 rounded-full p-1 max-w-md">
-                <TabsTrigger value="moderation" className="rounded-full font-black uppercase tracking-widest text-[10px] px-6">
+              <TabsList className="bg-white/40 dark:bg-zinc-900/40 backdrop-blur-sm border border-primary/5 rounded-full p-1 max-w-lg flex flex-wrap justify-center h-auto">
+                <TabsTrigger value="moderation" className="rounded-full font-black uppercase tracking-widest text-[10px] px-4 py-2">
                   Moderation ({flaggedItems.length})
                 </TabsTrigger>
-                <TabsTrigger value="store" className="rounded-full font-black uppercase tracking-widest text-[10px] px-6">
+                <TabsTrigger value="scripture-drops" className="rounded-full font-black uppercase tracking-widest text-[10px] px-4 py-2">
+                  Scripture Drops 📖
+                </TabsTrigger>
+                <TabsTrigger value="store" className="rounded-full font-black uppercase tracking-widest text-[10px] px-4 py-2">
                   Store Sync
                 </TabsTrigger>
-                <TabsTrigger value="admins" className="rounded-full font-black uppercase tracking-widest text-[10px] px-6">
-                  Administrators
+                <TabsTrigger value="admins" className="rounded-full font-black uppercase tracking-widest text-[10px] px-4 py-2">
+                  Admins
                 </TabsTrigger>
               </TabsList>
 
@@ -433,6 +457,57 @@ const Admin = () => {
                       </div>
                     )}
                   </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Weekly Scripture Drop curation pool tab */}
+              <TabsContent value="scripture-drops" className="space-y-6 animate-in fade-in duration-300">
+                <Card className="border border-transparent dark:border-zinc-800/60 bg-white/50 dark:bg-zinc-900/80 backdrop-blur-sm shadow-lg rounded-[2.5rem] p-8">
+                  <div className="space-y-6">
+                    <div className="text-left">
+                      <h3 className="text-xl font-black uppercase tracking-wider text-primary flex items-center gap-2">
+                        <BookOpen className="h-5 w-5" /> Weekly Scripture Curation drops
+                      </h3>
+                      <p className="text-xs text-muted-foreground font-medium mt-1">
+                        Select pre-curated scripture packs ready for the street. Instantly deploy them as official "StreetWords" posts to the community feed.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                      {WEEKLY_SCRIPTURE_POOL.map((scrip) => (
+                        <Card key={scrip.id} className="border border-primary/10 bg-white/40 dark:bg-zinc-950/40 rounded-3xl p-6 text-left flex flex-col justify-between hover:shadow-md transition-shadow">
+                          <div>
+                            <div className="flex justify-between items-center mb-4">
+                              <Badge className="bg-primary/10 text-primary border-none text-[9px] font-black uppercase tracking-widest">
+                                {scrip.category}
+                              </Badge>
+                              <span className="text-[10px] font-bold text-muted-foreground">{scrip.reference}</span>
+                            </div>
+                            <p className="font-serif italic text-sm text-foreground/90 leading-relaxed mb-3">
+                              "{scrip.verse}"
+                            </p>
+                            <p className="text-xs text-muted-foreground italic bg-primary/5 p-3 rounded-xl border border-primary/5">
+                              <strong>Discernment:</strong> {scrip.relevance}
+                            </p>
+                          </div>
+                          <CardFooter className="p-0 pt-5">
+                            <Button
+                              onClick={() => handlePublishScripture(scrip)}
+                              disabled={postingScriptureId === scrip.id}
+                              className="w-full rounded-full h-10 bg-primary hover:bg-primary/95 text-white font-black uppercase tracking-widest text-[9px] gap-2"
+                            >
+                              {postingScriptureId === scrip.id ? (
+                                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                              ) : (
+                                <Send className="h-3.5 w-3.5" />
+                              )}
+                              Publish to Feed
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
                 </Card>
               </TabsContent>
 
