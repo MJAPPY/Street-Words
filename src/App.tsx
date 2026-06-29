@@ -15,6 +15,7 @@ import PostDetail from "./pages/PostDetail";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Sponsors from "./pages/Sponsors";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
       <SessionProvider>
         <TooltipProvider>
+          <Toaster />
           <Toaster />
           <Sonner />
           <BrowserRouter>
@@ -37,6 +39,7 @@ const App = () => (
               <Route path="/admin" element={<Admin />} />
               <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/profile/:username?" element={<Profile />} />
+              <Route path="/sponsors" element={<Sponsors />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
