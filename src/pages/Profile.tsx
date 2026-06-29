@@ -28,6 +28,7 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
     favoriteVerse: 'The light shines in the darkness, and the darkness has not overcome it.',
     favoriteReference: 'John 1:5',
     websiteLink: 'https://streetwords.sh',
+    socialLink: 'https://x.com/StreetWords21',
     stats: {
       verses: 0,
       likes: 0,
@@ -310,19 +311,19 @@ const Profile = () => {
           <TabsList className="w-full justify-start bg-transparent h-auto p-0 space-x-12 border-b border-primary/10 rounded-none">
             <TabsTrigger 
               value="verses" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               {isOwnProfile ? "My Verses" : `${user.name}'s Verses`}
             </TabsTrigger>
             <TabsTrigger 
               value="saved" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               Saved Words ({savedPosts.length})
             </TabsTrigger>
             <TabsTrigger 
               value="reflections" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               Comments
             </TabsTrigger>
