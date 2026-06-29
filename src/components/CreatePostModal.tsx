@@ -44,7 +44,9 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     if (!formData.verse || !formData.reference) return;
 
     setIsLoading(true);
-    const authorName = user?.email?.split('@')[0] || 'TruthSeeker';
+    const authorName = user?.email === 'streetwords21@proton.me' 
+      ? 'StreetWords' 
+      : (user?.email?.split('@')[0] || 'TruthSeeker');
 
     try {
       await supabaseService.createPost({

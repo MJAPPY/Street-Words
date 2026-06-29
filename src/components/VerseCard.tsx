@@ -90,7 +90,10 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     e.preventDefault();
     if (!newComment.trim() || !session) return;
 
-    const authorName = user?.email?.split('@')[0] || 'You';
+    const authorName = user?.email === 'streetwords21@proton.me' 
+      ? 'StreetWords' 
+      : (user?.email?.split('@')[0] || 'You');
+
     const comment = await supabaseService.addComment(post.id, authorName, newComment);
 
     setPost(prev => ({
@@ -106,7 +109,10 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       navigate('/login');
       return;
     }
-    const authorName = user?.email?.split('@')[0] || 'You';
+    const authorName = user?.email === 'streetwords21@proton.me' 
+      ? 'StreetWords' 
+      : (user?.email?.split('@')[0] || 'You');
+
     const comment = await supabaseService.addComment(post.id, authorName, content, parentId);
 
     const addReplyToComments = (commentsList: Comment[]): Comment[] => {

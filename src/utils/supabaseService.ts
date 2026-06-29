@@ -288,7 +288,7 @@ export const supabaseService = {
 
   // GET user profile from Supabase with dynamic stat calculations
   async getProfile(userId: string, email: string): Promise<UserProfile> {
-    const defaultName = email.split('@')[0];
+    const defaultName = email === 'streetwords21@proton.me' ? 'StreetWords' : email.split('@')[0];
     const defaultProfile: UserProfile = {
       id: userId,
       name: defaultName,
@@ -331,34 +331,6 @@ export const supabaseService = {
           stats: defaultProfile.stats
         };
       }
-
-      // Calculate stats live
-      const posts = await this.getPosts();
-      const userPosts = posts.filter(p => p.author.toLowerCase() === defaultName.toLowerCase());
-      const userPostCount = userPosts.length;
-      
-      let totalLikes = 0;
-      userPosts.forEach(p => { totalLikes += (p.likes || 0); });
-
-      let commentCount = 0;
-      posts.forEach(p => {
-        p.comments.forEach(c => {
-          if (c.author.toLowerCase() === defaultName.toLowerCase()) {
-            commentCount++;
-          }
-          c.replies?.forEach(r => {
-            if (r.author.toLowerCase() === defaultName.toLowerCase()) {
-              commentCount++;
-            }
-          });
-        });
-      });
-
-      profile.stats = {
-        verses: userPostCount,
-        likes: totalLikes,
-        reflections: commentCount
-      };
 
       return profile;
     } catch (err) {
