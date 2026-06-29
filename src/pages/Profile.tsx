@@ -6,7 +6,7 @@ import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send, Loader2, Bookmark } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
 import { MadeWithDyad } from '@/components/made-with-dyad';
@@ -20,7 +20,7 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
   'streetwords': {
     id: 'u2',
     name: 'StreetWords',
-    handle: '@streetwords_official',
+    handle: '@streetwords',
     bio: 'Curating the pavement. Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation.',
     avatar: 'S',
     joinedDate: 'Joined January 2024',
@@ -29,7 +29,7 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
     favoriteReference: 'John 1:5',
     websiteLink: 'https://streetwords.sh',
     stats: {
-      verses: 4,
+      verses: 0,
       likes: 0,
       reflections: 0
     }
@@ -39,14 +39,29 @@ const MOCK_OTHER_PROFILES: Record<string, UserProfile> = {
 const Profile = () => {
   const { username } = useParams<{ username?: string }>();
   const { session, user: authUser, loading: authLoading } = useSession();
+  const navigate = useNavigate();
   
-  const isOwnProfile = !username || (session && authUser && username.toLowerCase() === authUser.email?.split('@')[0].toLowerCase()) || username.toLowerCase() === 'truthseeker';
+  const isAdminOwner = authUser?.email === 'streetwords21@proton.me';
   const profileKey = username?.toLowerCase() || '';
   
+  // Resolve whether this is the logged-in user's profile view
+  const isOwnProfile = !username || 
+    (session && authUser && (
+      username.toLowerCase() === authUser.email?.split('@')[0].toLowerCase() ||
+      (isAdminOwner && (username.toLowerCase() === 'streetwords' || username.toLowerCase() === 'streetwords21'))
+    ));
+
   const [user, setUser] = useState<UserProfile | null>(null);
   const [myPosts, setMyPosts] = useState<VersePost[]>([]);
   const [savedPosts, setSavedPosts] = useState<VersePost[]>([]);
   const [loadingProfile, setLoadingProfile] = useState(true);
+
+  // Redirect to login if user attempts to view personal profile page while logged out
+  useEffect(() => {
+    if (!authLoading && !session && !username) {
+      navigate('/login');
+    }
+  }, [session, authLoading, username, navigate]);
 
   const fetchProfileDetails = async () => {
     setLoadingProfile(true);
@@ -59,12 +74,10 @@ const Profile = () => {
     const filteredSaved = allPosts.filter(p => savedIds.includes(p.id));
     setSavedPosts(filteredSaved);
 
-    if (isOwnProfile && session && authUser) {
-      const data = await supabaseService.getProfile(authUser.id, authUser.email || '');
-      setUser(data);
+    let activeProfile: UserProfile;
 
-      const filteredMy = allPosts.filter(p => p.author.toLowerCase() === data.name.toLowerCase());
-      setMyPosts(filteredMy);
+    if (isOwnProfile && session && authUser) {
+      activeProfile = await supabaseService.getProfile(authUser.id, authUser.email || '');
     } else {
       const selectedProfile = MOCK_OTHER_PROFILES[profileKey] || {
         id: 'temp',
@@ -76,16 +89,45 @@ const Profile = () => {
         location: 'The Sidewalks',
         stats: { verses: 0, likes: 0, reflections: 0 }
       };
-      setUser(selectedProfile);
-
-      const filteredMy = allPosts.filter(p => p.author.toLowerCase() === selectedProfile.name.toLowerCase());
-      setMyPosts(filteredMy);
+      activeProfile = { ...selectedProfile };
     }
+
+    // Load actual dynamic live posts associated with this user
+    const filteredMy = allPosts.filter(p => p.author.toLowerCase() === activeProfile.name.toLowerCase());
+    setMyPosts(filteredMy);
+
+    // Dynamically calculate user statistics in real-time
+    const postCount = filteredMy.length;
+    
+    let totalLikes = 0;
+    filteredMy.forEach(p => { totalLikes += (p.likes || 0); });
+
+    let commentCount = 0;
+    allPosts.forEach(p => {
+      p.comments.forEach(c => {
+        if (c.author.toLowerCase() === activeProfile.name.toLowerCase()) {
+          commentCount++;
+        }
+        c.replies?.forEach(r => {
+          if (r.author.toLowerCase() === activeProfile.name.toLowerCase()) {
+            commentCount++;
+          }
+        });
+      });
+    });
+
+    activeProfile.stats = {
+      verses: postCount,
+      likes: totalLikes,
+      reflections: commentCount
+    };
+
+    setUser(activeProfile);
     setLoadingProfile(false);
   };
 
   useEffect(() => {
-    if (!authLoading) {
+    if (!authLoading && (session || username)) {
       fetchProfileDetails();
     }
   }, [isOwnProfile, authUser, authLoading, profileKey, username, session]);
