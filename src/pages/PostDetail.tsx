@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { VersePost, Comment } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft, Send, Heart, MessageSquare, Share2, Quote, Loader2 } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 import CommentItem from '@/components/CommentItem';
 import { useSession } from '@/components/SessionProvider';
@@ -230,9 +230,7 @@ const PostDetail = () => {
         </div>
       </main>
 
-      <footer className="py-12">
-        <MadeWithDyad />
-      </footer>
+      <Footer />
     </div>
   );
 };
