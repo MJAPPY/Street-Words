@@ -3,12 +3,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { 
   Sparkles, ArrowRight, BookOpen, Users, 
   Quote, Compass 
 } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 
 const Landing = () => {
   return (
@@ -149,38 +149,7 @@ const Landing = () => {
         </div>
       </section>
 
-      <footer className="py-16 border-t border-primary/5">
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-12">
-          <Link to="/" className="flex items-center gap-4 group">
-            <div className="relative flex items-center justify-center h-12 w-12">
-              {/* Vibrant Footer Logo Glow */}
-              <div className="absolute inset-0 bg-gradient-to-r from-primary to-[#ec4899] rounded-full blur-md opacity-40 group-hover:opacity-75 transition duration-300" />
-              <img 
-                src="/logo.png" 
-                alt="Street Words" 
-                className="relative z-10 h-10 w-10 object-contain filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)] transition-transform group-hover:scale-105 duration-300" 
-              />
-            </div>
-            <div className="flex flex-col -space-y-1 text-left">
-              <span className="font-black text-2xl tracking-tighter text-foreground group-hover:text-primary transition-colors">
-                STREET
-              </span>
-              <span className="font-light text-sm tracking-[0.3em] text-muted-foreground">
-                WORDS
-              </span>
-            </div>
-          </Link>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <Link to="/store">
-              <Button variant="outline" className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm">
-                Shop Stickers 🏷️
-              </Button>
-            </Link>
-            <MadeWithDyad />
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

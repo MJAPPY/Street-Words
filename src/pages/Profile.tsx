@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { UserProfile, VersePost } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useParams, useNavigate } from 'react-router-dom';
 import { MapPin, Calendar, BookOpen, MessageSquare, Quote, Sparkles, Globe, Video, Link2, UserPlus, Send, Loader2, Bookmark } from 'lucide-react';
 import VerseCard from '@/components/VerseCard';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import EditProfileModal from '@/components/EditProfileModal';
 import SettingsModal from '@/components/SettingsModal';
 import { showSuccess } from '@/utils/toast';
@@ -311,19 +311,19 @@ const Profile = () => {
           <TabsList className="w-full justify-start bg-transparent h-auto p-0 space-x-12 border-b border-primary/10 rounded-none">
             <TabsTrigger 
               value="verses" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               {isOwnProfile ? "My Verses" : `${user.name}'s Verses`}
             </TabsTrigger>
             <TabsTrigger 
               value="saved" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               Saved Words ({savedPosts.length})
             </TabsTrigger>
             <TabsTrigger 
               value="reflections" 
-              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary/50 data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
+              className="px-0 py-6 bg-transparent border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none h-auto font-black text-sm uppercase tracking-[0.2em] transition-all text-muted-foreground data-[state=active]:text-primary"
             >
               Comments
             </TabsTrigger>
@@ -364,11 +364,7 @@ const Profile = () => {
         </Tabs>
       </main>
 
-      <footer className="mt-32 py-16">
-        <div className="container text-center">
-          <MadeWithDyad />
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

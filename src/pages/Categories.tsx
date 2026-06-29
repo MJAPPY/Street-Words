@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { CATEGORY_DATA } from '@/types';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ import {
   Sparkles, Anchor, Clock, CheckCircle2, ShieldCheck,
   Frown, HeartCrack, Footprints, HeartHandshake
 } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import { INITIAL_POSTS } from '@/utils/posts';
 
 const iconMap: Record<string, any> = {
@@ -93,11 +93,7 @@ const Categories = () => {
         </div>
       </main>
 
-      <footer className="mt-32 border-t border-primary/5 py-12">
-        <div className="container text-center">
-          <MadeWithDyad />
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

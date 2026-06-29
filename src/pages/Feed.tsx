@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -276,16 +276,7 @@ const Feed = () => {
         </section>
       </main>
 
-      <footer className="mt-32 border-t border-primary/5 py-12">
-        <div className="container flex flex-col sm:flex-row items-center justify-between gap-6">
-          <Link to="/store">
-            <Button variant="outline" className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm">
-              Shop Stickers 🏷️
-            </Button>
-          </Link>
-          <MadeWithDyad />
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

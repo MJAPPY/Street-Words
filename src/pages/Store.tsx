@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
-import { MadeWithDyad } from '@/components/made-with-dyad';
 import { showSuccess } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -217,18 +217,7 @@ const Store = () => {
         </section>
       </main>
 
-      <footer className="mt-32 border-t border-primary/5 py-12">
-        <div className="container flex flex-col sm:flex-row items-center justify-between gap-6">
-          <Button 
-            onClick={() => handleDepartmentClick('u-stationery', 'Stickers')}
-            variant="outline" 
-            className="rounded-full border-primary/20 text-primary hover:bg-primary/5 font-black text-xs uppercase tracking-widest h-11 px-6 gap-2 shadow-sm"
-          >
-            Shop Stickers 🏷️
-          </Button>
-          <MadeWithDyad />
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
