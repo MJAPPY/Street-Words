@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut, HeartHandshake } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
@@ -47,7 +47,6 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
             <Link to="/feed" className="transition-all hover:text-primary hover:tracking-[0.4em]">Feed</Link>
             <Link to="/categories" className="transition-all hover:text-primary hover:tracking-[0.4em]">Categories</Link>
-            <Link to="/sponsors" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-1 text-primary">Sponsor Page 🤝</Link>
             <Link to="/store" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-1.5">Store</Link>
             {isAdmin && (
               <Link to="/admin" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2">
@@ -115,7 +114,6 @@ const Navbar = () => {
                   <Link to="/" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Landing</Link>
                   <Link to="/feed" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Feed</Link>
                   <Link to="/categories" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Categories</Link>
-                  <Link to="/sponsors" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Sponsorships 🤝</Link>
                   <Link to="/store" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Store</Link>
                   {isAdmin && (
                     <Link to="/admin" className="text-4xl font-black tracking-tighter hover:text-primary transition-colors">Admin</Link>
