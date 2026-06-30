@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Feed from "./pages/Feed";
 import Categories from "./pages/Categories";
 import Store from "./pages/Store";
+import Sponsors from "./pages/Sponsors";
 import Admin from "./pages/Admin";
 import PostDetail from "./pages/PostDetail";
 import Profile from "./pages/Profile";
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="/feed" element={<Feed />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/store" element={<Store />} />
+              <Route path="/sponsors" element={<Sponsors />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/post/:id" element={<PostDetail />} />
               <Route path="/profile/:username?" element={<Profile />} />
