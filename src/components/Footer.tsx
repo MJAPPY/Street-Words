@@ -7,7 +7,7 @@ import { Twitter, ShoppingBag, ArrowUpRight, BookOpen, ExternalLink, Heart } fro
 
 const Footer = () => {
   return (
-    <footer className="w-full mt-24 border-t border-primary/10 bg-background/50 backdrop-blur-xl text-left">
+    <footer className="w-full mt-24 border-t border-primary/10 bg-background/50 backdrop-blur-xl">
       <div className="container max-w-6xl py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 items-start">
           
@@ -32,11 +32,11 @@ const Footer = () => {
               </div>
             </Link>
             
-            <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-sm text-left">
+            <p className="text-sm text-muted-foreground font-medium leading-relaxed max-w-sm">
               An urban sanctuary grounded in Biblical revelation fulfilled by our Savior Yeshua (Jesus). Bringing timeless truth to chaotic concrete pavements.
             </p>
 
-            <div className="pt-2 border-l-2 border-primary/20 pl-4 text-left">
+            <div className="pt-2 border-l-2 border-primary/20 pl-4">
               <p className="text-xs font-serif italic text-muted-foreground">
                 “Verily, verily, I say unto you, He that believeth on me hath everlasting life.” — John 6:47
               </p>
@@ -65,11 +65,6 @@ const Footer = () => {
               <li>
                 <Link to="/store" className="hover:text-primary transition-colors flex items-center gap-1.5">
                   Storefront
-                </Link>
-              </li>
-              <li>
-                <Link to="/sponsors" className="hover:text-primary transition-colors flex items-center gap-1.5 text-rose-500 dark:text-rose-400">
-                  Sponsor a Voucher
                 </Link>
               </li>
             </ul>
