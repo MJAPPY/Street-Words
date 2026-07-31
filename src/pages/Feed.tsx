@@ -92,7 +92,7 @@ const Feed = () => {
             </div>
             
             <div className="space-y-4">
-              <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.85] hero-glow animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <h1 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tighter text-foreground leading-[0.85] hero-glow animate-in fade-in slide-in-from-bottom-8 duration-700">
                 STREET<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary bg-[length:200%_auto] animate-gradient">WORDS</span>
               </h1>

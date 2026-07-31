@@ -35,7 +35,7 @@ const Landing = () => {
             </div>
             
             <div className="space-y-6 max-w-5xl">
-              <h1 className="text-7xl md:text-[11rem] font-black tracking-tighter text-foreground leading-[0.75] animate-in fade-in slide-in-from-bottom-8 duration-700 select-none animate-title-glow">
+              <h1 className="text-5xl sm:text-7xl md:text-[11rem] font-black tracking-tighter text-foreground leading-[0.75] animate-in fade-in slide-in-from-bottom-8 duration-700 select-none animate-title-glow">
                 STREET<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary animate-shimmer-text">WORDS</span>
               </h1>
