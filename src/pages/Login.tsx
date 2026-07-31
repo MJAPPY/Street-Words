@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useSession } from '@/components/SessionProvider';
 import Navbar from '@/components/Navbar';
-import { Sparkles, Loader2, Info } from 'lucide-react';
+import { Sparkles, Loader2, Info, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +19,7 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const [authView, setAuthView] = useState<"standard" | "update_password" | "loading">("loading");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Dynamically obtain the origin so the email redirect links go to the exact current live environment
@@ -120,20 +121,33 @@ const Login = () => {
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div className="space-y-2 text-left">
                   <Label htmlFor="new-password" className="text-xs font-black uppercase tracking-widest px-1">New Password</Label>
-                  <Input
-                    id="new-password"
-                    type="password"
-                    required
-                    placeholder="Min 6 characters..."
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
-                  />
+                  <div className="relative flex items-center">
+                    <Input
+                      id="new-password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      placeholder="Min 6 characters..."
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="rounded-2xl h-12 w-full bg-muted/30 dark:bg-zinc-800/50 border-transparent focus:border-primary/30 focus:bg-white dark:focus:bg-zinc-950 text-foreground font-bold pr-12 transition-all"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 text-muted-foreground hover:text-foreground transition-colors focus:outline-none"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <Eye className="h-5 w-5 text-muted-foreground" />
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <Button 
                   type="submit" 
                   disabled={isUpdating}
-                  className="w-full h-12 rounded-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest shadow-lg shadow-primary/20"
+                  className="w-full h-12 mt-2 rounded-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest shadow-lg shadow-primary/20"
                 >
                   {isUpdating ? <Loader2 className="h-5 w-5 animate-spin mx-auto" /> : "Save New Password"}
                 </Button>
