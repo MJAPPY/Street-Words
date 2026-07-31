@@ -22,7 +22,7 @@ const Landing = () => {
           <img 
             src="/1500x500.jpg" 
             alt="Street Words Banner" 
-            className="w-full h-full object-cover object-[60%_50%] opacity-65 dark:opacity-45"
+            className="w-full h-full object-cover object-[85%_50%] opacity-65 dark:opacity-45"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/85 to-background z-10" />
         </div>
