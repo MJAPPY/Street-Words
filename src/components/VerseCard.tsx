@@ -1,17 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { VersePost, Comment } from '@/types';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag, Bookmark } from 'lucide-react';
+import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag, Bookmark, Download, Loader2 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { showSuccess } from '@/utils/toast';
+import { showSuccess, showError } from '@/utils/toast';
 import { Input } from '@/components/ui/input';
 import CommentItem from './CommentItem';
 import { useSession } from '@/components/SessionProvider';
 import { supabaseService } from '@/utils/supabaseService';
+import { useTheme } from 'next-themes';
+import html2canvas from 'html2canvas';
 
 interface VerseCardProps {
   post: VersePost;
@@ -20,11 +22,15 @@ interface VerseCardProps {
 const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const { session, user } = useSession();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [post, setPost] = useState(initialPost);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check saved status on load
@@ -72,6 +78,38 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     } catch (err) {
       showSuccess("Link copied to clipboard!");
       navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
+    }
+  };
+
+  const handleDownloadPNG = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!captureRef.current) return;
+    setIsDownloading(true);
+
+    try {
+      // Small pause to guarantee smooth canvas mounting
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      
+      const canvas = await html2canvas(captureRef.current, {
+        useCORS: true,
+        scale: 3, // Highly crisp 3x resolution for beautiful prints/retina screens
+        backgroundColor: theme === 'dark' ? '#18122B' : '#F3F4F6', // Perfect color fill to match context themes
+        logging: false,
+        borderRadius: 48,
+      });
+
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `streetwords-${post.reference.replace(/\s+/g, '-').replace(/:/g, '-').toLowerCase()}.png`;
+      link.href = image;
+      link.click();
+      showSuccess("PNG downloaded! Ready to share or print.");
+    } catch (err) {
+      console.error(err);
+      showError("Could not generate image card.");
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -138,7 +176,8 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
 
   return (
     <Card className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
-      <div className="p-8 md:p-12">
+      {/* Target capture zone for printing & socials */}
+      <div ref={captureRef} className="p-8 md:p-12 bg-transparent">
         <div className="flex justify-between items-center mb-10">
           <Link to={`/profile/${post.author}`} className="flex items-center gap-4 group/author hover:opacity-90">
             <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary to-[#ec4899] p-[2px] shadow-lg shadow-primary/20 transition-transform group-hover/author:scale-105 duration-350">
@@ -180,6 +219,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
             {post.relevance}
           </p>
         </div>
+
+        {/* Brand watermark included in PNG downloads */}
+        <div className="flex justify-between items-center mt-8 pt-6 border-t border-primary/5 text-[9px] font-black uppercase tracking-[0.25em] text-muted-foreground/40">
+          <span>Shared via Street Words</span>
+          <span>streetwords.sh</span>
+        </div>
       </div>
 
       <CardFooter className="bg-white/40 dark:bg-zinc-950/40 border-t border-white/60 dark:border-zinc-800/60 flex flex-col px-8 py-0">
@@ -207,6 +252,16 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
           </div>
           
           <div className="flex gap-2">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleDownloadPNG} 
+              disabled={isDownloading}
+              className="h-12 w-12 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" 
+              title="Download PNG Card"
+            >
+              {isDownloading ? <Loader2 className="h-5 w-5 animate-spin text-primary" /> : <Download className="h-5 w-5" />}
+            </Button>
             <Button 
               variant="ghost" 
               size="icon" 
