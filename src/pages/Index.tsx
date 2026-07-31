@@ -49,6 +49,15 @@ const Landing = () => {
             
             {/* Left Hero Column */}
             <div className="lg:col-span-7 space-y-8 text-left">
+              {/* Brand Visual Logo Intro */}
+              <div className="rounded-[2rem] overflow-hidden border border-primary/20 shadow-xl max-w-md bg-zinc-950/80 p-1 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                <img 
+                  src="/hero-banner.jpg" 
+                  alt="Street Words Banner" 
+                  className="rounded-[1.7rem] w-full object-cover h-24 filter contrast-125 hover:scale-[1.02] transition-transform duration-500"
+                />
+              </div>
+
               <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/25 rounded-full px-5 py-2 text-primary text-xs font-black uppercase tracking-[0.25em] animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-sm">
                 <Sparkles className="h-3.5 w-3.5 text-amber-500 animate-pulse" />
                 He has overcome the world — John 16:33
@@ -170,17 +179,17 @@ const Landing = () => {
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#ec4899]/5 rounded-full blur-[140px] pointer-events-none animate-pulse delay-700" />
       </section>
 
-      {/* Scripture Highlight / Mood Setter Section with high contrast image backing */}
+      {/* Scripture Highlight / Mood Setter Section with custom brand graphic backdrop */}
       <section className="py-24 relative overflow-hidden">
         <div className="container max-w-6xl">
-          <div className="relative rounded-[4rem] overflow-hidden bg-zinc-900 text-white shadow-2xl border border-zinc-800">
-            {/* Background Image with dramatic street lighting overlay */}
+          <div className="relative rounded-[4rem] overflow-hidden bg-zinc-950 text-white shadow-2xl border border-zinc-800">
+            {/* Background Image using the custom 1500x500 banner with dramatic blending */}
             <div 
-              className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 pointer-events-none"
-              style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&q=80&w=1200")' }} 
+              className="absolute inset-0 bg-cover bg-center mix-blend-color-dodge opacity-50 pointer-events-none"
+              style={{ backgroundImage: 'url("/hero-banner.jpg")' }} 
             />
             {/* Smooth dark overlay gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-zinc-950/80 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-zinc-950/90 to-transparent pointer-events-none" />
             
             <div className="relative z-10 px-8 py-20 md:p-24 flex flex-col md:flex-row items-center gap-12 justify-between">
               <div className="text-left space-y-4 max-w-xl">
@@ -191,7 +200,7 @@ const Landing = () => {
                   Illuminate Your Daily Path.
                 </h2>
                 <p className="text-sm md:text-base text-zinc-300 font-medium leading-relaxed">
-                  Transform busy subway cars, crowded walkways, and loud street corridors into quiet moments of sanctuary. Street Words connects ancient biblical wisdom with our modern urban realities.
+                  Transform busy subway cars, crowded walkways, and loud street corridors into quiet moments of sanctuary. Street Words connects ancient biblical wisdom with our modern realities.
                 </p>
                 <div className="flex flex-wrap gap-4 pt-2">
                   <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold">
