@@ -17,12 +17,12 @@ const Landing = () => {
       
       {/* Hero Section with Beautiful Custom Background Image */}
       <section className="relative pt-24 pb-20 md:pt-36 md:pb-36 overflow-hidden">
-        {/* Background Image Container with dark premium overlay and left-aligned banner focus */}
+        {/* Background Image Container with dark premium overlay and custom-aligned banner focus */}
         <div className="absolute inset-0 z-0">
           <img 
             src="/1500x500.jpg" 
             alt="Street Words Banner" 
-            className="w-full h-full object-cover object-[0%_50%] opacity-35 dark:opacity-25"
+            className="w-full h-full object-cover object-[10%_50%] opacity-35 dark:opacity-25"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/85 to-background z-10" />
         </div>
