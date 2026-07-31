@@ -12,11 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { showSuccess, showError } from '@/utils/toast';
+import { useTheme } from 'next-themes';
 
 const Login = () => {
   const { session } = useSession();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { theme } = useTheme();
   const [authView, setAuthView] = useState<"standard" | "update_password" | "loading">("loading");
   const [newPassword, setNewPassword] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -87,12 +89,14 @@ const Login = () => {
     );
   }
 
+  const currentTheme = theme === 'dark' ? 'dark' : 'light';
+
   return (
     <div className="min-h-screen urban-pattern bg-background/50 flex flex-col">
       <Navbar />
       
       <div className="flex-1 flex items-center justify-center p-6 my-10">
-        <div className="w-full max-w-md bg-white/70 dark:bg-zinc-900/80 backdrop-blur-md rounded-[3rem] p-10 border border-white/60 dark:border-zinc-800/60 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-500">
+        <div className="w-full max-w-md bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-[3rem] p-10 border border-zinc-200 dark:border-zinc-800 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-500">
           <div className="text-center space-y-4">
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em]">
               <Sparkles className="h-3 w-3" />
@@ -115,11 +119,11 @@ const Login = () => {
             </p>
           </div>
 
-          <div className="auth-container bg-white/40 dark:bg-zinc-950/20 p-6 rounded-[2rem] border border-primary/5">
+          <div className="auth-container bg-zinc-50 dark:bg-zinc-950/40 p-6 rounded-[2rem] border border-zinc-200 dark:border-zinc-800/50">
             {authView === "update_password" ? (
               <form onSubmit={handleUpdatePassword} className="space-y-4">
                 <div className="space-y-2 text-left">
-                  <Label htmlFor="new-password" className="text-xs font-black uppercase tracking-widest px-1">New Password</Label>
+                  <Label htmlFor="new-password" className="text-xs font-black uppercase tracking-widest px-1 text-foreground">New Password</Label>
                   <Input
                     id="new-password"
                     type="password"
@@ -127,7 +131,7 @@ const Login = () => {
                     placeholder="Min 6 characters..."
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                    className="rounded-2xl h-12 bg-white dark:bg-zinc-900 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:ring-primary font-bold"
                   />
                 </div>
                 <Button 
@@ -160,7 +164,7 @@ const Login = () => {
                     }
                   }}
                   providers={[]}
-                  theme="dark"
+                  theme={currentTheme}
                 />
 
                 {/* Helpful note about Supabase free tier email rate limits */}
