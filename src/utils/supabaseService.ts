@@ -59,13 +59,6 @@ export const supabaseService = {
   // Fetch all posts from Supabase (with automatic fallback to localStorage)
   async getPosts(): Promise<VersePost[]> {
     try {
-      // Silent Keep-Alive touch to prevent Supabase database from going idle
-      try {
-        supabase.from('keep_alive').upsert([{ id: 1, pinged_at: new Date().toISOString() }], { onConflict: 'id' }).then(() => {});
-      } catch (pingErr) {
-        // Fallback silently if table or permissions are unconfigured
-      }
-
       // 1. Get current user session to see if we can do background auto-provisioning
       const { data: { session } } = await supabase.auth.getSession();
 
