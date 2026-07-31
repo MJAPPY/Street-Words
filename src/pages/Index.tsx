@@ -15,11 +15,21 @@ const Landing = () => {
     <div className="min-h-screen urban-pattern bg-background/50">
       <Navbar />
       
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-20 md:pt-32 md:pb-32 overflow-hidden">
-        <div className="container max-w-6xl relative z-10">
+      {/* Hero Section with Beautiful Custom Background Image */}
+      <section className="relative pt-24 pb-20 md:pt-36 md:pb-36 overflow-hidden">
+        {/* Background Image Container with dark premium overlay */}
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="/1500x500.jpg" 
+            alt="Street Words Banner" 
+            className="w-full h-full object-cover opacity-35 dark:opacity-25"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/85 to-background z-10" />
+        </div>
+
+        <div className="container max-w-6xl relative z-20">
           <div className="flex flex-col items-center text-center space-y-12">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-5 py-2 text-primary text-xs font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 backdrop-blur-md rounded-full px-5 py-2 text-primary text-xs font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
               <Sparkles className="h-3.5 w-3.5" />
               He has overcome the world — John 16:33
             </div>
@@ -30,7 +40,7 @@ const Landing = () => {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary animate-shimmer-text">WORDS</span>
               </h1>
               <div className="space-y-6 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed">
+                <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed drop-shadow-sm">
                   Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation fulfilled by our Creator’s only begotten Son — our Savior Yeshua (Jesus).
                 </p>
                 <div className="inline-block py-2.5 px-8 rounded-3xl bg-primary/5 border border-primary/10 backdrop-blur-sm animate-title-glow">
@@ -51,7 +61,7 @@ const Landing = () => {
           </div>
         </div>
         
-        {/* Animated Background Elements */}
+        {/* Animated Background Glows */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#ec4899]/10 rounded-full blur-[140px] pointer-events-none animate-pulse delay-700" />
       </section>
