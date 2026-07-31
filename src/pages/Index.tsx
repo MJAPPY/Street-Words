@@ -15,8 +15,8 @@ const Landing = () => {
     <div className="min-h-screen urban-pattern bg-background/50">
       <Navbar />
       
-      {/* Hero Section with Beautiful Custom Background Image (Height reduced) */}
-      <section className="relative pt-20 pb-16 md:pt-28 md:pb-28 overflow-hidden">
+      {/* Hero Section with Beautiful Custom Background Image (Height reduced further) */}
+      <section className="relative pt-16 pb-12 md:pt-20 md:pb-20 overflow-hidden">
         {/* Background Image Container with dark premium overlay and custom-aligned banner focus */}
         <div className="absolute inset-0 z-0">
           <img 
