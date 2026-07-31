@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { 
   Sparkles, ArrowRight, BookOpen, Users, 
-  Quote, Compass 
+  Quote, Compass, Camera
 } from 'lucide-react';
 
 const Landing = () => {
@@ -64,6 +64,53 @@ const Landing = () => {
         {/* Animated Background Glows */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#ec4899]/10 rounded-full blur-[140px] pointer-events-none animate-pulse delay-700" />
+      </section>
+
+      {/* Street Poster Visual Curation Section */}
+      <section className="py-24 bg-gradient-to-b from-transparent to-primary/5">
+        <div className="container max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+            {/* Real Street Pole Poster Frame */}
+            <div className="md:col-span-5 relative group">
+              <div className="absolute -inset-4 bg-gradient-to-tr from-primary to-[#ec4899] rounded-[3.5rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+              <div className="relative overflow-hidden rounded-[3rem] border border-white/40 shadow-2xl bg-white/10 p-3">
+                <img 
+                  src="/streetpole.png" 
+                  alt="Physical Street Words Sticker Poster on pole" 
+                  className="w-full h-auto object-cover rounded-[2.5rem] transform hover:scale-105 transition-transform duration-700"
+                />
+              </div>
+            </div>
+            {/* Curated Message & Context */}
+            <div className="md:col-span-7 space-y-6 text-left">
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-wider">
+                <Camera className="h-3.5 w-3.5 text-[#ec4899]" />
+                Live on the Sidewalk
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-foreground leading-[1.1]">
+                Bringing Truth <br/>To the <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">Concrete Jungle</span>
+              </h2>
+              <p className="text-zinc-600 dark:text-zinc-300 font-medium leading-relaxed text-base">
+                Our stickers are custom designed and posted on public streets, poles, and sanctuary boards around cities worldwide. We are turning chaotic pedestrian walks into reflective encounters with eternal hope.
+              </p>
+              <div className="p-6 rounded-3xl bg-white/40 dark:bg-zinc-900/40 border border-white/50 dark:border-zinc-800/40">
+                <p className="text-sm font-bold text-foreground">
+                  "Most assuredly, I say to you, he who believes in Me has everlasting life."
+                </p>
+                <p className="text-xs font-black uppercase tracking-widest text-primary mt-2">
+                  — John 6:47
+                </p>
+              </div>
+              <div className="pt-4">
+                <Link to="/store">
+                  <Button className="rounded-full h-14 px-8 bg-primary hover:bg-primary/95 text-white font-black uppercase tracking-widest text-xs shadow-lg shadow-primary/20">
+                    Get Sticker Packs
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Feature Grid */}
