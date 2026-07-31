@@ -176,8 +176,8 @@ const Landing = () => {
           <div className="relative rounded-[4rem] overflow-hidden bg-zinc-900 text-white shadow-2xl border border-zinc-800">
             {/* Background Image with dramatic street lighting overlay */}
             <div 
-              className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-40 pointer-events-none"
-              style={{ backgroundImage: 'url("/1500x500.jpg")' }} 
+              className="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30 pointer-events-none"
+              style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&q=80&w=1200")' }} 
             />
             {/* Smooth dark overlay gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-zinc-950/80 to-transparent pointer-events-none" />
