@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
 import { useSession } from './SessionProvider';
+import { cn } from '@/lib/utils';
 
 const Navbar = () => {
   const location = useLocation();
@@ -15,6 +16,10 @@ const Navbar = () => {
   const { session, user, signOut } = useSession();
 
   const isAdmin = user?.email === 'streetwords21@proton.me';
+
+  const isLinkActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
@@ -44,13 +49,51 @@ const Navbar = () => {
             </div>
           </Link>
           
-          <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/70">
-            <Link to="/feed" className="transition-all hover:text-primary hover:tracking-[0.4em]">Feed</Link>
-            <Link to="/categories" className="transition-all hover:text-primary hover:tracking-[0.4em]">Categories</Link>
-            <Link to="/store" className="transition-all hover:text-primary hover:tracking-[0.4em]">Store</Link>
-            <Link to="/mission" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-1.5 text-primary">Mission</Link>
+          <div className="hidden lg:flex items-center gap-8 text-[11px] font-black uppercase tracking-[0.2em]">
+            <Link 
+              to="/feed" 
+              className={cn(
+                "transition-all hover:text-primary hover:tracking-[0.4em]",
+                isLinkActive('/feed') ? "text-primary font-black" : "text-muted-foreground/70"
+              )}
+            >
+              Feed
+            </Link>
+            <Link 
+              to="/categories" 
+              className={cn(
+                "transition-all hover:text-primary hover:tracking-[0.4em]",
+                isLinkActive('/categories') ? "text-primary font-black" : "text-muted-foreground/70"
+              )}
+            >
+              Categories
+            </Link>
+            <Link 
+              to="/store" 
+              className={cn(
+                "transition-all hover:text-primary hover:tracking-[0.4em]",
+                isLinkActive('/store') ? "text-primary font-black" : "text-muted-foreground/70"
+              )}
+            >
+              Store
+            </Link>
+            <Link 
+              to="/mission" 
+              className={cn(
+                "transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-1.5",
+                isLinkActive('/mission') ? "text-primary font-black" : "text-muted-foreground/70"
+              )}
+            >
+              Mission
+            </Link>
             {isAdmin && (
-              <Link to="/admin" className="transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2">
+              <Link 
+                to="/admin" 
+                className={cn(
+                  "transition-all hover:text-primary hover:tracking-[0.4em] flex items-center gap-2",
+                  isLinkActive('/admin') ? "text-primary font-black" : "text-muted-foreground/70"
+                )}
+              >
                 <Settings className="h-4 w-4" /> Admin
               </Link>
             )}
@@ -88,7 +131,7 @@ const Navbar = () => {
               </div>
 
               <Link to="/profile">
-                <Button variant="ghost" size="icon" className="rounded-none hover:bg-primary/5 h-10 w-10 sm:h-14 sm:w-14 border border-transparent hover:border-primary/20">
+                <Button variant="ghost" size="icon" className={cn("rounded-none hover:bg-primary/5 h-10 w-10 sm:h-14 sm:w-14 border border-transparent hover:border-primary/20", isLinkActive('/profile') && "text-primary")}>
                   <User className="h-5 w-5 sm:h-6 sm:w-6" />
                 </Button>
               </Link>
@@ -114,21 +157,21 @@ const Navbar = () => {
               </SheetTrigger>
               <SheetContent side="right" className="bg-background/95 backdrop-blur-xl border-l-primary/10">
                 <div className="flex flex-col gap-6 sm:gap-8 mt-16 text-left">
-                  <Link to="/" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Landing</Link>
-                  <Link to="/feed" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Feed</Link>
-                  <Link to="/categories" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Categories</Link>
-                  <Link to="/store" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Store</Link>
-                  <Link to="/mission" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors text-primary">Mission</Link>
+                  <Link to="/" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/') ? "text-primary" : "text-foreground")}>Landing</Link>
+                  <Link to="/feed" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/feed') ? "text-primary" : "text-foreground")}>Feed</Link>
+                  <Link to="/categories" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/categories') ? "text-primary" : "text-foreground")}>Categories</Link>
+                  <Link to="/store" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/store') ? "text-primary" : "text-foreground")}>Store</Link>
+                  <Link to="/mission" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/mission') ? "text-primary" : "text-foreground")}>Mission</Link>
                   {isAdmin && (
-                    <Link to="/admin" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Admin</Link>
+                    <Link to="/admin" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/admin') ? "text-primary" : "text-foreground")}>Admin</Link>
                   )}
                   {session ? (
                     <>
-                      <Link to="/profile" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">My Profile</Link>
+                      <Link to="/profile" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/profile') ? "text-primary" : "text-foreground")}>My Profile</Link>
                       <button onClick={signOut} className="text-left text-3xl sm:text-4xl font-black tracking-tighter hover:text-red-500 transition-colors">Sign Out</button>
                     </>
                   ) : (
-                    <Link to="/login" className="text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors">Login / Join</Link>
+                    <Link to="/login" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/login') ? "text-primary" : "text-foreground")}>Login / Join</Link>
                   )}
                   <div className="h-px bg-gradient-to-r from-primary/20 to-transparent" />
                   {session && (
