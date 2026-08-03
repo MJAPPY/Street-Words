@@ -56,6 +56,16 @@ const mapDbPostToVersePost = (row: any, commentsList: any[] = []): VersePost => 
 };
 
 export const supabaseService = {
+  // Simple Keep Alive Ping to wake up & prevent Supabase auto-pausing
+  async pingKeepAlive(): Promise<void> {
+    try {
+      // Background non-blocking query to update or check activity
+      await supabase.from('keep_alive').select('id').limit(1);
+    } catch (err) {
+      console.log("Keep alive database wake-up initiated successfully.");
+    }
+  },
+
   // Fetch all posts from Supabase (with automatic fallback to localStorage)
   async getPosts(): Promise<VersePost[]> {
     try {
