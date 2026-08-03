@@ -86,8 +86,8 @@ const Feed = () => {
       <section className="relative pt-20 pb-16 overflow-hidden border-b border-primary/5">
         <div className="container max-w-6xl relative z-10">
           <div className="flex flex-col items-center text-center space-y-8">
-            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <Sparkles className="h-3 w-3" />
+            <div className="inline-flex items-center gap-2 bg-primary/20 border border-primary/40 rounded-full px-4 py-1.5 text-white text-[10px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <Sparkles className="h-3 w-3 text-amber-300" />
               He has overcome the world — John 16:33
             </div>
             
