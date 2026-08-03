@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image, Camera } from 'lucide-react';
+import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image, Camera, ArrowRight } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 
