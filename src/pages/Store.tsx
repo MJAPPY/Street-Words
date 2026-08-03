@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image } from 'lucide-react';
+import { ShoppingBag, Info, ExternalLink, Sparkles, Shirt, Laptop, Smartphone, Home, Image, Camera } from 'lucide-react';
 import { showSuccess } from '@/utils/toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -93,7 +93,7 @@ const Store = () => {
     },
     { 
       name: 'Home & Living Decor', 
-      description: 'Cozy throw pillows, ceramic mugs, and custom shower curtains decorated with timeless scripture.', 
+      description: 'Cozy throw pillows, ceramic mugs, and custom scripture items for your home.', 
       icon: Home, 
       iaCode: 'u-home-living',
       color: 'from-emerald-400 to-teal-500'
@@ -109,7 +109,7 @@ const Store = () => {
         <header className="mb-16 text-center space-y-6 relative">
           <div className="inline-flex items-center gap-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-4 py-1.5 text-rose-600 dark:text-rose-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">
             <ShoppingBag className="h-3.5 w-3.5" />
-            Redbubble Department Directory
+            Official merchandise storefront
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground leading-[0.85]">
             THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#ec4899]">STORE</span>
@@ -121,7 +121,7 @@ const Store = () => {
               </span>
             ) : (
               <span>
-                Premium apparel and home decor designed to share scripture in a fun way—whether it be custom stickers or a shower curtain! Designed in-house and delivered securely through Redbubble.
+                Premium stickers, apparel, and decals designed to share scripture in a modern way. Our designs are custom made and delivered worldwide securely via Redbubble.
               </span>
             )}
           </p>
@@ -172,6 +172,45 @@ const Store = () => {
                 </Card>
               );
             })}
+          </div>
+        </section>
+
+        {/* Live Sticker Campaign Gallery Feature Section */}
+        <section className="mb-20 p-8 md:p-12 rounded-[3rem] bg-white/40 dark:bg-zinc-900/40 backdrop-blur-md border border-white/60 dark:border-zinc-800/60 shadow-xl max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center text-left">
+            <div className="md:col-span-5 relative group">
+              <div className="absolute -inset-2 bg-gradient-to-tr from-primary to-[#ec4899] rounded-[2.5rem] blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+              <img 
+                src="/streetwords-tokyo.png" 
+                alt="Physical print sticker on Shibuya light pole" 
+                className="rounded-[2rem] w-full h-auto max-h-[480px] object-cover shadow-2xl transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div className="md:col-span-7 space-y-6">
+              <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-primary text-[10px] font-black uppercase tracking-wider">
+                <Camera className="h-3.5 w-3.5" />
+                See it in action
+              </div>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter text-foreground">
+                Our Stickers, <br/>Spreading Grace Worldwide
+              </h2>
+              <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                Wondering how the products actually look? This is a high-durability waterproof matte vinyl sticker posted on a pedestrian light pole in Shibuya, Tokyo. Ready to resist weather, sun exposure, and city hustle.
+              </p>
+              <div className="p-5 rounded-2xl bg-zinc-100/50 dark:bg-zinc-950/40 border border-white/40 dark:border-zinc-800/40">
+                <p className="text-xs font-bold text-foreground">
+                  Our custom die-cut vinyl sticker packs are built with outdoor grade adhesive to ensure they remain beautiful forever!
+                </p>
+              </div>
+              <div>
+                <Button 
+                  onClick={() => handleDepartmentClick('u-stationery', 'Stickers & Decals')}
+                  className="rounded-full h-12 px-6 bg-primary hover:bg-primary/95 text-white font-black uppercase tracking-widest text-xs shadow-md"
+                >
+                  Buy Sticker Pack <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </section>
 
