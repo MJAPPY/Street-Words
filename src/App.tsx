@@ -16,6 +16,7 @@ import PostDetail from "./pages/PostDetail";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Mission from "./pages/Mission";
 import { supabaseService } from "@/utils/supabaseService";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => {
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/post/:id" element={<PostDetail />} />
                 <Route path="/profile/:username?" element={<Profile />} />
+                <Route path="/mission" element={<Mission />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
