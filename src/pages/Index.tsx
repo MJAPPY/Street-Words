@@ -41,7 +41,7 @@ const Landing = () => {
               </h1>
               <div className="space-y-6 max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-12 duration-1000">
                 <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed drop-shadow-sm">
-                  Sharing hope together in a broken world with timeless truth, grounded in the Biblical revelation fulfilled by our Creator’s only begotten Son — our Savior Yeshua (Jesus).
+                  Through the timeless truth of God’s Word, fulfilled in His only begotten Son, our Savior Yeshua (Jesus).
                 </p>
                 <div className="inline-block py-2.5 px-8 rounded-3xl bg-primary/5 border border-primary/10 backdrop-blur-sm animate-title-glow">
                   <p className="text-sm md:text-lg font-black uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-primary via-[#ec4899] to-primary animate-shimmer-text">
