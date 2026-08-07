@@ -174,6 +174,47 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     }));
   };
 
+  const handleEditComment = async (commentId: string, newContent: string) => {
+    await supabaseService.updateComment(commentId, newContent);
+
+    const updateInComments = (commentsList: Comment[]): Comment[] => {
+      return commentsList.map(c => {
+        if (c.id === commentId) {
+          return { ...c, content: newContent };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return { ...c, replies: updateInComments(c.replies) };
+        }
+        return c;
+      });
+    };
+
+    setPost(prev => ({
+      ...prev,
+      comments: updateInComments(prev.comments)
+    }));
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    await supabaseService.deleteComment(commentId);
+
+    const deleteFromComments = (commentsList: Comment[]): Comment[] => {
+      return commentsList
+        .filter(c => c.id !== commentId)
+        .map(c => {
+          if (c.replies && c.replies.length > 0) {
+            return { ...c, replies: deleteFromComments(c.replies) };
+          }
+          return c;
+        });
+    };
+
+    setPost(prev => ({
+      ...prev,
+      comments: deleteFromComments(prev.comments)
+    }));
+  };
+
   return (
     <Card className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
       {/* Target capture zone for printing & socials */}
@@ -319,6 +360,8 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                   key={comment.id} 
                   comment={comment} 
                   onReply={handleReply}
+                  onEdit={handleEditComment}
+                  onDelete={handleDeleteComment}
                 />
               ))}
             </div>

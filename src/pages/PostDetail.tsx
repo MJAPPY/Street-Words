@@ -105,6 +105,49 @@ const PostDetail = () => {
     });
   };
 
+  const handleEditComment = async (commentId: string, newContent: string) => {
+    if (!post) return;
+    await supabaseService.updateComment(commentId, newContent);
+
+    const updateInComments = (comments: Comment[]): Comment[] => {
+      return comments.map(c => {
+        if (c.id === commentId) {
+          return { ...c, content: newContent };
+        }
+        if (c.replies && c.replies.length > 0) {
+          return { ...c, replies: updateInComments(c.replies) };
+        }
+        return c;
+      });
+    };
+
+    setPost({
+      ...post,
+      comments: updateInComments(post.comments)
+    });
+  };
+
+  const handleDeleteComment = async (commentId: string) => {
+    if (!post) return;
+    await supabaseService.deleteComment(commentId);
+
+    const deleteFromComments = (comments: Comment[]): Comment[] => {
+      return comments
+        .filter(c => c.id !== commentId)
+        .map(c => {
+          if (c.replies && c.replies.length > 0) {
+            return { ...c, replies: deleteFromComments(c.replies) };
+          }
+          return c;
+        });
+    };
+
+    setPost({
+      ...post,
+      comments: deleteFromComments(post.comments)
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen urban-pattern bg-background/50">
@@ -223,6 +266,8 @@ const PostDetail = () => {
                   key={comment.id} 
                   comment={comment} 
                   onReply={handleReply}
+                  onEdit={handleEditComment}
+                  onDelete={handleDeleteComment}
                 />
               ))}
             </div>
