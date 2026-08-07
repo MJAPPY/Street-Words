@@ -1,19 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CategoryPills from '@/components/CategoryPills';
 import VerseCard from '@/components/VerseCard';
 import { Category, VersePost } from '@/types';
-import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, MessageSquare } from 'lucide-react';
+import { Sparkles, X, ArrowRight, BookOpen, Search, Quote, MessageSquare, Twitter, Facebook, Download, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import CreatePostModal from '@/components/CreatePostModal';
 import { supabaseService } from '@/utils/supabaseService';
 import { INITIAL_POSTS } from '@/utils/posts';
 import { getDailyVerseForToday } from '@/utils/dailyVerses';
+import { showSuccess, showError } from '@/utils/toast';
+import html2canvas from 'html2canvas';
 
 const Feed = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,7 +29,9 @@ const Feed = () => {
   
   // Interactive Daily Word Reveal states
   const [isRevealed, setIsRevealed] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const dailyVerse = getDailyVerseForToday();
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const loadPosts = async () => {
     const posts = await supabaseService.getPosts();
@@ -77,6 +81,53 @@ const Feed = () => {
       p.author.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  const handleShareTwitter = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const text = encodeURIComponent(`"${dailyVerse.verse}" — ${dailyVerse.reference}\n\nShared via @StreetWords21. Read the discernment thread at:`);
+    const url = encodeURIComponent(window.location.origin);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
+    showSuccess("Redirected to X (Twitter) share page!");
+  };
+
+  const handleShareFacebook = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = encodeURIComponent(window.location.origin);
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'noopener,noreferrer');
+    showSuccess("Redirected to Facebook share page!");
+  };
+
+  const handleDownloadCard = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!cardRef.current) return;
+    setIsSharing(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      const canvas = await html2canvas(cardRef.current, {
+        useCORS: true,
+        scale: 3, // 3x high-res
+        backgroundColor: null,
+        logging: false,
+        borderRadius: 40
+      });
+
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `streetwords-promise-${dailyVerse.reference.replace(/\s+/g, '-').replace(/:/g, '-').toLowerCase()}.png`;
+      link.href = image;
+      link.click();
+      showSuccess("Promise Card downloaded successfully!");
+    } catch (err) {
+      console.error(err);
+      showError("Could not generate Promise Card card image.");
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen urban-pattern bg-background/30">
@@ -136,6 +187,7 @@ const Feed = () => {
         {/* Interactive Daily Promise Reveal Card Widget */}
         <div className="mb-16">
           <div 
+            ref={cardRef}
             onClick={() => setIsRevealed(!isRevealed)}
             className="group relative cursor-pointer overflow-hidden p-8 md:p-12 rounded-[2.5rem] bg-gradient-to-br from-[#a855f7] to-[#ec4899] text-white shadow-2xl transition-all duration-500 hover:scale-[1.01] hover:shadow-pink-500/20"
           >
@@ -166,11 +218,39 @@ const Feed = () => {
                         {dailyVerse.discernment}
                       </p>
                     </div>
+
+                    {/* Shared elements menu */}
+                    <div className="flex flex-wrap gap-2 pt-2" data-html2canvas-ignore="true">
+                      <Button 
+                        onClick={handleShareTwitter}
+                        className="h-9 px-4 rounded-full bg-black hover:bg-zinc-900 text-white font-black uppercase tracking-widest text-[9px] gap-1.5 shadow-md border border-white/15"
+                      >
+                        <Twitter className="h-3 w-3 fill-white text-black" /> Post on X
+                      </Button>
+                      <Button 
+                        onClick={handleShareFacebook}
+                        className="h-9 px-4 rounded-full bg-[#1877F2] hover:bg-[#166FE5] text-white font-black uppercase tracking-widest text-[9px] gap-1.5 shadow-md border border-white/15"
+                      >
+                        <Facebook className="h-3.5 w-3.5 fill-white text-[#1877F2]" /> Facebook
+                      </Button>
+                      <Button 
+                        onClick={handleDownloadCard}
+                        disabled={isSharing}
+                        className="h-9 px-4 rounded-full bg-white/20 hover:bg-white/30 text-white font-black uppercase tracking-widest text-[9px] gap-1.5 backdrop-blur-md border border-white/10"
+                      >
+                        {isSharing ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Download className="h-3 w-3" />
+                        )}
+                        Download Card
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
               
-              <div className="shrink-0 flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+              <div className="shrink-0 flex items-center justify-center" data-html2canvas-ignore="true" onClick={(e) => e.stopPropagation()}>
                 {!isRevealed ? (
                   <Button 
                     onClick={() => setIsRevealed(true)}
