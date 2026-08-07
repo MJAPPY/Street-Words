@@ -65,6 +65,10 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     // Check saved status on load
     const savedIds = supabaseService.getSavedPostIds();
     setIsSaved(savedIds.includes(post.id));
+
+    // Check liked status on load
+    const likedIds = supabaseService.getLikedPostIds();
+    setIsLiked(likedIds.includes(post.id));
   }, [post.id]);
 
   // Check if the current user is the author of this post
@@ -82,10 +86,11 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       return;
     }
 
-    const nextLiked = !isLiked;
+    const nextLiked = supabaseService.toggleLikedPostId(post.id);
     setIsLiked(nextLiked);
     
-    const updatedLikesCount = await supabaseService.toggleLike(post.id, post.likes, isLiked);
+    // Toggle actual counts (db toggle uses current isLiked to determine the delta)
+    const updatedLikesCount = await supabaseService.toggleLike(post.id, post.likes, !nextLiked);
     setPost(prev => ({ ...prev, likes: updatedLikesCount }));
   };
 
@@ -314,7 +319,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
             <div className="w-1.5 h-1.5 rounded-full bg-primary" />
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">Author's Discernment</h4>
           </div>
-          <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic opacity-90">
+          <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic opacity-90 text-left">
             {post.relevance}
           </p>
         </div>

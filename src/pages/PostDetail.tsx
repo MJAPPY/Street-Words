@@ -36,6 +36,13 @@ const PostDetail = () => {
     fetchPostDetails();
   }, [id]);
 
+  useEffect(() => {
+    if (post) {
+      const likedIds = supabaseService.getLikedPostIds();
+      setIsLiked(likedIds.includes(post.id));
+    }
+  }, [post]);
+
   const handleLike = async () => {
     if (!session) {
       showSuccess("Join the sanctuary to like posts!");
@@ -44,9 +51,9 @@ const PostDetail = () => {
     }
     if (!post) return;
     
-    const nextLiked = !isLiked;
+    const nextLiked = supabaseService.toggleLikedPostId(post.id);
     setIsLiked(nextLiked);
-    const updatedLikes = await supabaseService.toggleLike(post.id, post.likes, isLiked);
+    const updatedLikes = await supabaseService.toggleLike(post.id, post.likes, !nextLiked);
     setPost(prev => prev ? { ...prev, likes: updatedLikes } : prev);
   };
 
@@ -202,7 +209,7 @@ const PostDetail = () => {
 
             <div className="bg-muted/30 dark:bg-zinc-950/40 rounded-3xl p-8 border border-white/40 dark:border-zinc-800/40 mb-8">
               <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-4">Street Discernment</h4>
-              <p className="text-lg text-foreground/80 leading-relaxed font-medium italic">
+              <p className="text-lg text-foreground/80 leading-relaxed font-medium italic text-left">
                 {post.relevance}
               </p>
             </div>

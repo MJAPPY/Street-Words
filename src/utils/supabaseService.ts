@@ -449,7 +449,7 @@ export const supabaseService = {
           favoriteReference: data.favorite_reference || undefined,
           socialLink: data.social_link || undefined,
           videoLink: data.video_link || undefined,
-          website_link: data.website_link || undefined,
+          websiteLink: data.website_link || undefined,
           location: data.location || undefined,
           stats: defaultProfile.stats
         };
@@ -512,6 +512,36 @@ export const supabaseService = {
       localStorage.setItem('streetwords_saved_posts', JSON.stringify(current));
       window.dispatchEvent(new Event('storage'));
       return isSaved;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  },
+
+  // Get list of liked post IDs persistently
+  getLikedPostIds(): string[] {
+    try {
+      const stored = localStorage.getItem('streetwords_liked_posts');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  // Toggle liked post ID status in local cache
+  toggleLikedPostId(postId: string): boolean {
+    try {
+      const current = this.getLikedPostIds();
+      const index = current.indexOf(postId);
+      let isLiked = false;
+      if (index > -1) {
+        current.splice(index, 1);
+      } else {
+        current.push(postId);
+        isLiked = true;
+      }
+      localStorage.setItem('streetwords_liked_posts', JSON.stringify(current));
+      return isLiked;
     } catch (e) {
       console.error(e);
       return false;
