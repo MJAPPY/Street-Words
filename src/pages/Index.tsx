@@ -1,16 +1,49 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
 import { 
   Sparkles, ArrowRight, BookOpen, Users, 
-  Quote, Compass
+  Quote, Compass, Loader2
 } from 'lucide-react';
+import { VersePost } from '@/types';
+import { supabaseService } from '@/utils/supabaseService';
+import VerseCard from '@/components/VerseCard';
 
 const Landing = () => {
+  const [latestPost, setLatestPost] = useState<VersePost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchLatestPost = async () => {
+    try {
+      const posts = await supabaseService.getPosts();
+      if (posts && posts.length > 0) {
+        // Since getPosts() orders by created_at DESC (and appends INITIAL_POSTS at the end),
+        // the first item is the absolute latest post.
+        setLatestPost(posts[0]);
+      }
+    } catch (e) {
+      console.error("Could not fetch latest post", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLatestPost();
+
+    // Re-fetch when storage updates (e.g. from dynamic new posts or comments)
+    window.addEventListener('storage', fetchLatestPost);
+    window.addEventListener('focus', fetchLatestPost);
+    return () => {
+      window.removeEventListener('storage', fetchLatestPost);
+      window.removeEventListener('focus', fetchLatestPost);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen urban-pattern bg-background/50">
       <Navbar />
@@ -64,6 +97,41 @@ const Landing = () => {
         {/* Animated Background Glows */}
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none animate-pulse" />
         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] bg-[#ec4899]/10 rounded-full blur-[140px] pointer-events-none animate-pulse delay-700" />
+      </section>
+
+      {/* Dynamic Latest Post preview showcase */}
+      <section className="py-16 bg-white/10 dark:bg-zinc-950/20 border-y border-primary/5">
+        <div className="container max-w-4xl space-y-10 text-center">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/25 rounded-full px-4 py-1 text-primary text-[10px] font-black uppercase tracking-[0.25em]">
+              <Sparkles className="h-3.5 w-3.5 text-amber-500 animate-spin" />
+              Latest Pavement Light
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">
+              Absolute Latest Post
+            </h2>
+            <p className="text-sm text-muted-foreground font-medium max-w-lg mx-auto">
+              The absolute freshest word shared with the community, updated in real-time.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto">
+            {loading ? (
+              <div className="py-24 flex flex-col items-center justify-center gap-3 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-sm rounded-[3rem] border border-primary/5">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest">Gathering testimony...</p>
+              </div>
+            ) : latestPost ? (
+              <div className="animate-in fade-in zoom-in-95 duration-500">
+                <VerseCard post={latestPost} />
+              </div>
+            ) : (
+              <div className="py-16 bg-white/40 dark:bg-zinc-900/40 backdrop-blur-sm rounded-[3rem] border-2 border-dashed border-primary/10">
+                <p className="text-muted-foreground font-medium text-sm">No testimonies shared yet.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </section>
 
       {/* Street Poster Visual Curation Section */}
