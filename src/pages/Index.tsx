@@ -22,7 +22,7 @@ const Landing = () => {
       const posts = await supabaseService.getPosts();
       if (posts && posts.length > 0) {
         // Since getPosts() orders by created_at DESC (and appends INITIAL_POSTS at the end),
-        // the first item is the absolute latest post.
+        // the first item is the latest post.
         setLatestPost(posts[0]);
       }
     } catch (e) {
@@ -108,10 +108,10 @@ const Landing = () => {
               Latest Pavement Light
             </div>
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter text-foreground">
-              Absolute Latest Post
+              Latest Post
             </h2>
             <p className="text-sm text-muted-foreground font-medium max-w-lg mx-auto">
-              The absolute freshest word shared with the community, updated in real-time.
+              The freshest word shared with the community, updated in real-time.
             </p>
           </div>
 
