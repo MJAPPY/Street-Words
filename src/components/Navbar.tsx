@@ -1,9 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut, Info } from 'lucide-react';
+import { Search, User, Menu, Settings, LogIn, PenSquare, Sun, Moon, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useTheme } from 'next-themes';
 import CreatePostModal from './CreatePostModal';
@@ -14,12 +14,15 @@ const Navbar = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
   const { session, user, signOut } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
 
   const isAdmin = user?.email === 'streetwords21@proton.me';
 
   const isLinkActive = (path: string) => {
     return location.pathname === path;
   };
+
+  const closeMenu = () => setIsOpen(false);
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background/80 backdrop-blur-xl">
@@ -39,7 +42,7 @@ const Navbar = () => {
               />
             </div>
             
-            <div className="flex flex-col -space-y-1 sm:-space-y-2">
+            <div className="flex flex-col -space-y-1 sm:-space-y-2 text-left">
               <span className="font-black text-xl sm:text-4xl tracking-tighter text-foreground group-hover:text-primary transition-colors duration-300">
                 STREET
               </span>
@@ -149,7 +152,7 @@ const Navbar = () => {
           )}
 
           <div className="lg:hidden">
-            <Sheet>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-14 sm:w-14 rounded-none">
                   <Menu className="h-6 w-6 sm:h-8 sm:w-8" />
@@ -157,25 +160,26 @@ const Navbar = () => {
               </SheetTrigger>
               <SheetContent side="right" className="bg-background/95 backdrop-blur-xl border-l-primary/10">
                 <div className="flex flex-col gap-6 sm:gap-8 mt-16 text-left">
-                  <Link to="/" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/') ? "text-primary" : "text-foreground")}>Landing</Link>
-                  <Link to="/feed" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/feed') ? "text-primary" : "text-foreground")}>Feed</Link>
-                  <Link to="/categories" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/categories') ? "text-primary" : "text-foreground")}>Categories</Link>
-                  <Link to="/store" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/store') ? "text-primary" : "text-foreground")}>Store</Link>
-                  <Link to="/mission" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/mission') ? "text-primary" : "text-foreground")}>Mission</Link>
+                  <Link to="/" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/') ? "text-primary" : "text-foreground")}>Home</Link>
+                  <Link to="/feed" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/feed') ? "text-primary" : "text-foreground")}>Feed</Link>
+                  <Link to="/categories" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/categories') ? "text-primary" : "text-foreground")}>Categories</Link>
+                  <Link to="/store" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/store') ? "text-primary" : "text-foreground")}>Store</Link>
+                  <Link to="/mission" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/mission') ? "text-primary" : "text-foreground")}>Mission</Link>
                   {isAdmin && (
-                    <Link to="/admin" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/admin') ? "text-primary" : "text-foreground")}>Admin</Link>
+                    <Link to="/admin" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/admin') ? "text-primary" : "text-foreground")}>Admin</Link>
                   )}
                   {session ? (
                     <>
-                      <Link to="/profile" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/profile') ? "text-primary" : "text-foreground")}>My Profile</Link>
-                      <button onClick={signOut} className="text-left text-3xl sm:text-4xl font-black tracking-tighter hover:text-red-500 transition-colors">Sign Out</button>
+                      <Link to="/profile" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/profile') ? "text-primary" : "text-foreground")}>My Profile</Link>
+                      <button onClick={() => { signOut(); closeMenu(); }} className="text-left text-3xl sm:text-4xl font-black tracking-tighter hover:text-red-500 transition-colors">Sign Out</button>
                     </>
                   ) : (
-                    <Link to="/login" className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/login') ? "text-primary" : "text-foreground")}>Login / Join</Link>
+                    <Link to="/login" onClick={closeMenu} className={cn("text-3xl sm:text-4xl font-black tracking-tighter hover:text-primary transition-colors", isLinkActive('/login') ? "text-primary" : "text-foreground")}>Login / Join</Link>
                   )}
                   <div className="h-px bg-gradient-to-r from-primary/20 to-transparent" />
                   {session && (
                     <CreatePostModal 
+                      onPostCreated={closeMenu}
                       trigger={
                         <Button className="w-full justify-between rounded-none h-16 px-6 font-black text-lg uppercase tracking-widest bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all">
                           Post Verse
