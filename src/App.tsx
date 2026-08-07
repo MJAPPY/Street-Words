@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { SessionProvider } from "@/components/SessionProvider";
 import AuthHandler from "@/components/AuthHandler";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Feed from "./pages/Feed";
 import Categories from "./pages/Categories";
@@ -35,6 +36,8 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              {/* Scroll to top automatically on route transitions */}
+              <ScrollToTop />
               {/* Catch password recovery tokens globally and redirect the user */}
               <AuthHandler />
               <Routes>
