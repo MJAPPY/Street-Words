@@ -1,14 +1,22 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { VersePost, Comment } from '@/types';
+import { VersePost, Comment, Category, CATEGORY_DATA } from '@/types';
 import { Card, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, ArrowRight, Flag, Bookmark, Download, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, 
+  ArrowRight, Flag, Bookmark, Download, Loader2, Edit3, 
+  PenSquare, Sparkles 
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { showSuccess, showError } from '@/utils/toast';
-import { Input } from '@/components/ui/input';
 import CommentItem from './CommentItem';
 import { useSession } from '@/components/SessionProvider';
 import { supabaseService } from '@/utils/supabaseService';
@@ -30,13 +38,40 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const [newComment, setNewComment] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Edit form state
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isUpdatingPost, setIsUpdatingPost] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    verse: post.verse,
+    reference: post.reference,
+    relevance: post.relevance,
+    category: post.category
+  });
+
   const captureRef = useRef<HTMLDivElement>(null);
+
+  // Sync state if initialPost changes
+  useEffect(() => {
+    setPost(initialPost);
+    setEditFormData({
+      verse: initialPost.verse,
+      reference: initialPost.reference,
+      relevance: initialPost.relevance,
+      category: initialPost.category
+    });
+  }, [initialPost]);
 
   useEffect(() => {
     // Check saved status on load
     const savedIds = supabaseService.getSavedPostIds();
     setIsSaved(savedIds.includes(post.id));
   }, [post.id]);
+
+  // Check if the current user is the author of this post
+  const currentUserHandle = user?.email === 'streetwords21@proton.me' 
+    ? 'StreetWords' 
+    : (user?.email?.split('@')[0] || '');
+  const isAuthor = session && currentUserHandle && currentUserHandle.toLowerCase() === post.author.toLowerCase();
 
   const handleLike = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -122,6 +157,29 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       return;
     }
     showSuccess("Post reported successfully. Moderation team is reviewing it.");
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editFormData.verse.trim() || !editFormData.reference.trim()) return;
+
+    setIsUpdatingPost(true);
+    try {
+      await supabaseService.updatePost(post.id, editFormData);
+      setPost(prev => ({
+        ...prev,
+        verse: editFormData.verse,
+        reference: editFormData.reference,
+        relevance: editFormData.relevance,
+        category: editFormData.category
+      }));
+      setIsEditDialogOpen(false);
+      showSuccess("Your post has been updated!");
+    } catch (err) {
+      showError("Could not update post.");
+    } finally {
+      setIsUpdatingPost(false);
+    }
   };
 
   const handleAddComment = async (e: React.FormEvent) => {
@@ -293,6 +351,111 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
           </div>
           
           <div className="flex gap-2">
+            {isAuthor && (
+              <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-12 w-12 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors" 
+                    title="Edit Post"
+                  >
+                    <Edit3 className="h-5 w-5" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-8 md:p-10">
+                  <DialogHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="p-2 rounded-xl bg-primary/10 text-primary">
+                        <PenSquare className="h-5 w-5" />
+                      </div>
+                      <DialogTitle className="text-2xl font-black tracking-tight">Edit Your Word</DialogTitle>
+                    </div>
+                    <p className="text-muted-foreground text-sm font-medium">Keep the community guided with accurate truth.</p>
+                  </DialogHeader>
+                  
+                  <form onSubmit={handleEditSubmit} className="space-y-8 py-6">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-verse" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                          <Quote className="h-3 w-3 text-primary" /> The Scripture
+                        </Label>
+                        <Textarea
+                          id="edit-verse"
+                          required
+                          value={editFormData.verse}
+                          onChange={(e) => setEditFormData(prev => ({ ...prev, verse: e.target.value }))}
+                          className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white transition-all font-serif italic text-lg p-6"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-reference" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
+                          <Input
+                            id="edit-reference"
+                            required
+                            value={editFormData.reference}
+                            onChange={(e) => setEditFormData(prev => ({ ...prev, reference: e.target.value }))}
+                            className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="edit-category" className="text-xs font-black uppercase tracking-widest px-1">Category</Label>
+                          <Select 
+                            value={editFormData.category} 
+                            onValueChange={(val) => setEditFormData(prev => ({ ...prev, category: val as Category }))}
+                          >
+                            <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-black uppercase tracking-widest text-[10px]">
+                              <SelectValue placeholder="Select Category" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-2xl border-none shadow-xl">
+                              {CATEGORY_DATA.map(cat => (
+                                <SelectItem key={cat.name} value={cat.name} className="font-black uppercase tracking-widest text-[10px] focus:bg-primary/5">
+                                  {cat.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pt-2">
+                        <Label htmlFor="edit-relevance" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
+                          <Sparkles className="h-3 w-3 text-primary" /> Your Discernment
+                        </Label>
+                        <Textarea
+                          id="edit-relevance"
+                          value={editFormData.relevance}
+                          onChange={(e) => setEditFormData(prev => ({ ...prev, relevance: e.target.value }))}
+                          className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white transition-all font-medium"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-4 flex gap-4">
+                      <Button 
+                        type="button" 
+                        variant="ghost" 
+                        onClick={() => setIsEditDialogOpen(false)}
+                        className="flex-1 h-14 rounded-full font-black uppercase tracking-widest text-xs"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={isUpdatingPost || !editFormData.verse || !editFormData.reference}
+                        className="flex-[2] h-14 rounded-full bg-primary hover:bg-primary/90 text-white font-black uppercase tracking-widest shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95"
+                      >
+                        {isUpdatingPost ? <Loader2 className="h-5 w-5 animate-spin" /> : "Save Changes"}
+                      </Button>
+                    </div>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            )}
+
             <Button 
               variant="ghost" 
               size="icon" 

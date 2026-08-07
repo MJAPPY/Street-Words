@@ -193,6 +193,40 @@ export const supabaseService = {
     return newPost;
   },
 
+  async updatePost(postId: string, updatedFields: { verse: string; reference: string; relevance: string; category: Category }): Promise<void> {
+    // 1. Sync with LocalStorage first
+    try {
+      const stored = localStorage.getItem('streetwords_posts');
+      if (stored) {
+        const parsed = JSON.parse(stored) as VersePost[];
+        const updated = parsed.map(p => p.id === postId ? { ...p, ...updatedFields } : p);
+        localStorage.setItem('streetwords_posts', JSON.stringify(updated));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    // 2. Sync with Supabase
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .update({
+          verse: updatedFields.verse,
+          reference: updatedFields.reference,
+          relevance: updatedFields.relevance,
+          category: updatedFields.category
+        })
+        .eq('id', postId);
+
+      if (error) throw error;
+    } catch (err) {
+      console.warn("Could not sync post update to Supabase.", err);
+    }
+    
+    // Dispatch storage event to alert other listening components
+    window.dispatchEvent(new Event('storage'));
+  },
+
   async toggleLike(postId: string, currentLikes: number, isLiked: boolean): Promise<number> {
     const nextLikes = isLiked ? currentLikes - 1 : currentLikes + 1;
 
@@ -415,7 +449,7 @@ export const supabaseService = {
           favoriteReference: data.favorite_reference || undefined,
           socialLink: data.social_link || undefined,
           videoLink: data.video_link || undefined,
-          websiteLink: data.website_link || undefined,
+          website_link: data.website_link || undefined,
           location: data.location || undefined,
           stats: defaultProfile.stats
         };
