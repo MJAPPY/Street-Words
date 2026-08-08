@@ -109,15 +109,56 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const postUrl = `${window.location.origin}/post/${post.id}`;
+
+    // Try native share sheet first
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Street Words',
+          text: `"${post.verse}" - ${post.reference}`,
+          url: postUrl,
+        });
+        showSuccess("Shared successfully!");
+        return;
+      } catch (err) {
+        // Fall through to clipboard copying if native share sheet is dismissed or fails
+      }
+    }
+
+    // Try modern Clipboard API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try {
+        await navigator.clipboard.writeText(postUrl);
+        showSuccess("Link copied to clipboard!");
+        return;
+      } catch (err) {
+        // Fall through to traditional legacy copy method
+      }
+    }
+
+    // Bulletproof fallback copy method for environments like dev iframes
     try {
-      await navigator.share({
-        title: 'Street Words',
-        text: `"${post.verse}" - ${post.reference}`,
-        url: `${window.location.origin}/post/${post.id}`,
-      });
-    } catch (err) {
-      showSuccess("Link copied to clipboard!");
-      navigator.clipboard.writeText(`${window.location.origin}/post/${post.id}`);
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = postUrl;
+      // Prevent scrolling to bottom of page when appending
+      tempTextArea.style.top = "0";
+      tempTextArea.style.left = "0";
+      tempTextArea.style.position = "fixed";
+      document.body.appendChild(tempTextArea);
+      tempTextArea.focus();
+      tempTextArea.select();
+      
+      const success = document.execCommand("copy");
+      document.body.removeChild(tempTextArea);
+      
+      if (success) {
+        showSuccess("Link copied to clipboard!");
+      } else {
+        throw new Error("Unable to copy");
+      }
+    } catch (fallbackErr) {
+      showError("Could not copy link automatically. Please copy the URL from your address bar.");
     }
   };
 
@@ -483,7 +524,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
             <Button variant="ghost" size="icon" onClick={handleReport} className="h-12 w-12 rounded-2xl hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-colors" title="Report Post">
               <Flag className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" onClick={handleShare} className="h-12 w-12 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary">
+            <Button variant="ghost" size="icon" onClick={handleShare} className="h-12 w-12 rounded-2xl hover:bg-primary/10 text-muted-foreground hover:text-primary" title="Share & Copy Link">
               <Share2 className="h-6 w-6" />
             </Button>
             <Link to={`/post/${post.id}`}>
