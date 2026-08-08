@@ -111,33 +111,18 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     e.stopPropagation();
     const postUrl = `${window.location.origin}/post/${post.id}`;
 
-    // Try native share sheet first
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Street Words',
-          text: `"${post.verse}" - ${post.reference}`,
-          url: postUrl,
-        });
-        showSuccess("Shared successfully!");
-        return;
-      } catch (err) {
-        // Fall through to clipboard copying if native share sheet is dismissed or fails
-      }
-    }
-
-    // Try modern Clipboard API
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      try {
+    // Prioritize copying directly to clipboard for maximum reliability, avoiding native share sheet glitches in local environments
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(postUrl);
         showSuccess("Link copied to clipboard!");
         return;
-      } catch (err) {
-        // Fall through to traditional legacy copy method
       }
+    } catch (err) {
+      // Fall through to fallback copy if modern API fails
     }
 
-    // Bulletproof fallback copy method for environments like dev iframes
+    // Bulletproof fallback copy method for restricted iframe/dev environments
     try {
       const tempTextArea = document.createElement("textarea");
       tempTextArea.value = postUrl;
