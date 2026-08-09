@@ -130,7 +130,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                 placeholder="Enter the verse text here..."
                 value={formData.verse}
                 onChange={(e) => setFormData(prev => ({ ...prev, verse: e.target.value }))}
-                className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white transition-all font-serif italic text-lg p-6"
+                className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
               />
             </div>
 
@@ -143,7 +143,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                   placeholder="e.g. John 3:16"
                   value={formData.reference}
                   onChange={(e) => setFormData(prev => ({ ...prev, reference: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
                 />
               </div>
 
@@ -153,7 +153,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                   value={formData.category} 
                   onValueChange={(val) => setFormData(prev => ({ ...prev, category: val as Category }))}
                 >
-                  <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-black uppercase tracking-widest text-[10px]">
+                  <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-black uppercase tracking-widest text-[10px]">
                     <SelectValue placeholder="Select Category" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -176,7 +176,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                 placeholder="How does this truth apply to the streets today?"
                 value={formData.relevance}
                 onChange={(e) => setFormData(prev => ({ ...prev, relevance: e.target.value }))}
-                className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white transition-all font-medium"
+                className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
               />
               <p className="text-[9px] text-muted-foreground font-bold px-1 italic">Shared reflections help our community navigate life's complexities.</p>
             </div>
@@ -186,7 +186,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
             <Button 
               type="button" 
               variant="ghost" 
-              onClick={() => setIsOpen(false)}
+              onChange={() => setIsOpen(false)}
               className="flex-1 h-14 rounded-full font-black uppercase tracking-widest text-xs"
             >
               Cancel

@@ -416,7 +416,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                           required
                           value={editFormData.verse}
                           onChange={(e) => setEditFormData(prev => ({ ...prev, verse: e.target.value }))}
-                          className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white transition-all font-serif italic text-lg p-6"
+                          className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
                         />
                       </div>
 
@@ -428,7 +428,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                             required
                             value={editFormData.reference}
                             onChange={(e) => setEditFormData(prev => ({ ...prev, reference: e.target.value }))}
-                            className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                            className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
                           />
                         </div>
 
@@ -438,7 +438,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                             value={editFormData.category} 
                             onValueChange={(val) => setEditFormData(prev => ({ ...prev, category: val as Category }))}
                           >
-                            <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-black uppercase tracking-widest text-[10px]">
+                            <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-black uppercase tracking-widest text-[10px]">
                               <SelectValue placeholder="Select Category" />
                             </SelectTrigger>
                             <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -460,7 +460,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                           id="edit-relevance"
                           value={editFormData.relevance}
                           onChange={(e) => setEditFormData(prev => ({ ...prev, relevance: e.target.value }))}
-                          className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white transition-all font-medium"
+                          className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
                         />
                       </div>
                     </div>

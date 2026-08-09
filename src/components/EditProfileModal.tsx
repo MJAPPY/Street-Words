@@ -113,7 +113,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 id="name"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold"
               />
             </div>
 
@@ -126,7 +126,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 value={formData.location}
                 placeholder="e.g. Urban Sanctuary, New York"
                 onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold"
               />
             </div>
 
@@ -136,7 +136,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                 id="bio"
                 value={formData.bio}
                 onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                className="rounded-2xl bg-muted/30 border-transparent focus:bg-white transition-all font-medium min-h-[100px]"
+                className="rounded-2xl bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-medium min-h-[100px]"
                 placeholder="Tell the street your story..."
               />
             </div>
@@ -154,7 +154,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                   placeholder="https://example.com"
                   value={formData.websiteLink}
                   onChange={(e) => setFormData(prev => ({ ...prev, websiteLink: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold text-xs"
                 />
               </div>
 
@@ -167,7 +167,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                   placeholder="https://youtube.com/channel/..."
                   value={formData.videoLink}
                   onChange={(e) => setFormData(prev => ({ ...prev, videoLink: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold text-xs"
                 />
               </div>
 
@@ -180,7 +180,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                   placeholder="https://instagram.com/yourhandle"
                   value={formData.socialLink}
                   onChange={(e) => setFormData(prev => ({ ...prev, socialLink: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold text-xs"
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold text-xs"
                 />
               </div>
             </div>
@@ -193,7 +193,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                   id="favVerse"
                   value={formData.favoriteVerse}
                   onChange={(e) => setFormData(prev => ({ ...prev, favoriteVerse: e.target.value }))}
-                  className="rounded-2xl bg-muted/30 border-transparent focus:bg-white transition-all font-medium min-h-[80px]"
+                  className="rounded-2xl bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-medium min-h-[80px]"
                   placeholder="Your anchor verse..."
                 />
               </div>
@@ -203,7 +203,7 @@ const EditProfileModal = ({ user, onUpdate }: EditProfileModalProps) => {
                   id="favRef"
                   value={formData.favoriteReference}
                   onChange={(e) => setFormData(prev => ({ ...prev, favoriteReference: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white transition-all font-bold"
+                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-bold"
                   placeholder="e.g. John 3:16"
                 />
               </div>
