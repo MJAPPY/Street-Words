@@ -74,7 +74,8 @@ const Feed = () => {
 
   // Combine Category filter + Active Search Query filter
   const filteredPosts = allPosts.filter(p => {
-    const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+    const categoriesArray = p.category.split(',').map(c => c.trim().toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || categoriesArray.includes(selectedCategory.toLowerCase());
     const matchesSearch = searchQuery.trim() === "" || 
       p.verse.toLowerCase().includes(searchQuery.toLowerCase()) || 
       p.reference.toLowerCase().includes(searchQuery.toLowerCase()) || 

@@ -55,10 +55,12 @@ const Categories = () => {
           {CATEGORY_DATA.map((cat) => {
             const Icon = iconMap[cat.icon] || Shield;
             
-            // Calculate active dynamic count (centralized posts + any live added ones)
+            const isMatch = (catStr: string) => catStr.split(',').map(c => c.trim().toLowerCase()).includes(cat.name.toLowerCase());
+
+            // Calculate active dynamic count supporting multiple comma-separated categories
             const activeCount = 
-              INITIAL_POSTS.filter(p => p.category === cat.name).length + 
-              localPosts.filter(p => p.category === cat.name).length;
+              INITIAL_POSTS.filter(p => isMatch(p.category)).length + 
+              localPosts.filter(p => isMatch(p.category)).length;
 
             return (
               <Link key={cat.name} to={`/feed?category=${cat.name}`}>

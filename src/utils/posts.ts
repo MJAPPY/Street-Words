@@ -51,7 +51,8 @@ export const INITIAL_POSTS: VersePost[] = [
 
 // Helper function to get actual live count of posts for a category
 export const getCategoryCount = (categoryName: string, userPosts: VersePost[] = []): number => {
-  const defaultCount = INITIAL_POSTS.filter(p => p.category === categoryName).length;
-  const customCount = userPosts.filter(p => p.category === categoryName).length;
+  const isMatch = (catStr: string) => catStr.split(',').map(c => c.trim().toLowerCase()).includes(categoryName.toLowerCase());
+  const defaultCount = INITIAL_POSTS.filter(p => isMatch(p.category)).length;
+  const customCount = userPosts.filter(p => isMatch(p.category)).length;
   return defaultCount + customCount;
 };

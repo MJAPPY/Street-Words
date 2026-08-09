@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Category, CATEGORY_DATA } from '@/types';
-import { showSuccess } from '@/utils/toast';
-import { PenSquare, Loader2, Quote, Sparkles } from 'lucide-react';
+import { showSuccess, showError } from '@/utils/toast';
+import { PenSquare, Loader2, Quote, Sparkles, Check } from 'lucide-react';
 import { useSession } from '@/components/SessionProvider';
 import { useNavigate } from 'react-router-dom';
 import { supabaseService } from '@/utils/supabaseService';
+import { cn } from '@/lib/utils';
 
 interface CreatePostModalProps {
   trigger?: React.ReactNode;
@@ -28,7 +28,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     verse: "",
     reference: "",
     relevance: "",
-    category: "Truth" as Category
+    categories: ["Truth"] as Category[]
   });
 
   const handleTriggerClick = (e: React.MouseEvent) => {
@@ -39,9 +39,24 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
     }
   };
 
+  const toggleCategory = (catName: Category) => {
+    setFormData(prev => {
+      const active = [...prev.categories];
+      if (active.includes(catName)) {
+        if (active.length === 1) {
+          showError("Select at least 1 category for this word.");
+          return prev;
+        }
+        return { ...prev, categories: active.filter(c => c !== catName) };
+      } else {
+        return { ...prev, categories: [...active, catName] };
+      }
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.verse || !formData.reference) return;
+    if (!formData.verse || !formData.reference || formData.categories.length === 0) return;
 
     setIsLoading(true);
     const authorName = user?.email === 'streetwords21@proton.me' 
@@ -53,7 +68,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
         verse: formData.verse,
         reference: formData.reference,
         relevance: formData.relevance,
-        category: formData.category,
+        category: formData.categories.join(', ') as Category, // Comma separated list matches schema Text constraints cleanly
         author: authorName
       });
 
@@ -63,7 +78,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
         verse: "",
         reference: "",
         relevance: "",
-        category: "Truth"
+        categories: ["Truth"]
       });
 
       if (onPostCreated) {
@@ -107,7 +122,7 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
       <DialogTrigger asChild>
         {renderTrigger()}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-8 md:p-10">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-6 md:p-10">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
@@ -118,8 +133,8 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
           <p className="text-muted-foreground text-sm font-medium">Illuminate the pavement with ancient truth.</p>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-8 py-6">
-          <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
+          <div className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="verse" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
                 <Quote className="h-3 w-3 text-primary" /> The Scripture
@@ -130,44 +145,52 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                 placeholder="Enter the verse text here..."
                 value={formData.verse}
                 onChange={(e) => setFormData(prev => ({ ...prev, verse: e.target.value }))}
-                className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
+                className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="reference" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
-                <Input
-                  id="reference"
-                  required
-                  placeholder="e.g. John 3:16"
-                  value={formData.reference}
-                  onChange={(e) => setFormData(prev => ({ ...prev, reference: e.target.value }))}
-                  className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="reference" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
+              <Input
+                id="reference"
+                required
+                placeholder="e.g. John 3:16"
+                value={formData.reference}
+                onChange={(e) => setFormData(prev => ({ ...prev, reference: e.target.value }))}
+                className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
+              />
+            </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="category" className="text-xs font-black uppercase tracking-widest px-1">Category</Label>
-                <Select 
-                  value={formData.category} 
-                  onValueChange={(val) => setFormData(prev => ({ ...prev, category: val as Category }))}
-                >
-                  <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-black uppercase tracking-widest text-[10px]">
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-2xl border-none shadow-xl">
-                    {CATEGORY_DATA.map(cat => (
-                      <SelectItem key={cat.name} value={cat.name} className="font-black uppercase tracking-widest text-[10px] focus:bg-primary/5">
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+            {/* Custom Multi-Select Tag UI */}
+            <div className="space-y-2">
+              <Label className="text-xs font-black uppercase tracking-widest px-1 flex items-center justify-between">
+                <span>Select Categories (Select Multiple)</span>
+                <span className="text-[10px] text-primary">{formData.categories.length} Selected</span>
+              </Label>
+              <div className="flex flex-wrap gap-2 p-4 bg-muted/30 rounded-[1.5rem] max-h-[160px] overflow-y-auto border border-primary/5">
+                {CATEGORY_DATA.map((cat) => {
+                  const isSelected = formData.categories.includes(cat.name);
+                  return (
+                    <button
+                      type="button"
+                      key={cat.name}
+                      onClick={() => toggleCategory(cat.name)}
+                      className={cn(
+                        "rounded-full px-3.5 py-1.5 text-[9px] font-black uppercase tracking-widest transition-all duration-200 border flex items-center gap-1.5",
+                        isSelected 
+                          ? "bg-primary text-white border-primary shadow-sm" 
+                          : "bg-white/80 dark:bg-zinc-900/60 text-muted-foreground border-transparent hover:border-primary/20 hover:text-primary"
+                      )}
+                    >
+                      {isSelected && <Check className="h-3 w-3" />}
+                      {cat.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="space-y-2 pt-2">
+            <div className="space-y-2 pt-1">
               <Label htmlFor="relevance" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
                 <Sparkles className="h-3 w-3 text-primary" /> Your Discernment
               </Label>
@@ -176,17 +199,16 @@ const CreatePostModal = ({ trigger, onPostCreated }: CreatePostModalProps) => {
                 placeholder="How does this truth apply to the streets today?"
                 value={formData.relevance}
                 onChange={(e) => setFormData(prev => ({ ...prev, relevance: e.target.value }))}
-                className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
+                className="rounded-2xl min-h-[90px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
               />
-              <p className="text-[9px] text-muted-foreground font-bold px-1 italic">Shared reflections help our community navigate life's complexities.</p>
             </div>
           </div>
 
-          <div className="pt-4 flex gap-4">
+          <div className="pt-2 flex gap-4">
             <Button 
               type="button" 
               variant="ghost" 
-              onChange={() => setIsOpen(false)}
+              onClick={() => setIsOpen(false)}
               className="flex-1 h-14 rounded-full font-black uppercase tracking-widest text-xs"
             >
               Cancel

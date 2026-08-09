@@ -9,11 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   MessageSquare, Heart, Share2, Quote, Send, ArrowUpRight, 
   ArrowRight, Flag, Bookmark, Download, Loader2, Edit3, 
-  PenSquare, Sparkles 
+  PenSquare, Sparkles, Check
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { showSuccess, showError } from '@/utils/toast';
@@ -22,6 +21,7 @@ import { useSession } from '@/components/SessionProvider';
 import { supabaseService } from '@/utils/supabaseService';
 import { useTheme } from 'next-themes';
 import html2canvas from 'html2canvas';
+import { cn } from '@/lib/utils';
 
 interface VerseCardProps {
   post: VersePost;
@@ -38,6 +38,11 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
   const [newComment, setNewComment] = useState("");
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // Parse existing categories from CSV
+  const parseCategories = (catString: string): Category[] => {
+    return catString.split(',').map(c => c.trim()) as Category[];
+  };
+
   // Edit form state
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isUpdatingPost, setIsUpdatingPost] = useState(false);
@@ -45,7 +50,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     verse: post.verse,
     reference: post.reference,
     relevance: post.relevance,
-    category: post.category
+    categories: parseCategories(post.category)
   });
 
   const captureRef = useRef<HTMLDivElement>(null);
@@ -57,7 +62,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
       verse: initialPost.verse,
       reference: initialPost.reference,
       relevance: initialPost.relevance,
-      category: initialPost.category
+      categories: parseCategories(initialPost.category)
     });
   }, [initialPost]);
 
@@ -190,19 +195,40 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     showSuccess("Post reported successfully. Moderation team is reviewing it.");
   };
 
+  const toggleEditCategory = (catName: Category) => {
+    setEditFormData(prev => {
+      const active = [...prev.categories];
+      if (active.includes(catName)) {
+        if (active.length === 1) {
+          showError("Select at least 1 category.");
+          return prev;
+        }
+        return { ...prev, categories: active.filter(c => c !== catName) };
+      } else {
+        return { ...prev, categories: [...active, catName] };
+      }
+    });
+  };
+
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editFormData.verse.trim() || !editFormData.reference.trim()) return;
+    if (!editFormData.verse.trim() || !editFormData.reference.trim() || editFormData.categories.length === 0) return;
 
     setIsUpdatingPost(true);
+    const joinedCategories = editFormData.categories.join(', ') as Category;
     try {
-      await supabaseService.updatePost(post.id, editFormData);
+      await supabaseService.updatePost(post.id, {
+        verse: editFormData.verse,
+        reference: editFormData.reference,
+        relevance: editFormData.relevance,
+        category: joinedCategories
+      });
       setPost(prev => ({
         ...prev,
         verse: editFormData.verse,
         reference: editFormData.reference,
         relevance: editFormData.relevance,
-        category: editFormData.category
+        category: joinedCategories
       }));
       setIsEditDialogOpen(false);
       showSuccess("Your post has been updated!");
@@ -304,11 +330,13 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
     }));
   };
 
+  const categoriesList = parseCategories(post.category);
+
   return (
     <Card className="group relative overflow-hidden border border-white/60 dark:border-zinc-800/60 bg-white/60 dark:bg-zinc-900/80 backdrop-blur-md shadow-lg hover:shadow-[0_20px_50px_-12px_rgba(168,85,247,0.25)] hover:-translate-y-1 transition-all duration-500 rounded-[3rem]">
       {/* Target capture zone for printing & socials */}
-      <div ref={captureRef} className="p-8 md:p-12 bg-transparent">
-        <div className="flex justify-between items-center mb-10">
+      <div ref={captureRef} className="p-8 md:p-12 bg-transparent text-left">
+        <div className="flex justify-between items-start mb-10">
           <Link to={`/profile/${post.author}`} className="flex items-center gap-4 group/author hover:opacity-90">
             <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-primary to-[#ec4899] p-[2px] shadow-lg shadow-primary/20 transition-transform group-hover/author:scale-105 duration-350">
               <div className="h-full w-full rounded-[14px] bg-white dark:bg-zinc-950 flex items-center justify-center font-black text-primary text-lg">
@@ -320,9 +348,13 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
               <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">{post.createdAt}</p>
             </div>
           </Link>
-          <Badge variant="secondary" className="bg-primary/10 text-primary border-none px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
-            {post.category}
-          </Badge>
+          <div className="flex flex-wrap gap-1.5 justify-end max-w-[240px]">
+            {categoriesList.map((cat) => (
+              <Badge key={cat} variant="secondary" className="bg-primary/10 text-primary border-none px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest whitespace-nowrap">
+                {cat}
+              </Badge>
+            ))}
+          </div>
         </div>
 
         <Link to={`/post/${post.id}`} className="block relative mb-10 group/quote">
@@ -394,7 +426,7 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                     <Edit3 className="h-5 w-5" />
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-8 md:p-10">
+                <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto rounded-[2.5rem] border-none shadow-2xl p-6 md:p-10">
                   <DialogHeader>
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 rounded-xl bg-primary/10 text-primary">
@@ -405,8 +437,8 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                     <p className="text-muted-foreground text-sm font-medium">Keep the community guided with accurate truth.</p>
                   </DialogHeader>
                   
-                  <form onSubmit={handleEditSubmit} className="space-y-8 py-6">
-                    <div className="space-y-6">
+                  <form onSubmit={handleEditSubmit} className="space-y-6 py-4">
+                    <div className="space-y-5">
                       <div className="space-y-2">
                         <Label htmlFor="edit-verse" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
                           <Quote className="h-3 w-3 text-primary" /> The Scripture
@@ -416,43 +448,51 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                           required
                           value={editFormData.verse}
                           onChange={(e) => setEditFormData(prev => ({ ...prev, verse: e.target.value }))}
-                          className="rounded-2xl min-h-[120px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
+                          className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-serif italic text-lg p-6"
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-reference" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
-                          <Input
-                            id="edit-reference"
-                            required
-                            value={editFormData.reference}
-                            onChange={(e) => setEditFormData(prev => ({ ...prev, reference: e.target.value }))}
-                            className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-reference" className="text-xs font-black uppercase tracking-widest px-1">Reference</Label>
+                        <Input
+                          id="edit-reference"
+                          required
+                          value={editFormData.reference}
+                          onChange={(e) => setEditFormData(prev => ({ ...prev, reference: e.target.value }))}
+                          className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-bold"
+                        />
+                      </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="edit-category" className="text-xs font-black uppercase tracking-widest px-1">Category</Label>
-                          <Select 
-                            value={editFormData.category} 
-                            onValueChange={(val) => setEditFormData(prev => ({ ...prev, category: val as Category }))}
-                          >
-                            <SelectTrigger className="rounded-2xl h-12 bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 transition-all font-black uppercase tracking-widest text-[10px]">
-                              <SelectValue placeholder="Select Category" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-none shadow-xl">
-                              {CATEGORY_DATA.map(cat => (
-                                <SelectItem key={cat.name} value={cat.name} className="font-black uppercase tracking-widest text-[10px] focus:bg-primary/5">
-                                  {cat.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                      {/* Custom Edit Multi-Select UI */}
+                      <div className="space-y-2">
+                        <Label className="text-xs font-black uppercase tracking-widest px-1 flex items-center justify-between">
+                          <span>Categories (Select Multiple)</span>
+                          <span className="text-[10px] text-primary">{editFormData.categories.length} Selected</span>
+                        </Label>
+                        <div className="flex flex-wrap gap-2 p-4 bg-muted/30 rounded-[1.5rem] max-h-[140px] overflow-y-auto border border-primary/5">
+                          {CATEGORY_DATA.map((cat) => {
+                            const isSelected = editFormData.categories.includes(cat.name);
+                            return (
+                              <button
+                                type="button"
+                                key={cat.name}
+                                onClick={() => toggleEditCategory(cat.name)}
+                                className={cn(
+                                  "rounded-full px-3.5 py-1.5 text-[9px] font-black uppercase tracking-widest transition-all duration-200 border flex items-center gap-1.5",
+                                  isSelected 
+                                    ? "bg-primary text-white border-primary shadow-sm" 
+                                    : "bg-white/80 dark:bg-zinc-900/60 text-muted-foreground border-transparent hover:border-primary/20 hover:text-primary"
+                                )}
+                              >
+                                {isSelected && <Check className="h-3 w-3" />}
+                                {cat.name}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
 
-                      <div className="space-y-2 pt-2">
+                      <div className="space-y-2 pt-1">
                         <Label htmlFor="edit-relevance" className="text-xs font-black uppercase tracking-widest px-1 flex items-center gap-2">
                           <Sparkles className="h-3 w-3 text-primary" /> Your Discernment
                         </Label>
@@ -460,12 +500,12 @@ const VerseCard = ({ post: initialPost }: VerseCardProps) => {
                           id="edit-relevance"
                           value={editFormData.relevance}
                           onChange={(e) => setEditFormData(prev => ({ ...prev, relevance: e.target.value }))}
-                          className="rounded-2xl min-h-[100px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
+                          className="rounded-2xl min-h-[90px] bg-muted/30 border-transparent focus:bg-white dark:focus:bg-zinc-900 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 transition-all font-medium"
                         />
                       </div>
                     </div>
 
-                    <div className="pt-4 flex gap-4">
+                    <div className="pt-2 flex gap-4">
                       <Button 
                         type="button" 
                         variant="ghost" 
